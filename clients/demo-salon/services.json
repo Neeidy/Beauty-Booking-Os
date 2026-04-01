@@ -1,0 +1,94 @@
+{
+  "categories": [
+    {
+      "name": "Nails",
+      "slug": "nails",
+      "services": [
+        {
+          "id": "svc_gel_manicure",
+          "name": "Gel Manikür",
+          "nameEn": "Gel Manicure",
+          "duration": 60,
+          "priceEur": 4500,
+          "description": "Langanhaltende Gel-Maniküre mit Farbauswahl",
+          "popular": true
+        },
+        {
+          "id": "svc_gel_pedicure",
+          "name": "Gel Pedikür",
+          "nameEn": "Gel Pedicure",
+          "duration": 75,
+          "priceEur": 5500,
+          "description": "Pflegende Gel-Pediküre für schöne Füße",
+          "popular": false
+        },
+        {
+          "id": "svc_nail_art",
+          "name": "Nail Art Design",
+          "nameEn": "Nail Art Design",
+          "duration": 90,
+          "priceEur": 6500,
+          "description": "Individuelle Nail Art nach Wunsch",
+          "popular": false
+        },
+        {
+          "id": "svc_nail_removal",
+          "name": "Gel Entfernung",
+          "nameEn": "Gel Removal",
+          "duration": 30,
+          "priceEur": 1500,
+          "description": "Schonende Entfernung von Gel-Nägeln",
+          "popular": false
+        }
+      ]
+    },
+    {
+      "name": "Gesichtspflege",
+      "slug": "skin",
+      "services": [
+        {
+          "id": "svc_hydrafacial",
+          "name": "HydraFacial Classic",
+          "nameEn": "HydraFacial Classic",
+          "duration": 45,
+          "priceEur": 8900,
+          "description": "Tiefenreinigung und Hydration für strahlende Haut",
+          "popular": true
+        },
+        {
+          "id": "svc_facial_basic",
+          "name": "Basis Gesichtsbehandlung",
+          "nameEn": "Basic Facial",
+          "duration": 60,
+          "priceEur": 6500,
+          "description": "Reinigung, Peeling und Feuchtigkeitspflege",
+          "popular": false
+        }
+      ]
+    },
+    {
+      "name": "Wimpern & Brauen",
+      "slug": "lashes-brows",
+      "services": [
+        {
+          "id": "svc_lash_lift",
+          "name": "Lash Lift & Tint",
+          "nameEn": "Lash Lift & Tint",
+          "duration": 60,
+          "priceEur": 7500,
+          "description": "Natürlicher Wimpernlift mit Färbung für 6-8 Wochen",
+          "popular": true
+        },
+        {
+          "id": "svc_brow_lamination",
+          "name": "Brow Lamination",
+          "nameEn": "Brow Lamination",
+          "duration": 45,
+          "priceEur": 5500,
+          "description": "Professionelle Augenbrauen-Lamination für volle Brauen",
+          "popular": false
+        }
+      ]
+    }
+  ]
+}

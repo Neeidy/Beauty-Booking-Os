@@ -1,0 +1,49 @@
+{
+  "brandTone": {
+    "style": "premium, warm, direct",
+    "personality": "Wie eine erfahrene Freundin, die auch Profi ist",
+    "avoid": ["too technical", "too robotic", "slang", "excessive emojis"],
+    "allowEmojis": false,
+    "formalityLevel": "Sie-Form"
+  },
+  "colors": {
+    "primary": "#2D2926",
+    "secondary": "#C9A96E",
+    "accent": "#E8DDD0",
+    "background": "#FAFAF8"
+  },
+  "ctaTemplates": {
+    "de": {
+      "bookNow": "Jetzt Termin buchen",
+      "contactUs": "Schreiben Sie uns",
+      "learnMore": "Mehr erfahren"
+    },
+    "en": {
+      "bookNow": "Book Now",
+      "contactUs": "Contact Us",
+      "learnMore": "Learn More"
+    },
+    "tr": {
+      "bookNow": "Şimdi Randevu Al",
+      "contactUs": "Bize Yazın",
+      "learnMore": "Daha Fazla"
+    }
+  },
+  "messageTemplates": {
+    "bookingConfirmation": {
+      "de": "Vielen Dank, {customerName}! Ihr Termin für {serviceName} am {date} um {time} ist bestätigt. Wir freuen uns auf Sie!",
+      "en": "Thank you, {customerName}! Your appointment for {serviceName} on {date} at {time} is confirmed. We look forward to seeing you!",
+      "tr": "Teşekkürler, {customerName}! {date} tarihinde saat {time} için {serviceName} randevunuz onaylandı. Sizi bekliyoruz!"
+    },
+    "reminder24h": {
+      "de": "Hallo {customerName}, wir möchten Sie an Ihren morgigen Termin erinnern: {serviceName} um {time}. Bis morgen!",
+      "en": "Hi {customerName}, just a reminder about your appointment tomorrow: {serviceName} at {time}. See you then!",
+      "tr": "Merhaba {customerName}, yarınki randevunuzu hatırlatmak isteriz: {serviceName}, saat {time}. Görüşmek üzere!"
+    },
+    "reminder3h": {
+      "de": "Ihr Termin bei Vienna Glow Studio ist heute um {time}. Wir freuen uns auf Sie!",
+      "en": "Your appointment at Vienna Glow Studio is today at {time}. See you soon!",
+      "tr": "Vienna Glow Studio randevunuz bugün saat {time}. Görüşmek üzere!"
+    }
+  }
+}

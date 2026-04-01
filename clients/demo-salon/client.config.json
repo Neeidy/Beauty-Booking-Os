@@ -1,0 +1,58 @@
+{
+  "clientName": "Vienna Glow Studio",
+  "slug": "demo-salon",
+  "timezone": "Europe/Vienna",
+  "packageType": "growth",
+  "languages": ["de", "en", "tr"],
+  "defaultLanguage": "de",
+  "channels": {
+    "website": true,
+    "instagramDm": false,
+    "whatsapp": true,
+    "email": true
+  },
+  "bookingRules": {
+    "allowAfterHoursLeadCapture": true,
+    "reminderHoursBefore": [24, 3],
+    "rescheduleWindowHours": 12,
+    "maxBookingsPerSlot": 1,
+    "minAdvanceBookingHours": 2,
+    "cancellationPolicyHours": 24,
+    "recoveryWaitHours": 48,
+    "maxFollowUpAttempts": 2
+  },
+  "operatingHours": {
+    "monday": { "open": "09:00", "close": "19:00" },
+    "tuesday": { "open": "09:00", "close": "19:00" },
+    "wednesday": { "open": "09:00", "close": "19:00" },
+    "thursday": { "open": "09:00", "close": "21:00" },
+    "friday": { "open": "09:00", "close": "19:00" },
+    "saturday": { "open": "10:00", "close": "17:00" },
+    "sunday": null
+  },
+  "contact": {
+    "phone": "+43 1 234 5678",
+    "email": "hello@viennaglowstudio.at",
+    "address": "Mariahilfer Straße 45, 1060 Wien",
+    "instagramHandle": "@viennaglowstudio",
+    "whatsappNumber": "+4312345678",
+    "googleMapsUrl": "https://maps.google.com/maps?q=Vienna+Glow+Studio"
+  },
+  "gdpr": {
+    "dataControllerName": "Vienna Glow Studio GmbH",
+    "dataControllerEmail": "datenschutz@viennaglowstudio.at",
+    "privacyPolicyUrl": "/datenschutz",
+    "dataRetentionDays": 730,
+    "consentRequired": ["data_processing", "reminder_messages"],
+    "marketingConsentOptional": true
+  },
+  "features": {
+    "aiIntake": true,
+    "aiBooking": true,
+    "aiFollowUp": true,
+    "instagramDmFlow": false,
+    "recoveryFlow": true,
+    "multiLanguage": true,
+    "advancedReporting": false
+  }
+}
