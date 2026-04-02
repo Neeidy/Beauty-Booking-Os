@@ -4,6 +4,7 @@ import { ZodError } from "zod";
 import { getCachedSalonConfig } from "@beauty-booking/config";
 import { createLead } from "@beauty-booking/db/queries/leads";
 import { logEvent } from "@beauty-booking/db/queries/event-logs";
+import { createGdprConsents } from "@beauty-booking/db/queries/gdpr-consents";
 import { createLeadInputSchema } from "@beauty-booking/shared";
 import { logger } from "@beauty-booking/shared";
 
@@ -116,7 +117,20 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // 7. Log the event
+  // 7. Write GDPR consent records to gdpr_consents table (best-effort)
+  const gdprItems = input.gdprConsents.map((c) => ({
+    clientId,
+    leadId: lead.id,
+    consentType: c.consentType,
+    granted: c.granted,
+    method: c.method,
+    ipAddress: request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? null,
+  }));
+  await createGdprConsents(gdprItems).catch((err) => {
+    logger.warn("Failed to write GDPR consents", { error: String(err), leadId: lead.id });
+  });
+
+  // 8. Log the event
   const durationMs = Date.now() - startTime;
   try {
     await logEvent({
@@ -142,6 +156,7 @@ export async function POST(request: NextRequest) {
       success: true,
       leadId: lead.id,
       message: "Lead created successfully",
+      redirectTo: "/booking/thank-you",
     },
     { status: 201 }
   );
