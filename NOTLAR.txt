@@ -1,0 +1,59 @@
+UYARI: .env.example'da gerçek API anahtarları var
+.env.example dosyası git tarafından takip ediliyor (.gitignore'a dahil DEĞİL) ve şu anda içinde gerçek credentials var:
+
+ANTHROPIC_API_KEY=sk-ant-api03-...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_...
+SUPABASE_SERVICE_ROLE_KEY=sb_secret_...
+Eğer bunlar gerçek anahtarlarsa, hemen rotate et (Anthropic Console + Supabase dashboard'dan yeni key üret, eskiyi iptal et). Git history'de kalan key'ler bile tehlikeli sayılır.
+
+Düzeltme:
+
+.env.example'ı placeholder'lara geri al
+Gerçek key'leri .env dosyasına koy (zaten .gitignore'da)
+Eğer commit'lendiyse anahtarları hemen revoke et
+Sprint 2 Durum Raporu
+Mevcut dosya yapısı — ne var:
+Paketler (kod içeren):
+
+Paket	Dosyalar	Durum
+packages/config	schemas/, loader.ts, index.ts, 2 test dosyası	Tam, 14 test ✓
+packages/db	schema.ts, queries/leads+event-logs, drizzle.config.ts	Tam, migration henüz çalıştırılmadı
+packages/shared	types/, utils/logger+retry, 2 test dosyası	Tam, 15 test ✓
+apps/web	api/lead/route.ts, next.config.ts	Kısmi — sadece API route var
+Sadece boş dizin (hiç dosya yok):
+
+Dizin	Sprint 2'de gerekli mi?
+packages/agents/orchestrator/	Evet — Sprint 2
+packages/agents/intake-agent/	Evet — Sprint 2
+packages/agents/booking-agent/	Evet — Sprint 2
+packages/agents/followup-agent/	Sprint 4
+packages/agents/content-agent/	Sprint 6
+packages/core/ (flows/rules/validators/formatters)	Sprint 3+
+packages/shared/src/clients/	Evet — Sprint 2 (anthropic.ts buraya)
+scripts/	Sprint 7
+Eksik package.json'lar:
+
+packages/agents/ — henüz hiçbir agent paketi yok (package.json yok)
+packages/core/ — yok
+packages/integrations/ — dizin bile yok
+Sprint 2 için ne gerekiyor:
+Bağımlılık eklenecekler:
+
+packages/shared: @anthropic-ai/sdk eklenecek (Claude wrapper için)
+packages/agents/*: her agent için ayrı package.json + @beauty-booking/shared + @anthropic-ai/sdk bağımlılığı
+apps/web: POST /api/lead/:id/classify ve /next-step route'ları
+DB durumu:
+
+DATABASE_URL .env.example'da placeholder — .env dosyası henüz yok
+migrations/ dizini boş — drizzle-kit push hiç çalıştırılmadı
+Supabase projesi kurulmamış
+Kritik bağımlılık: Agent'lar çalışabilmesi için önce DB'nin ayakta olması ve demo-salon client kaydının seeded olması gerekiyor.
+
+Sprint 2 için önerilen iş sırası:
+.env oluştur → Supabase bağlantısını kur → drizzle-kit push
+Demo-salon seed script'i → clients tablosuna kayıt at → clientId al
+packages/shared/src/clients/anthropic.ts — Claude wrapper
+packages/agents/ paketleri kur → Intake Agent → Orchestrator → Booking Agent
+API route'ları wire et
+Mocked Claude ile agent testleri
+Devam etmemi ister misin?
