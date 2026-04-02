@@ -1,3 +1,13 @@
+export {
+  callAgent,
+  extractJson,
+  getAnthropicClient,
+  _resetAnthropicClient,
+  _setAnthropicClient,
+  DEFAULT_MODEL,
+} from "./clients/anthropic.js";
+export type { AgentCallResult, CallAgentOptions } from "./clients/anthropic.js";
+
 export { logger } from "./utils/logger.js";
 export { withRetry } from "./utils/retry.js";
 export { createLeadInputSchema, createLeadResponseSchema } from "./types/lead.types.js";
