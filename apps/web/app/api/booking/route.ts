@@ -7,6 +7,12 @@ import { createBooking } from "@beauty-booking/db/queries/bookings";
 import { createAutomationJobs } from "@beauty-booking/db/queries/automation-jobs";
 import { logEvent } from "@beauty-booking/db/queries/event-logs";
 import { logger } from "@beauty-booking/shared";
+import { sendEmail } from "../../../../../packages/integrations/email/client.js";
+import {
+  buildBookingConfirmationHtml,
+  getBookingConfirmationSubject,
+  type SupportedLanguage,
+} from "../../../../../packages/integrations/email/templates/booking-confirmation.js";
 
 const CLIENTS_DIR = join(process.cwd(), "..", "..", "clients");
 
@@ -107,7 +113,43 @@ export async function POST(request: NextRequest) {
     logger.warn("Failed to schedule reminder jobs", { bookingId: booking.id, error: String(err) });
   });
 
-  // 7. Log event
+  // 7. Send confirmation email (non-blocking — failure must not break booking)
+  if (lead.customerEmail) {
+    const lang = (lead.language ?? "de") as SupportedLanguage;
+    const apptDate = new Date(appointmentAt);
+    const dateStr = apptDate.toLocaleDateString(lang === "de" ? "de-AT" : lang === "tr" ? "tr-TR" : "en-GB", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+    const timeStr = apptDate.toLocaleTimeString(lang === "de" ? "de-AT" : "en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    sendEmail({
+      to: lead.customerEmail,
+      subject: getBookingConfirmationSubject(lang),
+      html: buildBookingConfirmationHtml(
+        {
+          customerName,
+          serviceName: serviceId,   // Until services DB table is wired with name lookup
+          date: dateStr,
+          time: timeStr,
+          salonName: salonConfig.client.clientName,
+          salonAddress: salonConfig.client.contact.address,
+          salonPhone: salonConfig.client.contact.phone,
+          salonEmail: salonConfig.client.contact.email,
+        },
+        lang
+      ),
+    }).catch((err) => {
+      logger.warn("Confirmation email failed", { bookingId: booking.id, error: String(err) });
+    });
+  }
+
+  // 8. Log event
   const durationMs = Date.now() - startTime;
   await logEvent({
     clientId: lead.clientId,
