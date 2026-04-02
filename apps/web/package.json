@@ -14,6 +14,7 @@
     "@beauty-booking/config": "workspace:*",
     "@beauty-booking/db": "workspace:*",
     "@beauty-booking/shared": "workspace:*",
+    "@hookform/resolvers": "^5.2.2",
     "@tailwindcss/postcss": "^4.2.2",
     "@tailwindcss/typography": "^0.5.19",
     "autoprefixer": "^10.4.27",
@@ -21,7 +22,9 @@
     "postcss": "^8.5.8",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "tailwindcss": "^4.2.2"
+    "react-hook-form": "^7.72.0",
+    "tailwindcss": "^4.2.2",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
