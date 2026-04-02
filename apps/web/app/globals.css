@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+/* Vienna Glow Studio — Brand CSS Variables */
+:root {
+  --color-primary: #2D2926;
+  --color-secondary: #C9A96E;
+  --color-accent: #E8DDD0;
+  --color-background: #FAFAF8;
+  --color-text: #2D2926;
+  --color-text-muted: #6B6460;
+}
+
+html {
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
