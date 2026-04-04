@@ -1,0 +1,21 @@
+{
+  "name": "@beauty-booking/core",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./src/index.ts",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@beauty-booking/config": "workspace:*",
+    "@beauty-booking/db": "workspace:*",
+    "@beauty-booking/shared": "workspace:*",
+    "@beauty-booking/followup-agent": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2",
+    "@types/node": "^22.10.2",
+    "vitest": "^2.1.8"
+  }
+}
