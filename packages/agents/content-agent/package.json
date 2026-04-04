@@ -1,15 +1,14 @@
 {
-  "name": "@beauty-booking/followup-agent",
+  "name": "@beauty-booking/content-agent",
   "version": "0.0.1",
   "private": true,
-  "main": "./src/index.ts",
+  "main": "./index.ts",
   "scripts": {
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@beauty-booking/config": "workspace:*",
-    "@beauty-booking/content-agent": "workspace:*",
     "@beauty-booking/shared": "workspace:*",
     "zod": "^3.24.1"
   },

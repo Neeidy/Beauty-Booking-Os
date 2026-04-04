@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { callAgent, type AgentCallResult } from "@beauty-booking/shared";
 import type { SalonConfig } from "@beauty-booking/config";
+import { generateMessage } from "@beauty-booking/content-agent";
 import {
   buildFollowUpPrompt,
   type TriggerType,
@@ -136,7 +137,67 @@ export async function generateFollowUp(
     };
   }
 
-  // 3. AI fallback — build prompt and call Claude
+  // 3. Content Agent for winback/recovery triggers — uses brand voice writer
+  const CONTENT_AGENT_TRIGGERS: TriggerType[] = ["cancellation", "no_show", "no_confirmation"];
+
+  if (CONTENT_AGENT_TRIGGERS.includes(triggerType)) {
+    const purposeMap: Record<string, "winback" | "dm_reply"> = {
+      cancellation: "winback",
+      no_show: "winback",
+      no_confirmation: "dm_reply",
+    };
+    const purpose = purposeMap[triggerType] ?? "winback";
+
+    const contentResult = await generateMessage({
+      purpose,
+      language: input.language,
+      context: {
+        customerName: input.customerName,
+        serviceName: input.serviceName,
+        date: input.appointmentDate,
+        time: input.appointmentTime,
+      },
+      clientConfig: salonConfig,
+      maxLength: 300,
+    });
+
+    if (!contentResult.success || !contentResult.data) {
+      return {
+        success: false,
+        data: null,
+        error: contentResult.error ?? "Content Agent failed",
+        tokenUsage: contentResult.tokenUsage,
+        durationMs: contentResult.durationMs,
+        retryCount: contentResult.retryCount,
+      };
+    }
+
+    const actionTypeMap: Record<string, FollowUpOutput["action_type"]> = {
+      cancellation: "reschedule_offer",
+      no_show: "winback",
+      no_confirmation: "confirm_request",
+    };
+
+    const isLastAttempt = followUpAttempt >= salonConfig.client.bookingRules.maxFollowUpAttempts;
+
+    return {
+      success: true,
+      data: {
+        message: contentResult.data.message,
+        channel: "whatsapp",
+        action_type: actionTypeMap[triggerType] ?? "winback",
+        reschedule_link: null,
+        follow_up_scheduled: !isLastAttempt,
+        next_follow_up_hours: isLastAttempt ? null : 48,
+      },
+      error: null,
+      tokenUsage: contentResult.tokenUsage,
+      durationMs: contentResult.durationMs,
+      retryCount: contentResult.retryCount,
+    };
+  }
+
+  // 4. Fallback for any other trigger type — call Follow-up Agent directly
   const context: FollowUpPromptContext = {
     triggerType,
     customerName: input.customerName,

@@ -245,14 +245,12 @@ describe("generateFollowUp — AI fallback (no template)", () => {
   beforeEach(() => { _resetAnthropicClient(); });
   afterEach(() => { _resetAnthropicClient(); });
 
-  it("cancellation → calls AI, returns reschedule_offer", async () => {
+  it("cancellation → calls Content Agent, returns reschedule_offer", async () => {
     _setAnthropicClient(mockClientWith({
       message: "Wir würden uns freuen, Sie bald wieder bei uns begrüßen zu dürfen. Sollen wir einen neuen Termin vereinbaren?",
-      channel: "whatsapp",
-      action_type: "reschedule_offer",
-      reschedule_link: null,
-      follow_up_scheduled: true,
-      next_follow_up_hours: 48,
+      tone_check: "on_brand",
+      language: "de",
+      character_count: 110,
     }));
 
     const result = await generateFollowUp({
@@ -266,14 +264,12 @@ describe("generateFollowUp — AI fallback (no template)", () => {
     expect(result.tokenUsage.total).toBeGreaterThan(0); // AI was called
   });
 
-  it("no_show → calls AI, returns winback message", async () => {
+  it("no_show → calls Content Agent, returns winback message", async () => {
     _setAnthropicClient(mockClientWith({
       message: "Wir haben Sie heute vermisst. Wir würden uns freuen, Sie bald wieder bei uns willkommen zu heißen.",
-      channel: "whatsapp",
-      action_type: "winback",
-      reschedule_link: null,
-      follow_up_scheduled: false,
-      next_follow_up_hours: null,
+      tone_check: "on_brand",
+      language: "de",
+      character_count: 99,
     }));
 
     const result = await generateFollowUp({
@@ -285,14 +281,12 @@ describe("generateFollowUp — AI fallback (no template)", () => {
     expect(result.data?.action_type).toBe("winback");
   });
 
-  it("no_confirmation → calls AI, returns confirm_request", async () => {
+  it("no_confirmation → calls Content Agent, returns confirm_request", async () => {
     _setAnthropicClient(mockClientWith({
       message: "Bitte bestätigen Sie Ihren Termin für Gel Manikür morgen um 14:00.",
-      channel: "whatsapp",
-      action_type: "confirm_request",
-      reschedule_link: null,
-      follow_up_scheduled: true,
-      next_follow_up_hours: 2,
+      tone_check: "on_brand",
+      language: "de",
+      character_count: 66,
     }));
 
     const result = await generateFollowUp({
@@ -328,11 +322,9 @@ describe("generateFollowUp — max attempts guard", () => {
     // attempt = 2, max = 2 → should still attempt (>2 would stop, =2 is last attempt)
     _setAnthropicClient(mockClientWith({
       message: "Letzte Erinnerung.",
-      channel: "whatsapp",
-      action_type: "winback",
-      reschedule_link: null,
-      follow_up_scheduled: false,
-      next_follow_up_hours: null,
+      tone_check: "on_brand",
+      language: "de",
+      character_count: 18,
     }));
 
     const result = await generateFollowUp({

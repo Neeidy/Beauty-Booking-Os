@@ -8,7 +8,6 @@ export default defineConfig({
     alias: {
       "@beauty-booking/shared": resolve(__dirname, "../../shared/src/index.ts"),
       "@beauty-booking/config": resolve(__dirname, "../../config/src/index.ts"),
-      "@beauty-booking/content-agent": resolve(__dirname, "../content-agent/index.ts"),
       "zod": resolve(SHARED_MODULES, "zod"),
       "@anthropic-ai/sdk": resolve(SHARED_MODULES, "@anthropic-ai/sdk"),
     },
