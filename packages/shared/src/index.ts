@@ -29,6 +29,11 @@ export {
   MAX_NAME_LENGTH,
   MAX_SHORT_TEXT_LENGTH,
 } from "./utils/sanitizer.js";
+export {
+  verifyWhatsAppSignature,
+  verifyInstagramSignature,
+  verifyWebhookChallenge,
+} from "./utils/webhook-verify.js";
 export { createLeadInputSchema, createLeadResponseSchema } from "./types/lead.types.js";
 export type { CreateLeadInput, CreateLeadResponse } from "./types/lead.types.js";
 export {
