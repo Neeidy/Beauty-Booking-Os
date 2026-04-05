@@ -2,13 +2,15 @@
   "name": "@beauty-booking/db",
   "version": "0.0.1",
   "private": true,
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
   "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    }
+    ".": "./src/index.ts",
+    "./queries/leads": "./src/queries/leads.queries.ts",
+    "./queries/bookings": "./src/queries/bookings.queries.ts",
+    "./queries/event-logs": "./src/queries/event-logs.queries.ts",
+    "./queries/gdpr-consents": "./src/queries/gdpr-consents.queries.ts",
+    "./queries/automation-jobs": "./src/queries/automation-jobs.queries.ts"
   },
   "scripts": {
     "build": "tsc",

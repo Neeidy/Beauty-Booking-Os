@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { getDb, gdprConsents, type NewGdprConsent, type GdprConsent } from "../index.js";
+import { getDb, gdprConsents, type NewGdprConsent, type GdprConsent } from "../index";
 
 export async function createGdprConsent(data: NewGdprConsent): Promise<GdprConsent> {
   const db = getDb();

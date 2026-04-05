@@ -20,6 +20,16 @@ const nextConfig: NextConfig = {
     "@beauty-booking/content-agent",
   ],
 
+  // Map .js imports to .ts files for transpiled workspace packages
+  // (TypeScript ESM uses .js extensions in source, but webpack needs .ts)
+  webpack(config) {
+    config.resolve.extensionAlias = {
+      ".js": [".ts", ".tsx", ".js"],
+      ".jsx": [".tsx", ".jsx"],
+    };
+    return config;
+  },
+
   // Security headers
   async headers() {
     return [

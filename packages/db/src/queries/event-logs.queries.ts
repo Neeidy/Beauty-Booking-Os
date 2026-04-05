@@ -1,5 +1,5 @@
 import { eq, desc } from "drizzle-orm";
-import { getDb, eventLogs, type NewEventLog, type EventLog } from "../index.js";
+import { getDb, eventLogs, type NewEventLog, type EventLog } from "../index";
 
 export async function logEvent(data: NewEventLog): Promise<EventLog> {
   const db = getDb();

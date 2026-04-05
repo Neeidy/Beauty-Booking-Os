@@ -136,6 +136,7 @@ async function main() {
   const allServices = servicesData.categories.flatMap((cat, catIdx) =>
     cat.services.map((svc, svcIdx) => ({
       clientId,
+      serviceSlug: svc.id,
       serviceName: svc.name,
       category: cat.slug,
       durationMinutes: svc.duration,

@@ -1,5 +1,5 @@
 import { eq, desc, and } from "drizzle-orm";
-import { getDb, leads, type NewLead, type Lead } from "../index.js";
+import { getDb, leads, type NewLead, type Lead } from "../index";
 
 export async function createLead(data: NewLead): Promise<Lead> {
   const db = getDb();

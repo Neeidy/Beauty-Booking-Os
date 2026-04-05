@@ -1,5 +1,5 @@
 import { eq, desc } from "drizzle-orm";
-import { getDb, bookings, type NewBooking, type Booking } from "../index.js";
+import { getDb, bookings, type NewBooking, type Booking } from "../index";
 
 export async function createBooking(data: NewBooking): Promise<Booking> {
   const db = getDb();

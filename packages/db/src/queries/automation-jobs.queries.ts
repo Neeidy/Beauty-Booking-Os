@@ -1,5 +1,5 @@
 import { eq, lte, and, inArray } from "drizzle-orm";
-import { getDb, automationJobs, type NewAutomationJob, type AutomationJob } from "../index.js";
+import { getDb, automationJobs, type NewAutomationJob, type AutomationJob } from "../index";
 
 export async function createAutomationJob(data: NewAutomationJob): Promise<AutomationJob> {
   const db = getDb();
