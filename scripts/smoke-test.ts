@@ -20,6 +20,8 @@
 const BASE_URL = process.env["SMOKE_TEST_URL"] ?? "http://localhost:3000";
 const ADMIN_SECRET = process.env["SMOKE_TEST_ADMIN_SECRET"] ?? "";
 const WEBHOOK_SECRET = process.env["SMOKE_TEST_WEBHOOK_SECRET"] ?? "";
+const CLIENT_SLUG = process.env["SMOKE_TEST_CLIENT_SLUG"] ?? "demo-salon";
+const CLIENT_ID = process.env["SMOKE_TEST_CLIENT_ID"] ?? "00000000-0000-0000-0000-000000000001";
 
 if (!ADMIN_SECRET || !WEBHOOK_SECRET) {
   console.error(
@@ -134,19 +136,31 @@ async function main() {
 
   // ── Step 2: Create lead ──────────────────────────────────────────────────
   await step(2, "POST /api/lead → lead created", async () => {
-    const { status, data } = await api("POST", "/api/lead", {
-      customerName: "Smoke Test User",
-      customerEmail: "smoketest@deleted.local",
-      customerPhone: "+43 1 999 9999",
-      rawMessage: "SMOKE TEST — Ich möchte einen Termin für Gel Manikür buchen.",
-      source: "web_form",
-      language: "de",
-      gdprConsent: true,
+    const res = await fetch(`${BASE_URL}/api/lead`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-client-id": CLIENT_ID,
+      },
+      body: JSON.stringify({
+        clientSlug: CLIENT_SLUG,
+        source: "web_form",
+        customerName: "Smoke Test User",
+        customerEmail: "smoketest@deleted.local",
+        customerPhone: "+43199999999",
+        rawMessage: "SMOKE TEST — Gel Manikür Termin",
+        language: "de",
+        gdprConsents: [
+          { consentType: "data_processing", granted: true, method: "web_form" },
+        ],
+      }),
     });
-    assert(status === 201, `Expected 201, got ${status}: ${JSON.stringify(data)}`);
-    const id = (data as Record<string, unknown>)?.["id"] as string;
-    assert(!!id, "Response missing id field");
-    createdLeadId = id;
+    let data: unknown;
+    try { data = await res.json(); } catch { data = null; }
+    assert(res.status === 201, `Expected 201, got ${res.status}: ${JSON.stringify(data)}`);
+    const leadId = (data as Record<string, unknown>)?.["leadId"] as string;
+    assert(!!leadId, `Response missing leadId field: ${JSON.stringify(data)}`);
+    createdLeadId = leadId;
   });
 
   // ── Step 3: Admin leads list ─────────────────────────────────────────────

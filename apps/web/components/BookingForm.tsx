@@ -15,8 +15,8 @@ const allServices = servicesData.categories.flatMap((cat) =>
   }))
 );
 
-const DEMO_CLIENT_ID = "00000000-0000-0000-0000-000000000001";
-const DEMO_CLIENT_SLUG = "demo-salon";
+const DEMO_CLIENT_ID = process.env["NEXT_PUBLIC_DEMO_CLIENT_ID"] ?? "00000000-0000-0000-0000-000000000001";
+const DEMO_CLIENT_SLUG = process.env["NEXT_PUBLIC_DEFAULT_CLIENT_SLUG"] ?? "demo-salon";
 
 export default function BookingForm() {
   const router = useRouter();
