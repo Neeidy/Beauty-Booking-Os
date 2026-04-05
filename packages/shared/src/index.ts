@@ -34,6 +34,11 @@ export {
   verifyInstagramSignature,
   verifyWebhookChallenge,
 } from "./utils/webhook-verify.js";
+export {
+  evaluateAlerts,
+  DEFAULT_THRESHOLDS,
+} from "./utils/alerter.js";
+export type { AlertThresholds, SystemMetrics, AlertResult } from "./utils/alerter.js";
 export { createLeadInputSchema, createLeadResponseSchema } from "./types/lead.types.js";
 export type { CreateLeadInput, CreateLeadResponse } from "./types/lead.types.js";
 export {
