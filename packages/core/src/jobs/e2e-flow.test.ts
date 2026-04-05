@@ -250,8 +250,9 @@ describe("E2E: Lead → Booking → Reminder → Cancel → Recovery", () => {
           id: "msg_recovery", type: "message", role: "assistant",
           content: [{ type: "text", text: JSON.stringify({
             message: "Wir würden uns freuen, Sie bald wieder begrüßen zu dürfen.",
-            channel: "whatsapp", action_type: "reschedule_offer",
-            reschedule_link: null, follow_up_scheduled: false, next_follow_up_hours: null,
+            tone_check: "on_brand",
+            language: "de",
+            character_count: 60,
           }) }],
           model: "claude-sonnet-4-0", stop_reason: "end_turn", stop_sequence: null,
           usage: { input_tokens: 250, output_tokens: 90 },

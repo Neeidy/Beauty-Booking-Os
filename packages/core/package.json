@@ -11,7 +11,8 @@
     "@beauty-booking/config": "workspace:*",
     "@beauty-booking/db": "workspace:*",
     "@beauty-booking/shared": "workspace:*",
-    "@beauty-booking/followup-agent": "workspace:*"
+    "@beauty-booking/followup-agent": "workspace:*",
+    "@beauty-booking/content-agent": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.7.2",

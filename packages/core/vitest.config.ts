@@ -9,6 +9,7 @@ export default defineConfig({
       "@beauty-booking/shared": resolve(__dirname, "../shared/src/index.ts"),
       "@beauty-booking/config": resolve(__dirname, "../config/src/index.ts"),
       "@beauty-booking/followup-agent": resolve(__dirname, "../agents/followup-agent/index.ts"),
+      "@beauty-booking/content-agent": resolve(__dirname, "../agents/content-agent/index.ts"),
       // DB is mocked in tests — alias points to src for type resolution only
       "@beauty-booking/db": resolve(__dirname, "../db/src/index.ts"),
       "zod": resolve(SHARED_MODULES, "zod"),

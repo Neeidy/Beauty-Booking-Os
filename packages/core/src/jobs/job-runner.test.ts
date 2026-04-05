@@ -327,8 +327,9 @@ describe("handleRecovery", () => {
   it("cancelled booking with 48h wait passed → sends winback", async () => {
     mockAiWith({
       message: "Wir würden uns freuen, Sie wieder zu sehen.",
-      channel: "whatsapp", action_type: "reschedule_offer",
-      reschedule_link: null, follow_up_scheduled: false, next_follow_up_hours: null,
+      tone_check: "on_brand",
+      language: "de",
+      character_count: 44,
     });
 
     const cancelledAt = new Date(Date.now() - 49 * 60 * 60 * 1000); // 49h ago
@@ -379,8 +380,9 @@ describe("handleRecovery", () => {
   it("no_show booking → triggers winback (not cancellation)", async () => {
     mockAiWith({
       message: "Wir haben Sie vermisst.",
-      channel: "whatsapp", action_type: "winback",
-      reschedule_link: null, follow_up_scheduled: false, next_follow_up_hours: null,
+      tone_check: "on_brand",
+      language: "de",
+      character_count: 23,
     });
 
     const cancelledAt = new Date(Date.now() - 49 * 60 * 60 * 1000);
