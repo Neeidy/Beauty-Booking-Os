@@ -1,5 +1,4 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { checkRateLimit } from "../../packages/shared/src/utils/rate-limiter.js";
 
 const COOKIE_NAME = "admin_session";
 const ADMIN_SECRET = process.env["ADMIN_SECRET"] ?? "change-me-in-production";
@@ -13,7 +12,37 @@ const ADMIN_LIMIT   = { maxRequests: REQUESTS_PER_MINUTE * 5,  windowMs: WINDOW_
 /** Public endpoints that should be rate limited */
 const PUBLIC_RATE_LIMITED = ["/api/lead", "/api/booking", "/api/webhook"];
 
-/** Returns client IP from standard headers */
+// ── Inline rate limiter ───────────────────────────────────────────────────────
+// Inlined here because Next.js middleware runs in Edge Runtime, which has
+// restricted module resolution and cannot import workspace packages via
+// relative paths. The in-memory store is per-instance (single isolate).
+
+interface RateLimitEntry { count: number; windowStartMs: number; }
+const store = new Map<string, RateLimitEntry>();
+
+function checkRateLimit(
+  key: string,
+  opts: { maxRequests: number; windowMs: number }
+): { allowed: boolean; resetMs: number } {
+  const now = Date.now();
+  const entry = store.get(key);
+
+  if (!entry || now - entry.windowStartMs >= opts.windowMs) {
+    store.set(key, { count: 1, windowStartMs: now });
+    return { allowed: true, resetMs: opts.windowMs };
+  }
+
+  if (entry.count >= opts.maxRequests) {
+    const resetMs = opts.windowMs - (now - entry.windowStartMs);
+    return { allowed: false, resetMs };
+  }
+
+  entry.count++;
+  return { allowed: true, resetMs: opts.windowMs - (now - entry.windowStartMs) };
+}
+
+// ── IP extraction ─────────────────────────────────────────────────────────────
+
 function getClientIp(request: NextRequest): string {
   return (
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
@@ -21,6 +50,8 @@ function getClientIp(request: NextRequest): string {
     "unknown"
   );
 }
+
+// ── Middleware ────────────────────────────────────────────────────────────────
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;

@@ -24,7 +24,7 @@ export function setAdminSession(response: NextResponse): void {
   response.cookies.set(COOKIE_NAME, ADMIN_SECRET, {
     httpOnly: true,
     sameSite: "lax",
-    path: "/admin",
+    path: "/",
     maxAge: 60 * 60 * 8, // 8 hours
     secure: process.env["NODE_ENV"] === "production",
   });

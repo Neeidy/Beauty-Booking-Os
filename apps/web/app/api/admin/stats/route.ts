@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { isAdminApiAuthenticated } from "../../../../lib/admin-auth.js";
+import { isAdminApiAuthenticated } from "@/lib/admin-auth";
 import { getDb, leads, bookings, automationJobs, eventLogs } from "@beauty-booking/db";
 import { eq, gte, and, count, sum, lte, between } from "drizzle-orm";
 

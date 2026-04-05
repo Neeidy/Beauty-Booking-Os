@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { setAdminSession } from "../../../../../lib/admin-auth.js";
+import { setAdminSession } from "@/lib/admin-auth";
 
 const ADMIN_SECRET = process.env["ADMIN_SECRET"] ?? "change-me-in-production";
 

@@ -6,6 +6,20 @@ const nextConfig: NextConfig = {
   // Use standalone output for Docker/cloud deployment
   output: "standalone",
 
+  // Transpile pnpm workspace packages (TypeScript source, no pre-built dist needed)
+  transpilePackages: [
+    "@beauty-booking/shared",
+    "@beauty-booking/core",
+    "@beauty-booking/db",
+    "@beauty-booking/config",
+    "@beauty-booking/agents",
+    "@beauty-booking/orchestrator",
+    "@beauty-booking/intake-agent",
+    "@beauty-booking/booking-agent",
+    "@beauty-booking/followup-agent",
+    "@beauty-booking/content-agent",
+  ],
+
   // Security headers
   async headers() {
     return [
