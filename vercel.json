@@ -1,0 +1,31 @@
+{
+  "buildCommand": "cd apps/web && pnpm build",
+  "outputDirectory": "apps/web/.next",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "framework": "nextjs",
+  "crons": [
+    {
+      "path": "/api/jobs/reminders/run",
+      "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/jobs/recovery/run",
+      "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/jobs/retention",
+      "schedule": "0 2 * * 0"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
+    }
+  ]
+}
