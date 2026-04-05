@@ -4,7 +4,7 @@ import { getDb, leads } from "@beauty-booking/db";
 import { eq, and, count } from "drizzle-orm";
 
 export const metadata: Metadata = {
-  title: "Admin — Vienna Glow Studio",
+  title: `Admin — ${process.env["NEXT_PUBLIC_SALON_NAME"] ?? "Beauty Studio"}`,
   robots: { index: false, follow: false },
 };
 

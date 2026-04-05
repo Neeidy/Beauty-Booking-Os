@@ -4,7 +4,7 @@ import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
 
 export const metadata: Metadata = {
-  title: "Vielen Dank — Vienna Glow Studio",
+  title: `Vielen Dank — ${process.env["NEXT_PUBLIC_SALON_NAME"] ?? "Beauty Studio"}`,
   description: "Ihre Terminanfrage wurde erfolgreich übermittelt.",
 };
 
@@ -84,14 +84,14 @@ export default function ThankYouPage() {
                 +43 1 234 5678
               </a>
               <a
-                href="mailto:hello@viennaglowstudio.at"
+                href={`mailto:${process.env["NEXT_PUBLIC_CONTACT_EMAIL"] ?? "hello@example.at"}`}
                 className="flex items-center gap-2 hover:opacity-70 transition-opacity"
                 style={{ color: "var(--color-primary)" }}
               >
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
                 </svg>
-                hello@viennaglowstudio.at
+                {process.env["NEXT_PUBLIC_CONTACT_EMAIL"] ?? "hello@example.at"}
               </a>
               <a
                 href="https://wa.me/4312345678"

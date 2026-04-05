@@ -37,7 +37,7 @@ function LoginForm() {
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <h1 className="font-heading text-2xl font-semibold" style={{ color: "var(--color-primary)" }}>
-            Vienna Glow Studio
+            {process.env["NEXT_PUBLIC_SALON_NAME"] ?? "Beauty Booking OS"}
           </h1>
           <p className="text-sm mt-1" style={{ color: "var(--color-text-muted)" }}>Admin Panel</p>
         </div>

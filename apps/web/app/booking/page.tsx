@@ -4,9 +4,11 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import BookingForm from "../../components/BookingForm";
 
+const SALON_NAME = process.env["NEXT_PUBLIC_SALON_NAME"] ?? "Beauty Studio";
+
 export const metadata: Metadata = {
-  title: "Termin buchen — Vienna Glow Studio",
-  description: "Buchen Sie Ihren Termin bei Vienna Glow Studio bequem online.",
+  title: `Termin buchen — ${SALON_NAME}`,
+  description: `Buchen Sie Ihren Termin bei ${SALON_NAME} bequem online.`,
 };
 
 export default function BookingPage() {
