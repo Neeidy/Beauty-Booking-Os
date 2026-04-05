@@ -1,0 +1,55 @@
+{
+  "clientName": "Elegant Nails Vienna",
+  "slug": "elegant-nails-vienna",
+  "timezone": "Europe/Vienna",
+  "packageType": "starter",
+  "languages": ["de", "tr"],
+  "defaultLanguage": "de",
+  "channels": {
+    "website": true,
+    "instagramDm": false,
+    "whatsapp": false,
+    "email": true
+  },
+  "bookingRules": {
+    "allowAfterHoursLeadCapture": true,
+    "reminderHoursBefore": [24],
+    "rescheduleWindowHours": 12,
+    "maxBookingsPerSlot": 1,
+    "minAdvanceBookingHours": 2,
+    "cancellationPolicyHours": 24,
+    "recoveryWaitHours": 48,
+    "maxFollowUpAttempts": 1
+  },
+  "operatingHours": {
+    "monday": { "open": "10:00", "close": "19:00" },
+    "tuesday": { "open": "10:00", "close": "19:00" },
+    "wednesday": { "open": "10:00", "close": "19:00" },
+    "thursday": { "open": "10:00", "close": "20:00" },
+    "friday": { "open": "10:00", "close": "19:00" },
+    "saturday": { "open": "09:00", "close": "17:00" },
+    "sunday": null
+  },
+  "contact": {
+    "phone": "+43 1 987 6543",
+    "email": "hello@elegantnailsvienna.at",
+    "address": "Favoritenstraße 22, 1040 Wien"
+  },
+  "gdpr": {
+    "dataControllerName": "Elegant Nails Vienna e.U.",
+    "dataControllerEmail": "datenschutz@elegantnailsvienna.at",
+    "privacyPolicyUrl": "/datenschutz",
+    "dataRetentionDays": 730,
+    "consentRequired": ["data_processing", "reminder_messages"],
+    "marketingConsentOptional": true
+  },
+  "features": {
+    "aiIntake": false,
+    "aiBooking": false,
+    "aiFollowUp": false,
+    "instagramDmFlow": false,
+    "recoveryFlow": false,
+    "multiLanguage": true,
+    "advancedReporting": false
+  }
+}

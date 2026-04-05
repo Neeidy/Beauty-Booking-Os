@@ -1,0 +1,49 @@
+{
+  "brandTone": {
+    "style": "modern, friendly, professional",
+    "personality": "Junge, trendige Nagel-Expertin — herzlich und direkt",
+    "avoid": ["too formal", "medical terms", "complicated language"],
+    "allowEmojis": true,
+    "formalityLevel": "Du-Form"
+  },
+  "colors": {
+    "primary": "#1A1A2E",
+    "secondary": "#E94560",
+    "accent": "#F5E6E8",
+    "background": "#FAFAFA"
+  },
+  "ctaTemplates": {
+    "de": {
+      "bookNow": "Jetzt Termin sichern 💅",
+      "contactUs": "Schreib uns",
+      "learnMore": "Mehr erfahren"
+    },
+    "en": {
+      "bookNow": "Book Now 💅",
+      "contactUs": "Contact Us",
+      "learnMore": "Learn More"
+    },
+    "tr": {
+      "bookNow": "Randevunu Al 💅",
+      "contactUs": "Bize Yaz",
+      "learnMore": "Daha Fazla"
+    }
+  },
+  "messageTemplates": {
+    "bookingConfirmation": {
+      "de": "Hey {customerName}! 🎉 Dein Termin für {serviceName} am {date} um {time} Uhr ist bestätigt. Wir freuen uns auf dich!",
+      "en": "Hey {customerName}! 🎉 Your appointment for {serviceName} on {date} at {time} is confirmed. See you soon!",
+      "tr": "Hey {customerName}! 🎉 {date} tarihinde saat {time} için {serviceName} randevun onaylandı. Seni bekliyoruz!"
+    },
+    "reminder24h": {
+      "de": "Hey {customerName} 👋 Morgen ist dein Termin für {serviceName} um {time} Uhr bei uns. Bis morgen!",
+      "en": "Hey {customerName} 👋 Tomorrow is your {serviceName} appointment at {time}. See you then!",
+      "tr": "Hey {customerName} 👋 Yarın saat {time}'de {serviceName} randevun var. Görüşürüz!"
+    },
+    "reminder3h": {
+      "de": "Gleich ist es so weit! 💅 Dein Termin bei Elegant Nails ist heute um {time} Uhr.",
+      "en": "Almost time! 💅 Your appointment at Elegant Nails is today at {time}.",
+      "tr": "Neredeyse zamanı! 💅 Elegant Nails randevun bugün saat {time}'de."
+    }
+  }
+}

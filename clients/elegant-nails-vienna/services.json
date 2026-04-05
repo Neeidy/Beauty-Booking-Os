@@ -1,0 +1,100 @@
+{
+  "categories": [
+    {
+      "name": "Gel & Shellac",
+      "slug": "gel",
+      "services": [
+        {
+          "id": "en_gel_manicure",
+          "name": "Gel Manikür",
+          "nameEn": "Gel Manicure",
+          "duration": 60,
+          "priceEur": 4000,
+          "description": "Langanhaltende Gel-Maniküre in deiner Lieblingsfarbe",
+          "popular": true
+        },
+        {
+          "id": "en_shellac",
+          "name": "Shellac Manikür",
+          "nameEn": "Shellac Manicure",
+          "duration": 45,
+          "priceEur": 3500,
+          "description": "Shellac für bis zu 2 Wochen Halt",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "Acryl & Extensions",
+      "slug": "acryl",
+      "services": [
+        {
+          "id": "en_acryl_full",
+          "name": "Acryl Fullset",
+          "nameEn": "Acrylic Full Set",
+          "duration": 120,
+          "priceEur": 7000,
+          "description": "Komplettes Acryl-Set mit Farbauswahl",
+          "popular": false
+        },
+        {
+          "id": "en_acryl_refill",
+          "name": "Acryl Refill",
+          "nameEn": "Acrylic Refill",
+          "duration": 75,
+          "priceEur": 4500,
+          "description": "Nachfüllung alle 3–4 Wochen empfohlen",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "Nail Art",
+      "slug": "nail-art",
+      "services": [
+        {
+          "id": "en_nail_art_basic",
+          "name": "Nail Art Basic",
+          "nameEn": "Nail Art Basic",
+          "duration": 30,
+          "priceEur": 1500,
+          "description": "Einfache Muster und Designs",
+          "popular": false
+        },
+        {
+          "id": "en_nail_art_premium",
+          "name": "Nail Art Premium",
+          "nameEn": "Nail Art Premium",
+          "duration": 60,
+          "priceEur": 3000,
+          "description": "Individuelle komplexe Designs auf Anfrage",
+          "popular": false
+        }
+      ]
+    },
+    {
+      "name": "Pediküre",
+      "slug": "pedicure",
+      "services": [
+        {
+          "id": "en_pedicure_basic",
+          "name": "Basis Pediküre",
+          "nameEn": "Basic Pedicure",
+          "duration": 45,
+          "priceEur": 3500,
+          "description": "Reinigung, Pflege und Nagellack",
+          "popular": false
+        },
+        {
+          "id": "en_pedicure_gel",
+          "name": "Gel Pediküre",
+          "nameEn": "Gel Pedicure",
+          "duration": 60,
+          "priceEur": 5000,
+          "description": "Gel-Lack für langanhaltende Ergebnisse",
+          "popular": false
+        }
+      ]
+    }
+  ]
+}
