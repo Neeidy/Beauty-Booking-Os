@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
+import { loadBranding, brandingToCss } from "@/lib/load-branding";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -37,8 +38,15 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const slug = process.env.NEXT_PUBLIC_DEFAULT_CLIENT_SLUG || "demo-salon";
+  const branding = loadBranding(slug);
+  const brandCss = brandingToCss(branding);
+
   return (
     <html lang="de" className={`${playfair.variable} ${inter.variable}`}>
+      <head>
+        <style dangerouslySetInnerHTML={{ __html: brandCss }} />
+      </head>
       <body className="font-sans antialiased" style={{ backgroundColor: "var(--color-background)" }}>
         {children}
       </body>

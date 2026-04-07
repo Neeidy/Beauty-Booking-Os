@@ -1,17 +1,8 @@
 @import "tailwindcss";
 @config "../tailwind.config.ts";
 
-/* Vienna Glow Studio — Brand CSS Variables */
-/* These values mirror clients/{slug}/branding.json — do not edit manually.
-   Phase 0 Step 2 will replace this with runtime injection. */
-:root {
-  --color-primary: #2D2926;
-  --color-secondary: #C9A96E;
-  --color-accent: #E8DDD0;
-  --color-background: #FAFAF8;
-  --color-text: #2D2926;
-  --color-text-muted: #6B6460;
-}
+/* Brand color CSS custom properties are injected at runtime by
+   apps/web/app/layout.tsx via brandingToCss(). Do not redefine them here. */
 
 html {
   background-color: var(--color-background);

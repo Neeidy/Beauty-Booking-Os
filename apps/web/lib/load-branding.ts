@@ -3,6 +3,8 @@
  * This file runs at build time (PostCSS / Tailwind config evaluation), not in the browser.
  */
 
+export { brandingToCss } from "./branding-to-css";
+
 import fs from "fs";
 import path from "path";
 
