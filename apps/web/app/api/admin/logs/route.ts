@@ -29,11 +29,13 @@ export async function GET(request: NextRequest) {
 
   const where = and(...conditions);
 
-  const [rows, [{ total }], [tokenSummary]] = await Promise.all([
+  const [rows, countResult, tokenResult] = await Promise.all([
     db.select().from(eventLogs).where(where).orderBy(desc(eventLogs.createdAt)).limit(limit).offset(offset),
     db.select({ total: count() }).from(eventLogs).where(where),
     db.select({ totalTokens: sum(eventLogs.tokenCount) }).from(eventLogs).where(where),
   ]);
+  const total = countResult[0]?.total ?? 0;
+  const tokenSummary = tokenResult[0];
 
   return NextResponse.json({
     logs: rows,

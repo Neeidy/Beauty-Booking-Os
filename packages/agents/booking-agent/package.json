@@ -2,7 +2,11 @@
   "name": "@beauty-booking/booking-agent",
   "version": "0.0.1",
   "private": true,
-  "main": "./src/index.ts",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "exports": {
+    ".": "./index.ts"
+  },
   "scripts": {
     "test": "vitest run",
     "typecheck": "tsc --noEmit"

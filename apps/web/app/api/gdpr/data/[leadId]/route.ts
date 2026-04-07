@@ -12,13 +12,13 @@ import {
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { leadId: string } }
+  { params }: { params: Promise<{ leadId: string }> }
 ) {
   if (!isAdminApiAuthenticated(request)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { leadId } = params;
+  const { leadId } = await params;
   const db = getDb();
 
   const result = await deleteLeadData(leadId, {

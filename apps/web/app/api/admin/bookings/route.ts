@@ -27,10 +27,11 @@ export async function GET(request: NextRequest) {
 
   const where = and(...conditions);
 
-  const [rows, [{ total }]] = await Promise.all([
+  const [rows, countResult] = await Promise.all([
     db.select().from(bookings).where(where).orderBy(desc(bookings.appointmentAt)).limit(limit).offset(offset),
     db.select({ total: count() }).from(bookings).where(where),
   ]);
+  const total = countResult[0]?.total ?? 0;
 
   return NextResponse.json({
     bookings: rows,

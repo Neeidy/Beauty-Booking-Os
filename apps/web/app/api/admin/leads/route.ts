@@ -37,10 +37,11 @@ export async function GET(request: NextRequest) {
 
   const where = and(...conditions);
 
-  const [rows, [{ total }]] = await Promise.all([
+  const [rows, countResult] = await Promise.all([
     db.select().from(leads).where(where).orderBy(desc(leads.createdAt)).limit(limit).offset(offset),
     db.select({ total: count() }).from(leads).where(where),
   ]);
+  const total = countResult[0]?.total ?? 0;
 
   return NextResponse.json({
     leads: rows,

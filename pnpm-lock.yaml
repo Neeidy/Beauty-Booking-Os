@@ -26,12 +26,24 @@ importers:
 
   apps/web:
     dependencies:
+      '@beauty-booking/booking-agent':
+        specifier: workspace:*
+        version: link:../../packages/agents/booking-agent
       '@beauty-booking/config':
         specifier: workspace:*
         version: link:../../packages/config
+      '@beauty-booking/core':
+        specifier: workspace:*
+        version: link:../../packages/core
       '@beauty-booking/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@beauty-booking/intake-agent':
+        specifier: workspace:*
+        version: link:../../packages/agents/intake-agent
+      '@beauty-booking/orchestrator':
+        specifier: workspace:*
+        version: link:../../packages/agents/orchestrator
       '@beauty-booking/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -47,6 +59,9 @@ importers:
       autoprefixer:
         specifier: ^10.4.27
         version: 10.4.27(postcss@8.5.8)
+      drizzle-orm:
+        specifier: ^0.38.3
+        version: 0.38.4(@types/react@19.2.14)(postgres@3.4.8)(react@19.2.4)
       next:
         specifier: ^15.1.3
         version: 15.5.14(react-dom@19.2.4(react@19.2.4))(react@19.2.4)

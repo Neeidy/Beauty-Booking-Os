@@ -81,7 +81,7 @@ export async function generateMessage(
 ): Promise<AgentCallResult<ContentOutput>> {
   const { purpose, language, context, clientConfig, maxLength } = options;
 
-  const systemPrompt = buildContentPrompt(clientConfig, { purpose, language, context, maxLength });
+  const systemPrompt = buildContentPrompt(clientConfig, { purpose, language, context, ...(maxLength !== undefined ? { maxLength } : {}) });
   const userMessage = `Write a ${purpose} message in ${language} for ${clientConfig.client.clientName}.`;
 
   const result = await callAgent<ContentOutput>({

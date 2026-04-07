@@ -5,9 +5,9 @@ import { getCachedSalonConfig } from "@beauty-booking/config";
 import { getLeadById } from "@beauty-booking/db/queries/leads";
 import { logEvent } from "@beauty-booking/db/queries/event-logs";
 import { logger } from "@beauty-booking/shared";
-import { nextStep } from "../../../../../../../../packages/agents/booking-agent/flow.js";
-import { routeEvent } from "../../../../../../../../packages/agents/orchestrator/router.js";
-import type { IntakeOutput } from "../../../../../../../../packages/agents/intake-agent/classifier.js";
+import { nextStep } from "@beauty-booking/booking-agent";
+import { routeEvent } from "@beauty-booking/orchestrator";
+import type { IntakeOutput } from "@beauty-booking/intake-agent";
 
 const CLIENTS_DIR = join(process.cwd(), "..", "..", "clients");
 

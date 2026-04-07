@@ -25,7 +25,8 @@ function LoginForm() {
     });
 
     if (res.ok) {
-      router.push(next);
+      // Hard navigation ensures the new cookie is sent with the next request
+      window.location.href = next;
     } else {
       setError("Falsches Passwort. Bitte versuchen Sie es erneut.");
       setLoading(false);

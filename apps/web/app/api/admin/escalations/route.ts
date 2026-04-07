@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
   const db = getDb();
 
   // Escalation queue: leads assigned to human_review that are still "new"
-  const [rows, [{ total }]] = await Promise.all([
+  const [rows, countResult] = await Promise.all([
     db
       .select()
       .from(leads)
@@ -33,6 +33,7 @@ export async function GET(request: NextRequest) {
         eq(leads.status, "new"),
       )),
   ]);
+  const total = countResult[0]?.total ?? 0;
 
   return NextResponse.json({ leads: rows, total });
 }

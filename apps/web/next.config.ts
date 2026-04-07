@@ -3,8 +3,8 @@ import type { NextConfig } from "next";
 const ALLOWED_ORIGIN = process.env["NEXT_PUBLIC_SALON_DOMAIN"] ?? "*";
 
 const nextConfig: NextConfig = {
-  // Use standalone output for Docker/cloud deployment
-  output: "standalone",
+  // Use standalone output for Docker/cloud deployment (Vercel/Linux only)
+  // output: "standalone",  // Disabled locally: Windows symlink EPERM when creating .next/standalone
 
   // Transpile pnpm workspace packages (TypeScript source, no pre-built dist needed)
   transpilePackages: [
@@ -46,15 +46,25 @@ const nextConfig: NextConfig = {
           },
           {
             key: "Content-Security-Policy",
-            value: [
-              "default-src 'self'",
-              "script-src 'self' 'unsafe-inline'", // unsafe-inline needed for Next.js
-              "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: https:",
-              "font-src 'self'",
-              "connect-src 'self'",
-              "frame-ancestors 'none'",
-            ].join("; "),
+            value: process.env["NODE_ENV"] === "production"
+              ? [
+                  "default-src 'self'",
+                  "script-src 'self' 'unsafe-inline'",
+                  "style-src 'self' 'unsafe-inline'",
+                  "img-src 'self' data: https:",
+                  "font-src 'self' data:",
+                  "connect-src 'self'",
+                  "frame-ancestors 'none'",
+                ].join("; ")
+              : [
+                  "default-src 'self'",
+                  "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // unsafe-eval needed for Next.js HMR in dev
+                  "style-src 'self' 'unsafe-inline'",
+                  "img-src 'self' data: https:",
+                  "font-src 'self' data:",
+                  "connect-src 'self' ws: wss:", // ws needed for HMR websocket
+                  "frame-ancestors 'none'",
+                ].join("; "),
           },
         ],
       },

@@ -11,8 +11,13 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@beauty-booking/booking-agent": "workspace:*",
+    "drizzle-orm": "^0.38.3",
     "@beauty-booking/config": "workspace:*",
+    "@beauty-booking/core": "workspace:*",
     "@beauty-booking/db": "workspace:*",
+    "@beauty-booking/intake-agent": "workspace:*",
+    "@beauty-booking/orchestrator": "workspace:*",
     "@beauty-booking/shared": "workspace:*",
     "@hookform/resolvers": "^5.2.2",
     "@tailwindcss/postcss": "^4.2.2",

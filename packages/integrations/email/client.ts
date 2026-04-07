@@ -47,7 +47,7 @@ export async function sendEmail(options: SendEmailOptions): Promise<SendEmailRes
     }
 
     const data = await response.json() as { id?: string };
-    return { success: true, messageId: data.id };
+    return { success: true, ...(data.id !== undefined ? { messageId: data.id } : {}) };
   } catch (err) {
     return { success: false, error: String(err) };
   }

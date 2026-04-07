@@ -1,6 +1,6 @@
 import { join, resolve } from "path";
 import AdminHeader from "../../../components/admin/AdminHeader";
-import { loadSalonConfig } from "../../../../packages/config/src/loader.js";
+import { loadSalonConfig } from "@beauty-booking/config";
 
 const CLIENTS_DIR = resolve(process.cwd(), "..", "..", "clients");
 const DEFAULT_SLUG = process.env["DEFAULT_CLIENT_SLUG"] ?? "demo-salon";

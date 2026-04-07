@@ -13,7 +13,7 @@ const CLIENT_ID = process.env["DEMO_CLIENT_ID"] ?? "00000000-0000-0000-0000-0000
 async function getEscalationCount(): Promise<number> {
   try {
     const db = getDb();
-    const [{ total }] = await db
+    const [row] = await db
       .select({ total: count() })
       .from(leads)
       .where(and(
@@ -21,7 +21,7 @@ async function getEscalationCount(): Promise<number> {
         eq(leads.assignedTo, "human_review"),
         eq(leads.status, "new"),
       ));
-    return total ?? 0;
+    return row?.total ?? 0;
   } catch {
     return 0;
   }
