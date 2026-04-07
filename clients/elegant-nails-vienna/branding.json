@@ -10,7 +10,34 @@
     "primary": "#1A1A2E",
     "secondary": "#E94560",
     "accent": "#F5E6E8",
-    "background": "#FAFAFA"
+    "background": "#FAFAFA",
+    "text": "#1A1A2E",
+    "textMuted": "#5A5A72"
+  },
+  "spacing": {
+    "xs": "0.5rem",
+    "sm": "1rem",
+    "md": "1.5rem",
+    "lg": "2.5rem",
+    "xl": "4rem",
+    "2xl": "6rem"
+  },
+  "radius": {
+    "none": "0",
+    "sm": "0.125rem",
+    "md": "0.375rem",
+    "lg": "0.75rem",
+    "full": "9999px"
+  },
+  "shadow": {
+    "sm": "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+    "md": "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+    "lg": "0 10px 25px -5px rgb(0 0 0 / 0.1)"
+  },
+  "transition": {
+    "fast": "150ms ease-out",
+    "base": "250ms ease-out",
+    "slow": "400ms ease-out"
   },
   "ctaTemplates": {
     "de": {

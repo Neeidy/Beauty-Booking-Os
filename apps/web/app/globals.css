@@ -1,6 +1,9 @@
 @import "tailwindcss";
+@config "../tailwind.config.ts";
 
 /* Vienna Glow Studio — Brand CSS Variables */
+/* These values mirror clients/{slug}/branding.json — do not edit manually.
+   Phase 0 Step 2 will replace this with runtime injection. */
 :root {
   --color-primary: #2D2926;
   --color-secondary: #C9A96E;
