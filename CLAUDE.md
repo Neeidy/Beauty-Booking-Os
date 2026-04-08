@@ -1332,10 +1332,18 @@ Build: webpack compiles clean, all TypeScript errors resolved
 - Tests: 231/231 (225 + 6 new)
 - No schema changes, no package/ changes
 
+### V2-2: Customer Profile + History — COMPLETED
+- New endpoint: GET /api/admin/clients/[identifier]
+- New page: /admin/clients/[identifier]
+- "Profili Gör" link added to leads list
+- Multi-lead aggregation by phone (same customer, multiple leads over time)
+- Tests: 239/239 (231 + 8 new)
+- No schema changes, no packages/ changes
+
 ## PROJECT STATUS: PRODUCTION READY
 
-- **8 Sprints + post-sprint hardening + V2-1 completed**
-- **231/231 tests passing**
+- **8 Sprints + post-sprint hardening + V2-1 + V2-2 completed**
+- **239/239 tests passing**
 - **5 AI agents active** (Orchestrator, Intake, Booking, Follow-up, Content)
 - **2 demo salon configs** (demo-salon / elegant-nails-vienna)
 - **GDPR compliant** (consent, export, deletion, retention)
