@@ -12,6 +12,7 @@ const NAV = [
   { href: "/admin/leads",        label: "Leads",        icon: "◈" },
   { href: "/admin/bookings",     label: "Buchungen",    icon: "◇" },
   { href: "/admin/front-desk",   label: "Front Desk",   icon: "▦" },
+  { href: "/admin/leads",        label: "Müşteriler",   icon: "◉" },
   { href: "/admin/logs",         label: "Event Logs",   icon: "≡" },
   { href: "/admin/escalations",  label: "Eskalationen", icon: "!" },
   { href: "/admin/settings",     label: "Einstellungen",icon: "⚙" },

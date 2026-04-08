@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 interface Lead {
@@ -128,13 +129,26 @@ export default function LeadTable({ leads }: LeadTableProps) {
                     </span>
                   </td>
                   <td className="px-3 py-2">
-                    <button
-                      onClick={() => setExpandedId(isExpanded ? null : lead.id)}
-                      className="text-xs underline"
-                      style={{ color: "var(--color-secondary)" }}
-                    >
-                      {isExpanded ? "Schließen" : "Details"}
-                    </button>
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => setExpandedId(isExpanded ? null : lead.id)}
+                        className="text-xs underline"
+                        style={{ color: "var(--color-secondary)" }}
+                      >
+                        {isExpanded ? "Schließen" : "Details"}
+                      </button>
+                      <Link
+                        href={
+                          lead.customerPhone && lead.customerPhone.length > 0
+                            ? `/admin/clients/${encodeURIComponent(lead.customerPhone)}`
+                            : `/admin/clients/${lead.id}`
+                        }
+                        className="text-xs underline"
+                        style={{ color: "var(--color-text-muted)" }}
+                      >
+                        Profili Gör
+                      </Link>
+                    </div>
                   </td>
                 </tr>
                 {isExpanded && (
