@@ -1340,10 +1340,19 @@ Build: webpack compiles clean, all TypeScript errors resolved
 - Tests: 239/239 (231 + 8 new)
 - No schema changes, no packages/ changes
 
+### V2-3: Admin Weekly Calendar — COMPLETED
+- New endpoint: GET /api/admin/calendar
+- New page: /admin/calendar (7-day grid, URL-synced navigation)
+- No external calendar libraries — pure CSS Grid
+- Mobile: vertical day stack
+- Staff dimension deferred to V2-6
+- Tests: 247/247 (239 + 8 new)
+- No schema changes, no packages/ changes
+
 ## PROJECT STATUS: PRODUCTION READY
 
-- **8 Sprints + post-sprint hardening + V2-1 + V2-2 completed**
-- **239/239 tests passing**
+- **8 Sprints + post-sprint hardening + V2-1 + V2-2 + V2-3 completed**
+- **247/247 tests passing**
 - **5 AI agents active** (Orchestrator, Intake, Booking, Follow-up, Content)
 - **2 demo salon configs** (demo-salon / elegant-nails-vienna)
 - **GDPR compliant** (consent, export, deletion, retention)
