@@ -1324,10 +1324,18 @@ Final test count: 213/213 passing (+16: web smoke 2, plus config package counted
 Build: webpack compiles clean, all TypeScript errors resolved
 ```
 
+### V2-1: Admin Front Desk Kanban — COMPLETED
+- New page: /admin/front-desk (3-column kanban)
+- New endpoint: GET /api/admin/front-desk
+- Columns: Onaylanmadı / Onaylandı / Tamamlandı
+- Status updates via existing PATCH /api/booking/[id]/status
+- Tests: 231/231 (225 + 6 new)
+- No schema changes, no package/ changes
+
 ## PROJECT STATUS: PRODUCTION READY
 
-- **8 Sprints + post-sprint hardening completed**
-- **213/213 tests passing**
+- **8 Sprints + post-sprint hardening + V2-1 completed**
+- **231/231 tests passing**
 - **5 AI agents active** (Orchestrator, Intake, Booking, Follow-up, Content)
 - **2 demo salon configs** (demo-salon / elegant-nails-vienna)
 - **GDPR compliant** (consent, export, deletion, retention)
