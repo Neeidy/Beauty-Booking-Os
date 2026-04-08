@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { loadClientConfig } from "@/lib/load-client-config";
 
 export default function Header() {
+  const config = loadClientConfig();
+
   return (
     <header
       className="sticky top-0 z-50 border-b"
@@ -17,7 +20,7 @@ export default function Header() {
               className="text-xl font-heading font-semibold tracking-wide"
               style={{ color: "var(--color-primary)" }}
             >
-              Vienna Glow Studio
+              {config.clientName}
             </span>
           </Link>
 

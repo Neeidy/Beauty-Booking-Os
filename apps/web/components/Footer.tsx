@@ -1,7 +1,27 @@
 import Link from "next/link";
+import { loadClientConfig } from "@/lib/load-client-config";
+
+function formatDay(day: string): string {
+  const map: Record<string, string> = {
+    monday: "Montag",
+    tuesday: "Dienstag",
+    wednesday: "Mittwoch",
+    thursday: "Donnerstag",
+    friday: "Freitag",
+    saturday: "Samstag",
+    sunday: "Sonntag",
+  };
+  return map[day] ?? day;
+}
 
 export default function Footer() {
+  const config = loadClientConfig();
   const currentYear = new Date().getFullYear();
+
+  const showWhatsApp =
+    config.channels.whatsapp === true &&
+    typeof config.contact.whatsappNumber === "string" &&
+    config.contact.whatsappNumber.length > 0;
 
   return (
     <footer
@@ -20,15 +40,25 @@ export default function Footer() {
               className="font-heading text-lg font-semibold"
               style={{ color: "var(--color-background)" }}
             >
-              Vienna Glow Studio
+              {config.clientName}
             </h3>
             <p
               className="mt-3 text-sm leading-relaxed"
               style={{ color: "var(--color-accent)" }}
             >
-              Premium Beauty Studio in Wien —<br />
-              Nails, Gesichtspflege, Wimpern &amp; Brauen.
+              {config.contact.address}
             </p>
+            {config.contact.googleMapsUrl && (
+              <a
+                href={config.contact.googleMapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 inline-block text-xs hover:opacity-70 transition-opacity"
+                style={{ color: "var(--color-secondary)" }}
+              >
+                Auf Google Maps ansehen
+              </a>
+            )}
           </div>
 
           {/* Contact */}
@@ -42,21 +72,44 @@ export default function Footer() {
             <ul className="mt-4 space-y-2 text-sm" style={{ color: "var(--color-accent)" }}>
               <li>
                 <a
-                  href="tel:+4312345678"
+                  href={`tel:${config.contact.phone.replace(/\s/g, "")}`}
                   className="hover:opacity-70 transition-opacity"
                 >
-                  +43 1 234 5678
+                  {config.contact.phone}
                 </a>
               </li>
               <li>
                 <a
-                  href="mailto:hello@viennaglowstudio.at"
+                  href={`mailto:${config.contact.email}`}
                   className="hover:opacity-70 transition-opacity"
                 >
-                  hello@viennaglowstudio.at
+                  {config.contact.email}
                 </a>
               </li>
-              <li>Mariahilfer Straße 45, 1060 Wien</li>
+              {config.contact.instagramHandle && (
+                <li>
+                  <a
+                    href={`https://instagram.com/${config.contact.instagramHandle.replace(/^@/, "")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:opacity-70 transition-opacity"
+                  >
+                    {config.contact.instagramHandle}
+                  </a>
+                </li>
+              )}
+              {showWhatsApp && config.contact.whatsappNumber && (
+                <li>
+                  <a
+                    href={`https://wa.me/${config.contact.whatsappNumber.replace(/\D/g, "")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:opacity-70 transition-opacity"
+                  >
+                    WhatsApp
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
 
@@ -69,26 +122,16 @@ export default function Footer() {
               Öffnungszeiten
             </h4>
             <ul className="mt-4 space-y-1 text-sm" style={{ color: "var(--color-accent)" }}>
-              <li className="flex justify-between gap-4">
-                <span>Mo – Mi</span>
-                <span>09:00 – 19:00</span>
-              </li>
-              <li className="flex justify-between gap-4">
-                <span>Do</span>
-                <span>09:00 – 21:00</span>
-              </li>
-              <li className="flex justify-between gap-4">
-                <span>Fr</span>
-                <span>09:00 – 19:00</span>
-              </li>
-              <li className="flex justify-between gap-4">
-                <span>Sa</span>
-                <span>10:00 – 17:00</span>
-              </li>
-              <li className="flex justify-between gap-4">
-                <span>So</span>
-                <span>Geschlossen</span>
-              </li>
+              {Object.entries(config.operatingHours).map(([day, hours]) => (
+                <li key={day} className="flex justify-between gap-4">
+                  <span>{formatDay(day)}</span>
+                  <span>
+                    {hours === null
+                      ? "Geschlossen"
+                      : `${hours.open} – ${hours.close}`}
+                  </span>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
@@ -102,7 +145,7 @@ export default function Footer() {
           }}
         >
           <span style={{ color: "var(--color-accent)", opacity: 0.6 }}>
-            © {currentYear} Vienna Glow Studio GmbH. Alle Rechte vorbehalten.
+            © {currentYear} {config.gdpr.dataControllerName}. Alle Rechte vorbehalten.
           </span>
           <div className="flex gap-4">
             <Link

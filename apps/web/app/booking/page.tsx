@@ -3,12 +3,13 @@ import type { Metadata } from "next";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import BookingForm from "../../components/BookingForm";
+import { loadClientConfig } from "../../lib/load-client-config";
 
-const SALON_NAME = process.env["NEXT_PUBLIC_SALON_NAME"] ?? "Beauty Studio";
+const config = loadClientConfig();
 
 export const metadata: Metadata = {
-  title: `Termin buchen — ${SALON_NAME}`,
-  description: `Buchen Sie Ihren Termin bei ${SALON_NAME} bequem online.`,
+  title: `Termin buchen — ${config.clientName}`,
+  description: `Buchen Sie Ihren Termin bei ${config.clientName} bequem online.`,
 };
 
 export default function BookingPage() {
