@@ -1362,10 +1362,25 @@ Build: webpack compiles clean, all TypeScript errors resolved
 - Tests: 255/255 (247 + 8 new)
 - No schema changes, no packages/ changes
 
+### V2-5: Waiting List (Warteliste) — COMPLETED
+- New public endpoint: POST /api/waiting-list (no auth, customer-facing)
+- New admin endpoint: GET /api/admin/waiting-list (auth required)
+- New admin page: /admin/waiting-list
+- Waiting list entries stored as leads with metadata.waitingList: true
+- No new DB table, no migration — reuses leads table JSONB metadata
+- SlotPicker: shows "Warteliste beitreten" UI when all slots unavailable
+- WaitingListForm: inline form in SlotPicker, no nested <form> (button onClick pattern)
+- Duplicate registration guard: same email+service+date → alreadyRegistered: true
+- Status route hook: cancel/no_show triggers metadata.waitingList_notified: true
+- Admin view shows: date, customer, service, notified status, registered timestamp
+- No email notification in this sprint — admin handles outreach manually
+- Tests: 265/265 (255 + 10 new)
+- No packages/** changes, no DB schema changes
+
 ## PROJECT STATUS: PRODUCTION READY
 
-- **8 Sprints + post-sprint hardening + V2-1 + V2-2 + V2-3 + V2-4 completed**
-- **255/255 tests passing**
+- **8 Sprints + post-sprint hardening + V2-1 + V2-2 + V2-3 + V2-4 + V2-5 completed**
+- **265/265 tests passing**
 - **5 AI agents active** (Orchestrator, Intake, Booking, Follow-up, Content)
 - **2 demo salon configs** (demo-salon / elegant-nails-vienna)
 - **GDPR compliant** (consent, export, deletion, retention)
