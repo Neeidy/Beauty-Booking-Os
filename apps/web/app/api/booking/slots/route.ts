@@ -2,65 +2,15 @@ import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getDb, bookings, services } from "@beauty-booking/db";
 import { eq, and, gte, lte } from "drizzle-orm";
+import {
+  getViennaOffsetMinutes,
+  viennaWallClockToUTC,
+  formatTimeVienna,
+} from "@/lib/vienna-helpers";
 
 export const dynamic = "force-dynamic";
 
 const CLIENT_ID = process.env["DEMO_CLIENT_ID"] ?? "00000000-0000-0000-0000-000000000000";
-
-// ── Timezone helpers (machine-TZ-independent) ─────────────────────────────────
-
-/** Vienna UTC offset in minutes for a given instant — uses pure Intl, no local-TZ dependency. */
-function getViennaOffsetMinutes(date: Date): number {
-  const utcFormatter = new Intl.DateTimeFormat("en-US", {
-    timeZone: "UTC",
-    year: "numeric", month: "2-digit", day: "2-digit",
-    hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
-  });
-  const viennaFormatter = new Intl.DateTimeFormat("en-US", {
-    timeZone: "Europe/Vienna",
-    year: "numeric", month: "2-digit", day: "2-digit",
-    hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
-  });
-  const parseFormatted = (f: Intl.DateTimeFormat, d: Date): number => {
-    const parts = f.formatToParts(d).reduce<Record<string, string>>((acc, p) => {
-      if (p.type !== "literal") acc[p.type] = p.value;
-      return acc;
-    }, {});
-    return Date.UTC(
-      Number(parts["year"]),
-      Number(parts["month"]) - 1,
-      Number(parts["day"]),
-      Number(parts["hour"] === "24" ? "0" : parts["hour"]),
-      Number(parts["minute"]),
-      Number(parts["second"]),
-    );
-  };
-  const utcMs = parseFormatted(utcFormatter, date);
-  const viennaMs = parseFormatted(viennaFormatter, date);
-  return Math.round((viennaMs - utcMs) / 60000);
-}
-
-/** Converts a Vienna wall-clock time on a given date to a UTC Date. */
-function viennaWallClockToUTC(dateStr: string, hour: number, minute: number): Date {
-  const anchor = new Date(`${dateStr}T12:00:00Z`); // noon UTC — DST-safe anchor
-  const offsetMinutes = getViennaOffsetMinutes(anchor);
-  const [y, m, d] = dateStr.split("-").map(Number);
-  const asIfUtcMs = Date.UTC(y!, m! - 1, d!, hour, minute, 0);
-  return new Date(asIfUtcMs - offsetMinutes * 60000);
-}
-
-/** Formats a Date as "HH:mm" in Europe/Vienna (machine-TZ-independent via formatToParts). */
-function formatTimeVienna(date: Date): string {
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone: "Europe/Vienna",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  }).formatToParts(date);
-  const hour = parts.find((p) => p.type === "hour")?.value ?? "00";
-  const minute = parts.find((p) => p.type === "minute")?.value ?? "00";
-  return `${hour}:${minute}`;
-}
 
 // ── Zod schemas ───────────────────────────────────────────────────────────────
 

@@ -3,22 +3,11 @@ import { z } from "zod";
 import { isAdminApiAuthenticated } from "@/lib/admin-auth";
 import { getDb, bookings, services } from "@beauty-booking/db";
 import { eq, and, gte, lte, asc } from "drizzle-orm";
+import { formatDateVienna, formatTimeVienna } from "@/lib/vienna-helpers";
 
 export const dynamic = "force-dynamic";
 
 const CLIENT_ID = process.env["DEMO_CLIENT_ID"] ?? "00000000-0000-0000-0000-000000000000";
-
-// ── Timezone helpers (machine-timezone-independent) ───────────────────────────
-
-/** Returns "YYYY-MM-DD" for a date in Europe/Vienna. */
-function formatDateVienna(date: Date): string {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Europe/Vienna",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(date);
-}
 
 /**
  * Given any Date, returns the "YYYY-MM-DD" of the Monday of that date's
@@ -56,19 +45,6 @@ function getViennaStartOfDay(dateStr: string): Date {
   const offsetMs = (vHour - 12) * 3600 * 1000;
   const utcMidnight = Date.UTC(y!, mo! - 1, d!, 0, 0, 0) - offsetMs;
   return new Date(utcMidnight);
-}
-
-/** Formats a Date as "HH:mm" in Europe/Vienna. */
-function toViennaTime(date: Date): string {
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone: "Europe/Vienna",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  }).formatToParts(date);
-  const hour = parts.find((p) => p.type === "hour")?.value ?? "00";
-  const minute = parts.find((p) => p.type === "minute")?.value ?? "00";
-  return `${hour}:${minute}`;
 }
 
 // ── Zod schemas ───────────────────────────────────────────────────────────────
@@ -228,7 +204,7 @@ export async function GET(request: NextRequest) {
             customerName: r.customerName,
             customerContact: r.customerContact ?? "",
             appointmentAt: apptDate.toISOString(),
-            appointmentTime: toViennaTime(apptDate),
+            appointmentTime: formatTimeVienna(apptDate),
             durationMinutes: r.durationMinutes,
             status: r.status,
             serviceName: r.serviceName ?? null,
