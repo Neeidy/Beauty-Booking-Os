@@ -1377,10 +1377,31 @@ Build: webpack compiles clean, all TypeScript errors resolved
 - Tests: 265/265 (255 + 10 new)
 - No packages/** changes, no DB schema changes
 
+### V2-6: Business Hours Config + V2-5 Bug Fixes — COMPLETED
+- fix: WaitingListForm gdprConsent hardcode düzeltildi (checkbox state'e bağlandı)
+- fix: Hardcoded hex renkler (#DC2626, #D1FAE5, #065F46) CSS vars ile değiştirildi
+- fix: WaitingListView "Uhrzeit" kolonu kaldırıldı (veri yoktu)
+- refactor: apps/web/lib/vienna-helpers.ts oluşturuldu (6 helper export)
+  Exports: formatDateVienna, formatTimeVienna, getViennaOffsetMinutes,
+           viennaWallClockToUTC, toDateString, getViennaWeekdayKey
+- refactor: slots/route.ts, calendar/route.ts, waiting-list/route.ts
+  → inline helper'lar kaldırıldı, vienna-helpers.ts'den import ediliyor
+- feat: operatingHours artık clients/demo-salon/client.config.json'dan okunuyor
+- feat: Kapalı gün (null) → isDayClosed: true, slots: [], HTTP 200
+- feat: Config load hatası → fallback 09:00-18:00 (crash yok)
+- feat: SlotPicker isDayClosed durumunu gösteriyor
+- feat: /admin/settings — 7 günlük tablo (Almanca), booking rules kartı (read-only)
+- feat: Sidebar'a "Einstellungen" (/admin/settings) linki eklendi
+- test: 270/270 (+5 yeni business hours testi, Test 3 Pazar güvenliği düzeltildi)
+- Schema değişikliği YOK | packages/ değişikliği YOK
+- loadClientConfig SYNC doğrulandı (readFileSync — await yok)
+- operatingHours key formatı: "09:00" (colon) — parseHHMM her iki formatı da işliyor
+- toDateString helper: m parametresi 0-indexed (JS Date.getMonth() convention)
+
 ## PROJECT STATUS: PRODUCTION READY
 
-- **8 Sprints + post-sprint hardening + V2-1 + V2-2 + V2-3 + V2-4 + V2-5 completed**
-- **265/265 tests passing**
+- **8 Sprints + post-sprint hardening + V2-1 + V2-2 + V2-3 + V2-4 + V2-5 + V2-6 completed**
+- **270/270 tests passing**
 - **5 AI agents active** (Orchestrator, Intake, Booking, Follow-up, Content)
 - **2 demo salon configs** (demo-salon / elegant-nails-vienna)
 - **GDPR compliant** (consent, export, deletion, retention)
