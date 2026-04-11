@@ -1349,10 +1349,23 @@ Build: webpack compiles clean, all TypeScript errors resolved
 - Tests: 247/247 (239 + 8 new)
 - No schema changes, no packages/ changes
 
+### V2-4: Live Slot Selection — COMPLETED
+- New public endpoint: GET /api/booking/slots (no auth, customer-facing)
+- New components: DatePicker (custom month grid), SlotPicker (live fetch)
+- BookingForm: replaced free-text preferredDate/preferredTime with visual pickers
+- Selected slot stored in leads.metadata.appointmentAt (backend unchanged)
+- Step size = min(30, serviceDuration)
+- Honors minAdvanceBookingHours from client.config.json
+- Past slots and cancelled/no_show bookings do not block availability
+- Business hours: Mo-Sa 09-18, Sun 10-16 (hardcoded; V2-5 will move to config)
+- Race condition / slot reservation deferred to post-V2-9 dedicated sprint
+- Tests: 255/255 (247 + 8 new)
+- No schema changes, no packages/ changes
+
 ## PROJECT STATUS: PRODUCTION READY
 
-- **8 Sprints + post-sprint hardening + V2-1 + V2-2 + V2-3 completed**
-- **247/247 tests passing**
+- **8 Sprints + post-sprint hardening + V2-1 + V2-2 + V2-3 + V2-4 completed**
+- **255/255 tests passing**
 - **5 AI agents active** (Orchestrator, Intake, Booking, Follow-up, Content)
 - **2 demo salon configs** (demo-salon / elegant-nails-vienna)
 - **GDPR compliant** (consent, export, deletion, retention)
