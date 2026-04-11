@@ -14,8 +14,6 @@ export const bookingFormSchema = z
       .optional()
       .or(z.literal("")),
     serviceId: z.string().min(1, "Bitte wählen Sie eine Leistung aus"),
-    preferredDate: z.string().optional(),
-    preferredTime: z.string().optional(),
     notes: z
       .string()
       .max(500, "Maximale Länge: 500 Zeichen")

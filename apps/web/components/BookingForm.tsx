@@ -6,6 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { bookingFormSchema, type BookingFormData } from "../lib/booking-form-schema";
 import servicesData from "../../../clients/demo-salon/services.json";
+import DatePicker from "./DatePicker";
+import SlotPicker from "./SlotPicker";
 
 // Flatten services into a single list for the dropdown
 const allServices = servicesData.categories.flatMap((cat) =>
@@ -22,6 +24,9 @@ export default function BookingForm() {
   const router = useRouter();
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedSlotDatetime, setSelectedSlotDatetime] = useState<string | null>(null);
+  const [selectedSlotTime, setSelectedSlotTime] = useState<string | null>(null);
 
   const {
     register,
@@ -42,6 +47,13 @@ export default function BookingForm() {
   const onSubmit = async (data: BookingFormData) => {
     setIsSubmitting(true);
     setSubmitError(null);
+
+    // Slot selection is required
+    if (!selectedSlotDatetime) {
+      setSubmitError("Lütfen randevu saati seçin");
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
       // Build the lead payload
@@ -70,8 +82,9 @@ export default function BookingForm() {
       // Build raw message from form data
       const messageParts = [`Name: ${data.customerName}`];
       if (selectedService) messageParts.push(`Leistung: ${selectedService.label}`);
-      if (data.preferredDate) messageParts.push(`Datum: ${data.preferredDate}`);
-      if (data.preferredTime) messageParts.push(`Uhrzeit: ${data.preferredTime}`);
+      if (selectedDate && selectedSlotTime) {
+        messageParts.push(`Termin: ${selectedDate} um ${selectedSlotTime}`);
+      }
       if (data.notes) messageParts.push(`Notiz: ${data.notes}`);
 
       const response = await fetch("/api/lead", {
@@ -91,8 +104,9 @@ export default function BookingForm() {
           gdprConsents,
           metadata: {
             serviceId: data.serviceId,
-            preferredDate: data.preferredDate,
-            preferredTime: data.preferredTime,
+            appointmentAt: selectedSlotDatetime,
+            appointmentTime: selectedSlotTime,
+            appointmentDate: selectedDate,
           },
         }),
       });
@@ -257,49 +271,56 @@ export default function BookingForm() {
           )}
         </div>
 
-        {/* Date + Time */}
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label
-              htmlFor="preferredDate"
-              className="mb-1 block text-sm font-medium"
-              style={{ color: "var(--color-primary)" }}
-            >
-              Bevorzugtes Datum
-            </label>
-            <input
-              id="preferredDate"
-              type="date"
-              className="w-full rounded-sm border px-4 py-2.5 text-sm outline-none"
-              style={{
-                borderColor: "var(--color-accent)",
-                backgroundColor: "#fff",
-                color: "var(--color-primary)",
+        {/* Date picker */}
+        <div>
+          <label
+            className="mb-2 block text-sm font-medium"
+            style={{ color: "var(--color-primary)" }}
+          >
+            Datum wählen
+          </label>
+          <div
+            className="rounded-sm border p-3"
+            style={{ borderColor: "var(--color-accent)" }}
+          >
+            <DatePicker
+              selectedDate={selectedDate}
+              onDateChange={(d) => {
+                setSelectedDate(d);
+                setSelectedSlotDatetime(null);
+                setSelectedSlotTime(null);
               }}
-              {...register("preferredDate")}
+              disabled={!selectedServiceId}
             />
           </div>
-          <div>
-            <label
-              htmlFor="preferredTime"
-              className="mb-1 block text-sm font-medium"
-              style={{ color: "var(--color-primary)" }}
-            >
-              Bevorzugte Uhrzeit
-            </label>
-            <input
-              id="preferredTime"
-              type="time"
-              className="w-full rounded-sm border px-4 py-2.5 text-sm outline-none"
-              style={{
-                borderColor: "var(--color-accent)",
-                backgroundColor: "#fff",
-                color: "var(--color-primary)",
-              }}
-              {...register("preferredTime")}
-            />
-          </div>
+          {!selectedServiceId && (
+            <p className="mt-1 text-xs" style={{ color: "var(--color-text-muted)" }}>
+              Zuerst eine Leistung auswählen
+            </p>
+          )}
         </div>
+
+        {/* Slot picker */}
+        {selectedDate && selectedServiceId && (
+          <div>
+            <label
+              className="mb-2 block text-sm font-medium"
+              style={{ color: "var(--color-primary)" }}
+            >
+              Uhrzeit wählen
+            </label>
+            <SlotPicker
+              date={selectedDate}
+              serviceId={selectedServiceId ?? null}
+              clientId={DEMO_CLIENT_ID}
+              selectedSlot={selectedSlotDatetime}
+              onSlotSelect={(dt, t) => {
+                setSelectedSlotDatetime(dt);
+                setSelectedSlotTime(t);
+              }}
+            />
+          </div>
+        )}
 
         {/* Notes */}
         <div>
