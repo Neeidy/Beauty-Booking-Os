@@ -195,7 +195,14 @@ export default function SlotPicker({
             />
           )}
           {waitingError && (
-            <p style={{ color: "#DC2626", fontSize: "13px", marginTop: "8px" }}>{waitingError}</p>
+            <p style={{
+              color: "var(--color-text)",
+              fontSize: "13px",
+              marginTop: "8px",
+              padding: "8px",
+              border: "1px solid var(--color-accent)",
+              borderRadius: "6px",
+            }}>⚠ {waitingError}</p>
           )}
         </div>
       )}
@@ -205,11 +212,12 @@ export default function SlotPicker({
           style={{
             marginTop: "16px",
             padding: "12px",
-            background: "#D1FAE5",
+            border: "1px solid var(--color-primary)",
             borderRadius: "8px",
+            background: "color-mix(in srgb, var(--color-primary) 8%, var(--color-background))",
           }}
         >
-          <p style={{ color: "#065F46", fontSize: "14px" }}>
+          <p style={{ color: "var(--color-primary)", fontSize: "14px" }}>
             ✓ Sie stehen auf der Warteliste. Wir melden uns, sobald ein Termin frei wird.
           </p>
         </div>
@@ -244,14 +252,14 @@ function WaitingListForm({
   const [customerName, setCustomerName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
-  const [gdprConsent, setGdprConsent] = useState(false);
+  const [gdprChecked, setGdprChecked] = useState(false);
 
   async function handleSubmit() {
     if (!customerName.trim() || !customerEmail.trim()) {
       onError("Name und E-Mail sind erforderlich.");
       return;
     }
-    if (!gdprConsent) {
+    if (!gdprChecked) {
       onError("Bitte stimmen Sie der Datenschutzerklärung zu.");
       return;
     }
@@ -267,7 +275,7 @@ function WaitingListForm({
           serviceId,
           requestedDate: date,
           clientId: clientId ?? undefined,
-          gdprConsent: true,
+          gdprConsent: gdprChecked,
         }),
       });
       if (!res.ok) {
@@ -333,8 +341,8 @@ function WaitingListForm({
       >
         <input
           type="checkbox"
-          checked={gdprConsent}
-          onChange={(e) => setGdprConsent(e.target.checked)}
+          checked={gdprChecked}
+          onChange={(e) => setGdprChecked(e.target.checked)}
           style={{ marginTop: "2px", accentColor: "var(--color-secondary)" }}
         />
         <span>
@@ -345,21 +353,20 @@ function WaitingListForm({
       <button
         type="button"
         onClick={handleSubmit}
-        disabled={isLoading}
+        disabled={!gdprChecked || isLoading}
         style={{
-          background: isLoading ? "var(--color-accent)" : "var(--color-secondary)",
-          color: "var(--color-primary)",
+          background: "var(--color-primary)",
+          color: "var(--color-background)",
           border: "none",
           borderRadius: "6px",
           padding: "10px 16px",
-          cursor: isLoading ? "default" : "pointer",
+          cursor: !gdprChecked || isLoading ? "not-allowed" : "pointer",
           fontSize: "14px",
-          fontWeight: 600,
           minHeight: "44px",
-          opacity: isLoading ? 0.7 : 1,
+          opacity: !gdprChecked || isLoading ? 0.6 : 1,
         }}
       >
-        {isLoading ? "Wird eingetragen…" : "Auf Warteliste eintragen"}
+        {isLoading ? "Bitte warten..." : "Auf Warteliste eintragen"}
       </button>
     </div>
   );

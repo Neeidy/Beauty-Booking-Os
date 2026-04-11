@@ -59,7 +59,7 @@ export default function WaitingListView({ initialData }: WaitingListViewProps) {
     return (
       <div
         className="rounded-sm border p-6 text-sm text-center"
-        style={{ borderColor: "var(--color-accent)", color: "#dc2626" }}
+        style={{ borderColor: "var(--color-accent)", color: "var(--color-text)" }}
       >
         Daten konnten nicht geladen werden
       </div>
@@ -180,8 +180,16 @@ export default function WaitingListView({ initialData }: WaitingListViewProps) {
                       className="inline-block rounded-full px-2.5 py-0.5 text-xs font-medium"
                       style={
                         entry.notified
-                          ? { backgroundColor: "#D1FAE5", color: "#065F46" }
-                          : { backgroundColor: "#FEF3C7", color: "#92400E" }
+                          ? {
+                              border: "1px solid var(--color-primary)",
+                              background: "color-mix(in srgb, var(--color-primary) 15%, var(--color-background))",
+                              color: "var(--color-primary)",
+                            }
+                          : {
+                              border: "1px solid var(--color-secondary)",
+                              background: "color-mix(in srgb, var(--color-secondary) 15%, var(--color-background))",
+                              color: "var(--color-text)",
+                            }
                       }
                     >
                       {entry.notified ? "Benachrichtigt" : "Wartend"}
