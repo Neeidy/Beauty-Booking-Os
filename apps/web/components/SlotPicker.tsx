@@ -8,6 +8,13 @@ interface SlotItem {
   available: boolean;
 }
 
+type SlotsResponse = {
+  isDayClosed?: boolean;
+  slots: SlotItem[];
+  serviceDurationMinutes: number;
+  serviceName?: string | null;
+};
+
 interface SlotPickerProps {
   date: string | null;
   serviceId: string | null;
@@ -24,6 +31,7 @@ export default function SlotPicker({
   onSlotSelect,
 }: SlotPickerProps) {
   const [slots, setSlots] = useState<SlotItem[]>([]);
+  const [isDayClosed, setIsDayClosed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [retryCounter, setRetryCounter] = useState(0);
@@ -42,6 +50,7 @@ export default function SlotPicker({
     const controller = new AbortController();
     setLoading(true);
     setError(null);
+    setIsDayClosed(false);
     // Reset waiting list state when date/service changes
     setShowWaitingForm(false);
     setWaitingSubmitted(false);
@@ -52,9 +61,10 @@ export default function SlotPicker({
     )
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        return r.json() as Promise<{ slots: SlotItem[] }>;
+        return r.json() as Promise<SlotsResponse>;
       })
       .then((data) => {
+        setIsDayClosed(data.isDayClosed ?? false);
         setSlots(data.slots ?? []);
       })
       .catch((err: unknown) => {
@@ -100,6 +110,18 @@ export default function SlotPicker({
           Tekrar dene
         </button>
       </div>
+    );
+  }
+
+  if (isDayClosed) {
+    return (
+      <p style={{
+        color: "var(--color-text-muted)",
+        fontSize: "14px",
+        padding: "8px 0",
+      }}>
+        Dieser Tag ist nicht verfügbar. Bitte wählen Sie einen anderen Tag.
+      </p>
     );
   }
 
