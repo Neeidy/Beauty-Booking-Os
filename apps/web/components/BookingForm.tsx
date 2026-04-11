@@ -1,11 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { bookingFormSchema, type BookingFormData } from "../lib/booking-form-schema";
 import servicesData from "../../../clients/demo-salon/services.json";
+
+interface PublicStaffMember {
+  id: string;
+  name: string;
+  title: string;
+}
 import DatePicker from "./DatePicker";
 import SlotPicker from "./SlotPicker";
 
@@ -27,6 +33,9 @@ export default function BookingForm() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedSlotDatetime, setSelectedSlotDatetime] = useState<string | null>(null);
   const [selectedSlotTime, setSelectedSlotTime] = useState<string | null>(null);
+  const [staffList, setStaffList] = useState<PublicStaffMember[]>([]);
+  const [staffLoadError, setStaffLoadError] = useState(false);
+  const [selectedStaffId, setSelectedStaffId] = useState<string>("");
 
   const {
     register,
@@ -43,6 +52,24 @@ export default function BookingForm() {
 
   const selectedServiceId = watch("serviceId");
   const selectedService = allServices.find((s) => s.id === selectedServiceId);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/public/staff")
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
+      .then((data: { staff: PublicStaffMember[] }) => {
+        if (!cancelled) setStaffList(data.staff ?? []);
+      })
+      .catch(() => {
+        if (!cancelled) setStaffLoadError(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const onSubmit = async (data: BookingFormData) => {
     setIsSubmitting(true);
@@ -79,6 +106,15 @@ export default function BookingForm() {
         });
       }
 
+      // Build staff preference note
+      const selectedStaff = selectedStaffId
+        ? staffList.find((s) => s.id === selectedStaffId)
+        : null;
+      const baseNotes = data.notes ?? "";
+      const notesValue = selectedStaff
+        ? `Mitarbeiter-Wunsch: ${selectedStaff.name}${baseNotes ? `\n${baseNotes}` : ""}`
+        : baseNotes;
+
       // Build raw message from form data
       const messageParts = [`Name: ${data.customerName}`];
       if (selectedService) messageParts.push(`Leistung: ${selectedService.label}`);
@@ -102,6 +138,7 @@ export default function BookingForm() {
           rawMessage: messageParts.join(" | "),
           language: "de",
           gdprConsents,
+          notes: notesValue || undefined,
           metadata: {
             serviceId: data.serviceId,
             appointmentAt: selectedSlotDatetime,
@@ -319,6 +356,46 @@ export default function BookingForm() {
                 setSelectedSlotTime(t);
               }}
             />
+          </div>
+        )}
+
+        {/* Staff preference dropdown — only shown if staff loaded successfully */}
+        {!staffLoadError && staffList.length > 0 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+            <label
+              style={{
+                fontSize: "13px",
+                color: "var(--color-text-muted)",
+                fontWeight: 500,
+              }}
+            >
+              Wunsch-Mitarbeiter{" "}
+              <span style={{ fontWeight: 400, color: "var(--color-text-muted)" }}>
+                (optional)
+              </span>
+            </label>
+            <select
+              value={selectedStaffId}
+              onChange={(e) => setSelectedStaffId(e.target.value)}
+              style={{
+                border: "1px solid var(--color-accent)",
+                borderRadius: "6px",
+                padding: "10px 12px",
+                fontSize: "14px",
+                color: "var(--color-text)",
+                background: "var(--color-background)",
+                width: "100%",
+                minHeight: "44px",
+                cursor: "pointer",
+              }}
+            >
+              <option value="">Keine Vorauswahl</option>
+              {staffList.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name} — {s.title}
+                </option>
+              ))}
+            </select>
           </div>
         )}
 

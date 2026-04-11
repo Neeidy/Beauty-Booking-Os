@@ -1,0 +1,22 @@
+{
+  "staff": [
+    {
+      "id": "staff_1",
+      "name": "Anna",
+      "title": "Nageldesignerin",
+      "active": true
+    },
+    {
+      "id": "staff_2",
+      "name": "Sofia",
+      "title": "Kosmetikerin",
+      "active": true
+    },
+    {
+      "id": "staff_3",
+      "name": "Lena",
+      "title": "Wimpernstudio",
+      "active": true
+    }
+  ]
+}

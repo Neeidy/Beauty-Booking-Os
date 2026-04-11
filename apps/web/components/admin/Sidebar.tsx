@@ -18,6 +18,7 @@ const NAV = [
   { href: "/admin/logs",         label: "Event Logs",   icon: "≡" },
   { href: "/admin/escalations",  label: "Eskalationen", icon: "!" },
   { href: "/admin/settings",     label: "Einstellungen",icon: "⚙" },
+  { href: "/admin/staff",        label: "Team",         icon: "👥" },
 ];
 
 export default function Sidebar({ escalationCount = 0 }: SidebarProps) {
