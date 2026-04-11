@@ -3,10 +3,11 @@ import { z } from "zod";
 import { getDb, bookings, services } from "@beauty-booking/db";
 import { eq, and, gte, lte } from "drizzle-orm";
 import {
-  getViennaOffsetMinutes,
   viennaWallClockToUTC,
   formatTimeVienna,
+  getViennaWeekdayKey,
 } from "@/lib/vienna-helpers";
+import { loadClientConfig } from "@/lib/load-client-config";
 
 export const dynamic = "force-dynamic";
 
@@ -25,8 +26,21 @@ const SlotsResponseSchema = z.object({
   serviceId: z.string(),
   serviceName: z.string().nullable(),
   serviceDurationMinutes: z.number(),
+  isDayClosed: z.boolean(),
   slots: z.array(SlotItemSchema),
 });
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+/** Parses "HH:MM" or "HHMM" into hour/minute numbers. */
+function parseHHMM(timeStr: string): { hour: number; minute: number } {
+  const normalized = timeStr.replace(":", ""); // handle both "0900" and "09:00"
+  const padded = normalized.padStart(4, "0");
+  return {
+    hour: parseInt(padded.slice(0, 2), 10),
+    minute: parseInt(padded.slice(2, 4), 10),
+  };
+}
 
 // ── Handler ───────────────────────────────────────────────────────────────────
 
@@ -69,15 +83,48 @@ export async function GET(request: NextRequest) {
       console.warn("booking-slots-api: services query failed, using default 60min", err);
     }
 
-    // Step 2 — Load minAdvanceBookingHours from client config
+    // Step 2 — Load config (operating hours + booking rules)
+    const jsWeekday = getViennaWeekdayKey(date);
+
+    let openHour = 9;
+    let openMinute = 0;
+    let closeHour = 18;
+    let closeMinute = 0;
+    let isDayClosed = false;
+
     try {
-      const { loadClientConfig } = await import("@/lib/load-client-config");
-      const cfg = loadClientConfig();
+      const cfg = loadClientConfig(); // SYNC — no await
       if (cfg?.bookingRules?.minAdvanceBookingHours != null) {
         minAdvanceHours = cfg.bookingRules.minAdvanceBookingHours;
       }
-    } catch {
-      // fallback to 2 hours
+      const dayConfig = cfg.operatingHours?.[jsWeekday];
+      if (dayConfig === null || dayConfig === undefined) {
+        isDayClosed = true;
+      } else if (dayConfig.open && dayConfig.close) {
+        const openParsed = parseHHMM(dayConfig.open);
+        const closeParsed = parseHHMM(dayConfig.close);
+        openHour = openParsed.hour;
+        openMinute = openParsed.minute;
+        closeHour = closeParsed.hour;
+        closeMinute = closeParsed.minute;
+      }
+    } catch (err) {
+      console.warn(
+        "[slots] Failed to load config, using fallback 09:00–18:00",
+        err,
+      );
+    }
+
+    // Closed day — return early with empty slots
+    if (isDayClosed) {
+      return NextResponse.json({
+        date,
+        serviceId,
+        serviceName,
+        serviceDurationMinutes,
+        isDayClosed: true,
+        slots: [],
+      });
     }
 
     // Step 3 — Fetch existing bookings for the day
@@ -104,29 +151,21 @@ export async function GET(request: NextRequest) {
       (b) => b.status !== "cancelled" && b.status !== "no_show",
     );
 
-    // Step 4 — Business hours (hardcoded; V2-5 will move to config)
-    const anchor = new Date(`${date}T12:00:00Z`);
-    const weekday = new Intl.DateTimeFormat("en-US", {
-      timeZone: "Europe/Vienna",
-      weekday: "short",
-    }).format(anchor); // "Mon", "Tue", ..., "Sun"
-
-    const isSunday = weekday === "Sun";
-    const openHour = isSunday ? 10 : 9;
-    const closeHour = isSunday ? 16 : 18;
-
-    // Step 5 — Generate slots
-    // Only generate slots that fit before closing (avoids non-bookable trailing slots)
+    // Step 4 — Generate slots from config-based operating hours
     const stepMinutes = Math.min(30, serviceDurationMinutes);
     const now = new Date();
     const minBookableTime = new Date(now.getTime() + minAdvanceHours * 60 * 60 * 1000);
+
+    const openTotalMinutes = openHour * 60 + openMinute;
+    const closeTotalMinutes = closeHour * 60 + closeMinute;
+    const closingUTC = viennaWallClockToUTC(date, closeHour, closeMinute);
 
     type SlotItem = { time: string; datetime: string; available: boolean };
     const slots: SlotItem[] = [];
 
     for (
-      let minuteOfDay = openHour * 60;
-      minuteOfDay + serviceDurationMinutes <= closeHour * 60;
+      let minuteOfDay = openTotalMinutes;
+      minuteOfDay < closeTotalMinutes;
       minuteOfDay += stepMinutes
     ) {
       const hour = Math.floor(minuteOfDay / 60);
@@ -134,6 +173,9 @@ export async function GET(request: NextRequest) {
 
       const slotStartUTC = viennaWallClockToUTC(date, hour, minute);
       const slotEndUTC = new Date(slotStartUTC.getTime() + serviceDurationMinutes * 60000);
+
+      // Skip slots where service doesn't fit before closing
+      if (slotEndUTC.getTime() > closingUTC.getTime()) continue;
 
       const isInPast = slotStartUTC.getTime() < minBookableTime.getTime();
 
@@ -153,12 +195,13 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Step 6 — Zod-validate and return
+    // Step 5 — Zod-validate and return
     const payload = {
       date,
       serviceId,
       serviceName,
       serviceDurationMinutes,
+      isDayClosed: false,
       slots,
     };
 
