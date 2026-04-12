@@ -240,6 +240,6 @@ export async function executeCancellationRecovery(
   return {
     outcome: "message_sent",
     message: messageText,
-    nextFollowUpAt,
+    ...(nextFollowUpAt !== undefined ? { nextFollowUpAt } : {}),
   };
 }
