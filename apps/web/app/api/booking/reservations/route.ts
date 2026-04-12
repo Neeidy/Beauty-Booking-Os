@@ -12,6 +12,7 @@ import {
   expireStaleSlotReservations,
   ACTIVE_TTL_MINUTES,
 } from "@/lib/slot-reservations";
+import { logRequest, logError } from "@/lib/logger";
 
 const CLIENT_ID = process.env["DEMO_CLIENT_ID"] ?? "00000000-0000-0000-0000-000000000000";
 
@@ -23,15 +24,18 @@ const ReservationRequestSchema = z.object({
 });
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
+  const start = Date.now();
   let body: unknown;
   try {
     body = await request.json();
   } catch {
+    logRequest(request.method, "/api/booking/reservations", 400, Date.now() - start);
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
   const parsed = ReservationRequestSchema.safeParse(body);
   if (!parsed.success) {
+    logRequest(request.method, "/api/booking/reservations", 400, Date.now() - start);
     return NextResponse.json(
       { error: "Geçersiz istek.", details: parsed.error.flatten() },
       { status: 400 }
@@ -52,9 +56,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       .limit(1);
 
     if (svcRows.length === 0) {
+      logRequest(request.method, "/api/booking/reservations", 400, Date.now() - start);
       return NextResponse.json({ error: "Hizmet bulunamadı." }, { status: 400 });
     }
     if (!svcRows[0]!.active) {
+      logRequest(request.method, "/api/booking/reservations", 400, Date.now() - start);
       return NextResponse.json({ error: "Hizmet aktif değil." }, { status: 400 });
     }
 
@@ -111,6 +117,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     });
 
     if (bookingConflict) {
+      logRequest(request.method, "/api/booking/reservations", 409, Date.now() - start);
       return NextResponse.json({ error: "Bu slot az önce doldu." }, { status: 409 });
     }
 
@@ -129,6 +136,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       .limit(1);
 
     if (reservationConflicts.length > 0) {
+      logRequest(request.method, "/api/booking/reservations", 409, Date.now() - start);
       return NextResponse.json({ error: "Bu slot az önce doldu." }, { status: 409 });
     }
 
@@ -150,11 +158,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       // DB unique violation or exclusion constraint violation
       const msg = insertErr instanceof Error ? insertErr.message : "";
       if (msg.includes("unique") || msg.includes("exclusion") || msg.includes("duplicate") || msg.includes("constraint")) {
+        logRequest(request.method, "/api/booking/reservations", 409, Date.now() - start);
         return NextResponse.json({ error: "Bu slot az önce doldu." }, { status: 409 });
       }
       throw insertErr;
     }
 
+    logRequest(request.method, "/api/booking/reservations", 200, Date.now() - start);
     return NextResponse.json({
       success: true,
       reservationToken,
@@ -164,6 +174,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     });
   } catch (err) {
     console.error("[POST /api/booking/reservations]", err);
+    logError("/api/booking/reservations", err);
+    logRequest(request.method, "/api/booking/reservations", 500, Date.now() - start, String(err));
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

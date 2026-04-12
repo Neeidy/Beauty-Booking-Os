@@ -27,7 +27,7 @@ describe("demo-salon config files", () => {
     for (const cat of config.services.categories) {
       expect(cat.services.length).toBeGreaterThan(0);
       for (const svc of cat.services) {
-        expect(svc.id).toMatch(/^svc_/);
+        expect(svc.id).toMatch(/^(svc_[a-z0-9_]+|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/);
         expect(svc.duration).toBeGreaterThan(0);
       }
     }

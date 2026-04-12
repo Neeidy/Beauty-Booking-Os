@@ -7,6 +7,7 @@ import { logEvent } from "@beauty-booking/db/queries/event-logs";
 import { createGdprConsents } from "@beauty-booking/db/queries/gdpr-consents";
 import { createLeadInputSchema } from "@beauty-booking/shared";
 import { logger } from "@beauty-booking/shared";
+import { logRequest, logError } from "@/lib/logger";
 
 const CLIENTS_DIR = join(process.cwd(), "..", "..", "clients");
 
@@ -17,6 +18,7 @@ export async function POST(request: NextRequest) {
   try {
     rawBody = await request.json();
   } catch {
+    logRequest(request.method, "/api/lead", 400, Date.now() - startTime);
     return NextResponse.json(
       { success: false, error: "Invalid JSON body" },
       { status: 400 }
@@ -26,6 +28,7 @@ export async function POST(request: NextRequest) {
   // 1. Validate input
   const parseResult = createLeadInputSchema.safeParse(rawBody);
   if (!parseResult.success) {
+    logRequest(request.method, "/api/lead", 422, Date.now() - startTime);
     return NextResponse.json(
       {
         success: false,
@@ -46,6 +49,7 @@ export async function POST(request: NextRequest) {
     logger.warn("Unknown client slug on lead create", {
       slug: input.clientSlug,
     });
+    logRequest(request.method, "/api/lead", 404, Date.now() - startTime);
     return NextResponse.json(
       { success: false, error: "Unknown client" },
       { status: 404 }
@@ -57,6 +61,7 @@ export async function POST(request: NextRequest) {
     (c) => c.consentType === "data_processing" && c.granted
   );
   if (!dataProcessingConsent) {
+    logRequest(request.method, "/api/lead", 422, Date.now() - startTime);
     return NextResponse.json(
       {
         success: false,
@@ -68,6 +73,7 @@ export async function POST(request: NextRequest) {
 
   // 4. We need at least one contact method
   if (!input.customerEmail && !input.customerPhone) {
+    logRequest(request.method, "/api/lead", 422, Date.now() - startTime);
     return NextResponse.json(
       {
         success: false,
@@ -83,6 +89,7 @@ export async function POST(request: NextRequest) {
   //    For Sprint 1, we store slug in metadata and clientId must be pre-seeded.
   const clientId = request.headers.get("x-client-id");
   if (!clientId) {
+    logRequest(request.method, "/api/lead", 400, Date.now() - startTime);
     return NextResponse.json(
       {
         success: false,
@@ -111,6 +118,8 @@ export async function POST(request: NextRequest) {
     });
   } catch (err) {
     logger.error("Failed to create lead in DB", { error: String(err), clientId });
+    logError("/api/lead", err);
+    logRequest(request.method, "/api/lead", 500, Date.now() - startTime, String(err));
     return NextResponse.json(
       { success: false, error: "Internal server error" },
       { status: 500 }
@@ -151,6 +160,7 @@ export async function POST(request: NextRequest) {
 
   logger.info("Lead created", { leadId: lead.id, clientSlug: input.clientSlug, source: input.source });
 
+  logRequest(request.method, "/api/lead", 201, Date.now() - startTime);
   return NextResponse.json(
     {
       success: true,

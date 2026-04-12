@@ -8,6 +8,7 @@ import {
   expireStaleSlotReservations,
   extendSubmittedExpiry,
 } from "@/lib/slot-reservations";
+import { logRequest, logError } from "@/lib/logger";
 
 const CLIENT_ID = process.env["DEMO_CLIENT_ID"] ?? "00000000-0000-0000-0000-000000000000";
 
@@ -26,15 +27,18 @@ const submitBodySchema = z
   .passthrough();
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
+  const start = Date.now();
   let bodyRaw: Record<string, unknown>;
   try {
     bodyRaw = await request.json();
   } catch {
+    logRequest(request.method, "/api/booking/submit", 400, Date.now() - start);
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
   const parsed = submitBodySchema.safeParse(bodyRaw);
   if (!parsed.success) {
+    logRequest(request.method, "/api/booking/submit", 400, Date.now() - start);
     return NextResponse.json(
       { error: "reservationToken gerekli." },
       { status: 400 }
@@ -70,6 +74,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       .limit(1);
 
     if (rows.length === 0) {
+      logRequest(request.method, "/api/booking/submit", 409, Date.now() - start);
       return NextResponse.json(
         { error: "Rezervasyon bulunamadı." },
         { status: 409 }
@@ -79,6 +84,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const reservation = rows[0]!;
 
     if (reservation.status !== "active") {
+      logRequest(request.method, "/api/booking/submit", 409, Date.now() - start);
       return NextResponse.json(
         { error: "Rezervasyon süresi doldu. Lütfen yeniden slot seç." },
         { status: 409 }
@@ -86,6 +92,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     if (reservation.expiresAt <= now) {
+      logRequest(request.method, "/api/booking/submit", 409, Date.now() - start);
       return NextResponse.json(
         { error: "Rezervasyon süresi doldu. Lütfen yeniden slot seç." },
         { status: 409 }
@@ -95,6 +102,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // Step 3 — Validate serviceId matches
     const bodyServiceId = metadata?.serviceId;
     if (bodyServiceId && bodyServiceId !== reservation.serviceId) {
+      logRequest(request.method, "/api/booking/submit", 409, Date.now() - start);
       return NextResponse.json(
         { error: "Rezervasyon hizmeti eşleşmiyor." },
         { status: 409 }
@@ -111,6 +119,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           : new Date(String(reservation.slotStart));
       const diffMs = Math.abs(bodySlotStart.getTime() - reservationSlotStart.getTime());
       if (diffMs > 60 * 1000) {
+        logRequest(request.method, "/api/booking/submit", 409, Date.now() - start);
         return NextResponse.json(
           { error: "Rezervasyon saati eşleşmiyor." },
           { status: 409 }
@@ -132,6 +141,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       });
     } catch (fetchErr) {
       console.error("[POST /api/booking/submit] fetch /api/lead failed", fetchErr);
+      logError("/api/booking/submit", fetchErr);
+      logRequest(request.method, "/api/booking/submit", 502, Date.now() - start, String(fetchErr));
       // Do NOT release reservation — keep active until TTL
       return NextResponse.json(
         { error: "Gönderim başarısız oldu, rezervasyonun kısa süre daha korunuyor." },
@@ -141,6 +152,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     if (!leadRes.ok) {
       console.error("[POST /api/booking/submit] /api/lead returned", leadRes.status);
+      logRequest(request.method, "/api/booking/submit", 502, Date.now() - start);
       // Do NOT release reservation
       return NextResponse.json(
         { error: "Gönderim başarısız oldu, rezervasyonun kısa süre daha korunuyor." },
@@ -172,9 +184,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       ? { success: true, leadId }
       : { success: true };
 
+    logRequest(request.method, "/api/booking/submit", 200, Date.now() - start);
     return NextResponse.json(responseBody);
   } catch (err) {
     console.error("[POST /api/booking/submit]", err);
+    logError("/api/booking/submit", err);
+    logRequest(request.method, "/api/booking/submit", 500, Date.now() - start, String(err));
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

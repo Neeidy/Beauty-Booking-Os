@@ -4,7 +4,10 @@ export const serviceSchema = z.object({
   id: z
     .string()
     .min(1)
-    .regex(/^svc_[a-z0-9_]+$/, "Service ID must start with svc_"),
+    .regex(
+      /^(svc_[a-z0-9_]+|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/,
+      "Service ID must be svc_ slug or UUID"
+    ),
   name: z.string().min(1),
   nameEn: z.string().min(1),
   duration: z.number().positive().int(),
