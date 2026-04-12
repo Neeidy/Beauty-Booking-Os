@@ -54,12 +54,9 @@ export type ClientConfig = {
     advancedReporting: boolean;
   };
   googleBusiness?: {
-    profileUrl: string;
-    bookingButtonText?: {
-      de?: string;
-      en?: string;
-      tr?: string;
-    };
+    profileUrl?: string;
+    bookingButtonText?: Record<string, string>;
+    reviewUrl?: string;
   };
 };
 
