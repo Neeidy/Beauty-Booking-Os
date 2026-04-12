@@ -353,6 +353,8 @@ booked | lost | spam
 - Deviation: expireStaleSlotReservations called before transaction (not inside) to avoid Drizzle tx type mismatch
 - fix: booking-slots-api.test.ts mock updated — added slotReservations export + update chain to mockDb
 - Test count: 290/290 (unchanged — sprint policy deferred new unit tests to end-of-system validation)
+- note: 003_slot_reservations.sql applied manually to Supabase (Drizzle-kit generate not used for this migration — raw SQL path)
+- note: migration file location confirmed at packages/db/migrations/003_slot_reservations.sql (drizzle.config.ts out: "./migrations")
 
 ---
 
