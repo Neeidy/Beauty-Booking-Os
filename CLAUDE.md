@@ -5,10 +5,10 @@
 
 ## SYSTEM STATUS
 
-- **Tests:** 274/274 passing (V2-7 complete)
+- **Tests:** 278/278 passing (V2-8 complete)
 - **Sprints 1–8:** Production ready (213 tests at launch)
-- **V2 Sprints:** V2-1 ✅ V2-2 ✅ V2-3 ✅ V2-4 ✅ V2-5 ✅ V2-6 ✅ V2-7 ✅
-- **Next:** V2-8 Google Business Booking
+- **V2 Sprints:** V2-1 ✅ V2-2 ✅ V2-3 ✅ V2-4 ✅ V2-5 ✅ V2-6 ✅ V2-7 ✅ V2-8 ✅
+- **Next:** V2-9 Google Reviews Automation
 - **packages/\*\*:** FROZEN — no changes during V2 frontend workstream
 - **DB schema:** No changes since Sprint 8 — no new migrations until V2-11
 
@@ -253,7 +253,7 @@ booked | lost | spam
 | V2-5 | Waiting List (Warteliste) | ✅ DONE | 265/265 |
 | V2-6 | Business Hours Config + Bug Fixes | ✅ DONE | 270/270 |
 | V2-7 | Staff Profilleri (Config-Driven) | ✅ DONE | 274/274 |
-| V2-8 | Google Business Booking | ⏳ | — |
+| V2-8 | Google Business Booking | ✅ DONE | 278/278 |
 | V2-9 | Google Reviews Automation | ⏳ | — |
 | V2-10 | Rebooking Reminder | ⏳ | — |
 | V2-11 | Slot Reservation + Locking | ⏳ (post V2-10) | — |
@@ -274,6 +274,19 @@ booked | lost | spam
 - fix: load-staff-config path uses resolve(cwd, "..", "..", "clients", ...) — loadClientConfig pattern
 - test: 274/274 (+4 yeni)
 - Yapılmadı: Staff slot blocking (DB gerektirir → V2-11 veya sonrası)
+- Schema değişikliği YOK, packages değişikliği YOK
+
+---
+
+## V2-8: Google Business Booking — COMPLETED
+- feat: ClientConfig type'a googleBusiness?: { profileUrl, bookingButtonText? } eklendi
+- feat: client.config.json → googleBusiness config (demo URL, 3 dil)
+- feat: CTASection.tsx'e GoogleBusinessButton eklendi (config yoksa gizlenir)
+- feat: Google link → ?source=google_business query param ile /booking'e yönlendirir
+- feat: BookingForm URL'den bookingSource detection (web_form | google_business)
+- feat: metadata.bookingSource submit payload'a eklendi — /api/lead contract DOKUNULMADI
+- fix: GoogleBusinessButton CTASection.tsx'e eklendi — (marketing)/page.tsx mevcut değildi
+- test: 278/278 (+4 yeni — config loading ve fallback testleri)
 - Schema değişikliği YOK, packages değişikliği YOK
 
 ---
