@@ -95,6 +95,12 @@ Run this checklist before every production deploy. Check each item only when ver
 
 ---
 
+## Pre-Deploy
+
+- [ ] Switch logger from fs/logs/app.log to Supabase event_logs table (apps/web/lib/logger.ts + apps/web/app/api/internal/log/route.ts)
+
+---
+
 ## Post-Deploy
 
 - [ ] Visit salon landing page — renders correctly
