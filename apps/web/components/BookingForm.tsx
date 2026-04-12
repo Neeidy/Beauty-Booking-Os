@@ -106,21 +106,21 @@ export default function BookingForm() {
         {
           consentType: "data_processing",
           granted: true,
-          method: "web_form_checkbox",
+          method: "web_form",
         },
       ];
       if (data.gdprReminders) {
         gdprConsents.push({
           consentType: "reminder_messages",
           granted: true,
-          method: "web_form_checkbox",
+          method: "web_form",
         });
       }
       if (data.gdprMarketing) {
         gdprConsents.push({
           consentType: "marketing",
           granted: true,
-          method: "web_form_checkbox",
+          method: "web_form",
         });
       }
 
