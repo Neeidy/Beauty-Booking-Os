@@ -5,10 +5,10 @@
 
 ## SYSTEM STATUS
 
-- **Tests:** 282/282 passing (V2-9 complete)
+- **Tests:** 290/290 passing (V2-10 complete)
 - **Sprints 1–8:** Production ready (213 tests at launch)
-- **V2 Sprints:** V2-1 ✅ V2-2 ✅ V2-3 ✅ V2-4 ✅ V2-5 ✅ V2-6 ✅ V2-7 ✅ V2-8 ✅ V2-9 ✅
-- **Next:** V2-10 Rebooking Reminder
+- **V2 Sprints:** V2-1 ✅ V2-2 ✅ V2-3 ✅ V2-4 ✅ V2-5 ✅ V2-6 ✅ V2-7 ✅ V2-8 ✅ V2-9 ✅ V2-10 ✅
+- **Next:** V2-11 Slot Reservation + Locking
 - **packages/\*\*:** FROZEN — no changes during V2 frontend workstream
 - **DB schema:** No changes since Sprint 8 — no new migrations until V2-11
 
@@ -255,7 +255,7 @@ booked | lost | spam
 | V2-7 | Staff Profilleri (Config-Driven) | ✅ DONE | 274/274 |
 | V2-8 | Google Business Booking | ✅ DONE | 278/278 |
 | V2-9 | Google Reviews Automation | ✅ DONE | 282/282 |
-| V2-10 | Rebooking Reminder | ⏳ | — |
+| V2-10 | Rebooking Hatırlatması | ✅ DONE | 290/290 |
 | V2-11 | Slot Reservation + Locking | ⏳ (post V2-10) | — |
 
 ---
@@ -301,6 +301,26 @@ booked | lost | spam
   duplicate önleme: aynı booking için ikinci job oluşturulmaz
 - test: 282/282 (+4 yeni — admin trigger 4 case)
 - automationJobs insert: id verilmez (defaultRandom), attempts/maxAttempts explicit, duplicate idempotent
+- Schema değişikliği YOK, packages değişikliği YOK
+
+---
+
+## V2-10: Rebooking Hatırlatması — COMPLETED
+- feat: ClientConfig.rebookingWeeks? (default 4, clamp 2-12)
+- feat: client.config.json → rebookingWeeks: 4
+- feat: POST /api/jobs/rebooking — WEBHOOK_SECRET auth (dev mode allow)
+  GDPR: gdprConsents tablosu (consentType="reminder_messages", granted=true, revokedAt IS NULL)
+  Job: status="scheduled", scheduledAt=now+weeks, executedAt=null
+  Duplicate önleme, no-lead skip, summary response
+- feat: GET /api/admin/rebooking — job listesi, leftJoin customerName, orderBy desc
+- feat: POST /api/admin/rebooking — admin manuel trigger (proxies to jobs route)
+- feat: /admin/rebooking — server shell + RebookingView client component
+  "Şimdi Çalıştır" button, result summary, job list with status badges
+  Tarih: Intl.DateTimeFormat Vienna timezone
+- feat: Sidebar "Rebooking" nav item (🔄 emoji, aktif state)
+- test: 290/290 (+8: auth, consent, duplicate, clamp×2, GET list, GET auth, POST auth)
+- fix: makeSelectChain thenable (then method) — handles await without .limit()
+- bookings.metadata KULLANILMADI — field yok, GDPR gdprConsents'ten
 - Schema değişikliği YOK, packages değişikliği YOK
 
 ---
