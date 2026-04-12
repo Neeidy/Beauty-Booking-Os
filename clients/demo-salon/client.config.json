@@ -55,6 +55,7 @@
     "multiLanguage": true,
     "advancedReporting": false
   },
+  "rebookingWeeks": 4,
   "googleBusiness": {
     "profileUrl": "https://booking.google.com/business/vienna-glow-studio",
     "bookingButtonText": {

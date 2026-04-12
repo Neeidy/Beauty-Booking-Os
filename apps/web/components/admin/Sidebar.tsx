@@ -19,6 +19,7 @@ const NAV = [
   { href: "/admin/escalations",  label: "Eskalationen", icon: "!" },
   { href: "/admin/settings",     label: "Einstellungen",icon: "⚙" },
   { href: "/admin/staff",        label: "Team",         icon: "👥" },
+  { href: "/admin/rebooking",    label: "Rebooking",    icon: "🔄" },
 ];
 
 export default function Sidebar({ escalationCount = 0 }: SidebarProps) {

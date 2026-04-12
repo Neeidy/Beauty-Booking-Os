@@ -58,6 +58,7 @@ export type ClientConfig = {
     bookingButtonText?: Record<string, string>;
     reviewUrl?: string;
   };
+  rebookingWeeks?: number; // Default 4, runtime'da clamp(2, 12) uygulanır
 };
 
 /**
