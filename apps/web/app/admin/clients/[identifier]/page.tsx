@@ -1,8 +1,10 @@
+export const dynamic = "force-dynamic";
+
 import Link from "next/link";
 import AdminHeader from "../../../../components/admin/AdminHeader";
 import ClientProfileView from "./ClientProfileView";
-
-export const dynamic = "force-dynamic";
+import { getDb, bookings, services, leads } from "@beauty-booking/db";
+import { eq, desc, inArray, asc } from "drizzle-orm";
 
 interface ClientBooking {
   id: string;
@@ -15,7 +17,7 @@ interface ClientBooking {
   createdAt: string;
 }
 
-interface ClientProfileResponse {
+interface ClientProfileData {
   identifier: string;
   customer: {
     name: string | null;
@@ -34,6 +36,151 @@ interface ClientProfileResponse {
   bookings: ClientBooking[];
 }
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+function toViennaTime(date: Date): string {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Europe/Vienna",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).formatToParts(date);
+  const hour = parts.find((p) => p.type === "hour")?.value ?? "00";
+  const minute = parts.find((p) => p.type === "minute")?.value ?? "00";
+  return `${hour}:${minute}`;
+}
+
+const EMPTY_SUMMARY = {
+  totalBookings: 0,
+  completedBookings: 0,
+  cancelledBookings: 0,
+  noshowCount: 0,
+  showRate: 0,
+};
+
+async function fetchClientProfile(identifier: string): Promise<ClientProfileData> {
+  const decoded = decodeURIComponent(identifier);
+  const isUuid = UUID_REGEX.test(decoded);
+  const db = getDb();
+
+  const customerRows = isUuid
+    ? await db.select().from(leads).where(eq(leads.id, decoded)).limit(1)
+    : await db
+        .select()
+        .from(leads)
+        .where(eq(leads.customerPhone, decoded))
+        .orderBy(asc(leads.createdAt))
+        .limit(1);
+
+  if (customerRows.length === 0) {
+    return { identifier: decoded, customer: null, summary: EMPTY_SUMMARY, bookings: [] };
+  }
+
+  const customer = customerRows[0]!;
+
+  let allLeadIds: string[];
+  let firstSeenAt: string;
+
+  if (isUuid) {
+    allLeadIds = [customer.id];
+    firstSeenAt =
+      customer.createdAt instanceof Date
+        ? customer.createdAt.toISOString()
+        : String(customer.createdAt);
+  } else {
+    const phoneLeads = customer.customerPhone
+      ? await db
+          .select({ id: leads.id, createdAt: leads.createdAt })
+          .from(leads)
+          .where(eq(leads.customerPhone, customer.customerPhone))
+          .orderBy(asc(leads.createdAt))
+      : [{ id: customer.id, createdAt: customer.createdAt }];
+
+    allLeadIds = phoneLeads.map((l) => l.id);
+    const earliest = phoneLeads[0]?.createdAt;
+    firstSeenAt =
+      earliest instanceof Date ? earliest.toISOString() : String(earliest ?? customer.createdAt);
+  }
+
+  type BookingRow = {
+    id: string;
+    appointmentAt: Date | string;
+    durationMinutes: number;
+    status: string;
+    notes: string | null;
+    createdAt: Date | string;
+    serviceName: string | null;
+  };
+
+  let bookingRows: BookingRow[] = [];
+  try {
+    bookingRows = await db
+      .select({
+        id: bookings.id,
+        appointmentAt: bookings.appointmentAt,
+        durationMinutes: bookings.durationMinutes,
+        status: bookings.status,
+        notes: bookings.notes,
+        createdAt: bookings.createdAt,
+        serviceName: services.serviceName,
+      })
+      .from(bookings)
+      .leftJoin(services, eq(bookings.serviceId, services.id))
+      .where(inArray(bookings.leadId, allLeadIds))
+      .orderBy(desc(bookings.appointmentAt));
+  } catch {
+    const fallbackRows = await db
+      .select({
+        id: bookings.id,
+        appointmentAt: bookings.appointmentAt,
+        durationMinutes: bookings.durationMinutes,
+        status: bookings.status,
+        notes: bookings.notes,
+        createdAt: bookings.createdAt,
+      })
+      .from(bookings)
+      .where(inArray(bookings.leadId, allLeadIds))
+      .orderBy(desc(bookings.appointmentAt));
+    bookingRows = fallbackRows.map((r) => ({ ...r, serviceName: null }));
+  }
+
+  const totalBookings = bookingRows.length;
+  const completedBookings = bookingRows.filter((b) => b.status === "completed").length;
+  const cancelledBookings = bookingRows.filter((b) => b.status === "cancelled").length;
+  const noshowCount = bookingRows.filter((b) => b.status === "no_show").length;
+  const showRate = totalBookings === 0 ? 0 : completedBookings / totalBookings;
+
+  const clientBookings: ClientBooking[] = bookingRows.map((row) => ({
+    id: row.id,
+    appointmentAt:
+      row.appointmentAt instanceof Date
+        ? row.appointmentAt.toISOString()
+        : String(row.appointmentAt),
+    appointmentTime: toViennaTime(
+      row.appointmentAt instanceof Date ? row.appointmentAt : new Date(String(row.appointmentAt)),
+    ),
+    status: row.status,
+    serviceName: row.serviceName ?? null,
+    durationMinutes: row.durationMinutes,
+    notes: row.notes ?? null,
+    createdAt:
+      row.createdAt instanceof Date ? row.createdAt.toISOString() : String(row.createdAt),
+  }));
+
+  return {
+    identifier: decoded,
+    customer: {
+      name: customer.customerName ?? null,
+      email: customer.customerEmail ?? null,
+      phone: customer.customerPhone ?? null,
+      language: customer.language ?? null,
+      firstSeenAt,
+    },
+    summary: { totalBookings, completedBookings, cancelledBookings, noshowCount, showRate },
+    bookings: clientBookings,
+  };
+}
+
 export default async function ClientProfilePage({
   params,
 }: {
@@ -41,22 +188,9 @@ export default async function ClientProfilePage({
 }) {
   const { identifier } = await params;
 
-  const baseUrl = process.env["NEXT_PUBLIC_APP_URL"] ?? "http://localhost:3030";
-  const adminSecret = process.env["ADMIN_SECRET"] ?? "change-me-in-production";
-
-  let data: ClientProfileResponse | null = null;
-
+  let data: ClientProfileData | null = null;
   try {
-    const res = await fetch(
-      `${baseUrl}/api/admin/clients/${encodeURIComponent(identifier)}`,
-      {
-        headers: { "x-admin-secret": adminSecret },
-        cache: "no-store",
-      },
-    );
-    if (res.ok) {
-      data = (await res.json()) as ClientProfileResponse;
-    }
+    data = await fetchClientProfile(identifier);
   } catch {
     // data stays null — rendered as error below
   }
