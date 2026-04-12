@@ -5,7 +5,7 @@
       "slug": "nails",
       "services": [
         {
-          "id": "svc_gel_manicure",
+          "id": "433dc47f-fa6e-4b20-9a88-8d6c06909726",
           "name": "Gel Manikür",
           "nameEn": "Gel Manicure",
           "duration": 60,
@@ -14,7 +14,7 @@
           "popular": true
         },
         {
-          "id": "svc_gel_pedicure",
+          "id": "3843d5bb-42ee-4ea1-b07b-8e4ff3623496",
           "name": "Gel Pedikür",
           "nameEn": "Gel Pedicure",
           "duration": 75,
@@ -23,7 +23,7 @@
           "popular": false
         },
         {
-          "id": "svc_nail_art",
+          "id": "479b8f0c-c6d4-4045-9b84-eb33518d6754",
           "name": "Nail Art Design",
           "nameEn": "Nail Art Design",
           "duration": 90,
@@ -32,7 +32,7 @@
           "popular": false
         },
         {
-          "id": "svc_nail_removal",
+          "id": "f5eedc6f-2d8a-41a7-8d54-78812af5be16",
           "name": "Gel Entfernung",
           "nameEn": "Gel Removal",
           "duration": 30,
@@ -47,7 +47,7 @@
       "slug": "skin",
       "services": [
         {
-          "id": "svc_hydrafacial",
+          "id": "4e271168-fef5-4eee-bc74-60258bdd4f15",
           "name": "HydraFacial Classic",
           "nameEn": "HydraFacial Classic",
           "duration": 45,
@@ -56,7 +56,7 @@
           "popular": true
         },
         {
-          "id": "svc_facial_basic",
+          "id": "1573dba6-252c-4bed-b253-9fb4f1c7b85d",
           "name": "Basis Gesichtsbehandlung",
           "nameEn": "Basic Facial",
           "duration": 60,
@@ -71,7 +71,7 @@
       "slug": "lashes-brows",
       "services": [
         {
-          "id": "svc_lash_lift",
+          "id": "bcf37107-1184-41f3-a89a-ca645985bb79",
           "name": "Lash Lift & Tint",
           "nameEn": "Lash Lift & Tint",
           "duration": 60,
@@ -80,7 +80,7 @@
           "popular": true
         },
         {
-          "id": "svc_brow_lamination",
+          "id": "880d8e5f-9dea-4730-8f5d-c8f485e1c739",
           "name": "Brow Lamination",
           "nameEn": "Brow Lamination",
           "duration": 45,
