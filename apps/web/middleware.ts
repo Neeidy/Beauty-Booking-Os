@@ -54,6 +54,7 @@ function getClientIp(request: NextRequest): string {
 // ── Middleware ────────────────────────────────────────────────────────────────
 
 export function middleware(request: NextRequest) {
+  const start = Date.now();
   const { pathname } = request.nextUrl;
   const ip = getClientIp(request);
 
@@ -95,6 +96,28 @@ export function middleware(request: NextRequest) {
       loginUrl.searchParams.set("next", pathname);
       return NextResponse.redirect(loginUrl);
     }
+  }
+
+  // ── API request logging ───────────────────────────────────────────────────
+  // Middleware runs in Edge runtime — fs is unavailable, so we fire-and-forget
+  // a POST to the internal log sink which runs in Node.js and can write to disk.
+  // Status is always 0 here because Next.js middleware cannot intercept the
+  // route handler's response (streaming limitation). Per-route logRequest calls
+  // provide accurate status + duration for individually instrumented routes.
+  if (pathname.startsWith("/api/") && !pathname.startsWith("/api/internal/")) {
+    const duration = Date.now() - start;
+    void fetch(new URL("/api/internal/log", request.url).toString(), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "request",
+        method: request.method,
+        path: pathname,
+        status: 0,
+        durationMs: duration,
+        note: "response status unavailable in middleware",
+      }),
+    }).catch(() => {});
   }
 
   return NextResponse.next();

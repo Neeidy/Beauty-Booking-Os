@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getDb, bookings, automationJobs, gdprConsents } from "@beauty-booking/db";
 import { and, eq, isNull } from "drizzle-orm";
 import { loadClientConfig } from "@/lib/load-client-config";
+import { logRequest, logError } from "@/lib/logger";
 
 const CLIENT_ID =
   process.env.DEMO_CLIENT_ID ?? "00000000-0000-0000-0000-000000000000";
@@ -15,7 +16,11 @@ function isAuthorized(request: NextRequest): boolean {
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
+  const start = Date.now();
+  const path = "/api/jobs/rebooking";
+
   if (!isAuthorized(request)) {
+    logRequest(request.method, path, 401, Date.now() - start);
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -118,6 +123,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       processed.push(b.id);
     }
 
+    logRequest(request.method, path, 200, Date.now() - start);
     return NextResponse.json({
       success: true,
       summary: {
@@ -133,6 +139,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     });
   } catch (err) {
     console.error("[/api/jobs/rebooking]", err);
+    logError(path, err);
+    logRequest(request.method, path, 500, Date.now() - start, String(err));
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

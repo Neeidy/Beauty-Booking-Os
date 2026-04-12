@@ -3,10 +3,15 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { isAdminApiAuthenticated } from "@/lib/admin-auth";
 import { getDb, automationJobs, bookings } from "@beauty-booking/db";
+import { logRequest, logError } from "@/lib/logger";
 import { eq, desc } from "drizzle-orm";
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
+  const start = Date.now();
+  const path = "/api/admin/rebooking";
+
   if (!isAdminApiAuthenticated(request)) {
+    logRequest(request.method, path, 401, Date.now() - start);
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -30,15 +35,22 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       .orderBy(desc(automationJobs.scheduledAt))
       .limit(50);
 
+    logRequest(request.method, path, 200, Date.now() - start);
     return NextResponse.json({ success: true, jobs, count: jobs.length });
   } catch (err) {
     console.error("[GET /api/admin/rebooking]", err);
+    logError(path, err);
+    logRequest(request.method, path, 500, Date.now() - start, String(err));
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
+  const start = Date.now();
+  const path = "/api/admin/rebooking";
+
   if (!isAdminApiAuthenticated(request)) {
+    logRequest(request.method, path, 401, Date.now() - start);
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -51,15 +63,19 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
+      logRequest(request.method, path, 502, Date.now() - start);
       return NextResponse.json(
         { error: "Job trigger failed", details: err },
         { status: 502 }
       );
     }
 
+    logRequest(request.method, path, 200, Date.now() - start);
     return NextResponse.json(await res.json());
   } catch (err) {
     console.error("[POST /api/admin/rebooking]", err);
+    logError(path, err);
+    logRequest(request.method, path, 500, Date.now() - start, String(err));
     return NextResponse.json({ error: "Job trigger failed" }, { status: 500 });
   }
 }
