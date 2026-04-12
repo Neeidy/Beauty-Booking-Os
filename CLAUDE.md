@@ -5,12 +5,12 @@
 
 ## SYSTEM STATUS
 
-- **Tests:** 290/290 passing (V2-10 complete)
+- **Tests:** 290/290 passing (V2-11 complete — test count unchanged, no new unit tests this sprint per policy)
 - **Sprints 1–8:** Production ready (213 tests at launch)
-- **V2 Sprints:** V2-1 ✅ V2-2 ✅ V2-3 ✅ V2-4 ✅ V2-5 ✅ V2-6 ✅ V2-7 ✅ V2-8 ✅ V2-9 ✅ V2-10 ✅
-- **Next:** V2-11 Slot Reservation + Locking
-- **packages/\*\*:** FROZEN — no changes during V2 frontend workstream
-- **DB schema:** No changes since Sprint 8 — no new migrations until V2-11
+- **V2 Sprints:** V2-1 ✅ V2-2 ✅ V2-3 ✅ V2-4 ✅ V2-5 ✅ V2-6 ✅ V2-7 ✅ V2-8 ✅ V2-9 ✅ V2-10 ✅ V2-11 ✅
+- **Next:** V2 series complete
+- **packages/db:** schema.ts updated for V2-11 (slot_reservations table). FROZEN again.
+- **DB schema:** Migration 003_slot_reservations.sql applied — slot_reservations table live
 
 ---
 
@@ -201,6 +201,11 @@ waitingList_notified, waitingList_registeredAt`
 
 **Staff** → V2-7'de config-only. DB tablosu yok. Preference → `bookings.notes`
 
+**slot_reservations:** id, clientId, serviceId, reservationToken (unique), slotStart (TIMESTAMPTZ),
+slotEnd (TIMESTAMPTZ), status (reservation_status enum), expiresAt, submittedAt, releasedAt,
+leadId, createdAt. Exclusion constraint: no overlap for active/submitted rows (btree_gist).
+Drizzle export: `slotReservations`, `reservationStatusEnum` from `@beauty-booking/db`
+
 **Booking status enum:** pending | confirmed | reminded | completed |
 no_show | cancelled | rescheduled
 
@@ -256,7 +261,7 @@ booked | lost | spam
 | V2-8 | Google Business Booking | ✅ DONE | 278/278 |
 | V2-9 | Google Reviews Automation | ✅ DONE | 282/282 |
 | V2-10 | Rebooking Hatırlatması | ✅ DONE | 290/290 |
-| V2-11 | Slot Reservation + Locking | ⏳ (post V2-10) | — |
+| V2-11 | Slot Reservation + Locking | ✅ DONE | 290/290 (test count unchanged per sprint policy) |
 
 ---
 
@@ -322,6 +327,32 @@ booked | lost | spam
 - fix: makeSelectChain thenable (then method) — handles await without .limit()
 - bookings.metadata KULLANILMADI — field yok, GDPR gdprConsents'ten
 - Schema değişikliği YOK, packages değişikliği YOK
+
+---
+
+## V2-11: Slot Reservation + Locking — COMPLETED
+- feat: slot_reservations table + reservationStatusEnum + migration 003_slot_reservations.sql + RLS
+- feat: DB-level overlap protection via exclusion constraint (btree_gist — confirmed available on Supabase)
+- feat: apps/web/lib/slot-reservations.ts — 5 helpers + 2 TTL constants (ACTIVE_TTL_MINUTES=10, SUBMITTED_TTL_MINUTES=60)
+  generateReservationToken (crypto.randomUUID, edge-runtime safe), calculateReservationWindow,
+  createReservationExpiry, extendSubmittedExpiry, expireStaleSlotReservations
+- feat: POST /api/booking/reservations — service verify, Vienna→UTC, expiry, replaceToken release,
+  booking conflict check, reservation conflict check, insert with DB constraint catch → 409
+- feat: DELETE /api/booking/reservations/[token] — idempotent, always 200, sets releasedAt
+- feat: POST /api/booking/submit — reservation validation (status/expiry/serviceId/slotStart match),
+  forwards to /api/lead via internal fetch, transitions to submitted + extended expiry
+- feat: GET /api/booking/slots — expireStaleSlotReservations on each call, queries active/submitted
+  reservations, ?reservationToken ignore-own-lock, blockedByReservation in slot loop
+- feat: SlotPicker — handleSlotSelect (POST reservation on click), countdown useEffect (clearInterval cleanup),
+  keepalive DELETE on unmount, reservationToken passed to parent via onSlotSelect(dt, t, token)
+- feat: BookingForm — reservationToken state, submit guard (slot without token → error),
+  submit endpoint changed to /api/booking/submit, reservationToken in body, date change clears token
+- /api/lead untouched
+- DB exception applied: packages/db/src/schema.ts + migration (only schema touch in V2 series)
+- bookingFormSchema cannot be .extend()ed (ZodEffects from .refine()) — submit route uses z.passthrough() validation
+- Deviation: expireStaleSlotReservations called before transaction (not inside) to avoid Drizzle tx type mismatch
+- fix: booking-slots-api.test.ts mock updated — added slotReservations export + update chain to mockDb
+- Test count: 290/290 (unchanged — sprint policy deferred new unit tests to end-of-system validation)
 
 ---
 
