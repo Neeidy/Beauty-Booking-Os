@@ -14,7 +14,7 @@ const NAV = [
   { href: "/admin/front-desk",   label: "Front Desk",   icon: "▦" },
   { href: "/admin/calendar",     label: "Takvim",       icon: "◫" },
   { href: "/admin/waiting-list", label: "Warteliste",   icon: "◷" },
-  { href: "/admin/clients",       label: "Müşteriler",   icon: "◉" },
+  { href: "/admin/leads",         label: "Müşteriler",   icon: "◉" },
   { href: "/admin/logs",         label: "Event Logs",   icon: "≡" },
   { href: "/admin/escalations",  label: "Eskalationen", icon: "!" },
   { href: "/admin/settings",     label: "Einstellungen",icon: "⚙" },
