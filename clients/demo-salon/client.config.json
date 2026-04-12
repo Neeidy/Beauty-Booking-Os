@@ -54,5 +54,13 @@
     "recoveryFlow": true,
     "multiLanguage": true,
     "advancedReporting": false
+  },
+  "googleBusiness": {
+    "profileUrl": "https://booking.google.com/business/vienna-glow-studio",
+    "bookingButtonText": {
+      "de": "Jetzt buchen",
+      "en": "Book now",
+      "tr": "Şimdi rezervasyon yap"
+    }
   }
 }

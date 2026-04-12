@@ -36,6 +36,7 @@ export default function BookingForm() {
   const [staffList, setStaffList] = useState<PublicStaffMember[]>([]);
   const [staffLoadError, setStaffLoadError] = useState(false);
   const [selectedStaffId, setSelectedStaffId] = useState<string>("");
+  const [bookingSource, setBookingSource] = useState<"web_form" | "google_business">("web_form");
 
   const {
     register,
@@ -69,6 +70,15 @@ export default function BookingForm() {
     return () => {
       cancelled = true;
     };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get("source") === "google_business") {
+        setBookingSource("google_business");
+      }
+    }
   }, []);
 
   const onSubmit = async (data: BookingFormData) => {
@@ -144,6 +154,7 @@ export default function BookingForm() {
             appointmentAt: selectedSlotDatetime,
             appointmentTime: selectedSlotTime,
             appointmentDate: selectedDate,
+            bookingSource: bookingSource,
           },
         }),
       });

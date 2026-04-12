@@ -1,6 +1,52 @@
 import Link from "next/link";
 import { loadClientConfig } from "@/lib/load-client-config";
 
+// Server-side helper — "use client" gerektirmez, loadClientConfig SYNC
+function GoogleBusinessButton() {
+  let profileUrl = "";
+  let buttonText = "Jetzt buchen";
+
+  try {
+    const cfg = loadClientConfig();
+    profileUrl = cfg.googleBusiness?.profileUrl ?? "";
+    const lang = cfg.defaultLanguage ?? "de";
+    buttonText =
+      cfg.googleBusiness?.bookingButtonText?.[lang as "de" | "en" | "tr"] ??
+      "Jetzt buchen";
+  } catch {
+    // Config yüklenemezse buton gizlenir
+  }
+
+  if (!profileUrl) {
+    return null;
+  }
+
+  return (
+    <a
+      href={`${profileUrl}?source=google_business`}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "8px",
+        background: "var(--color-primary)",
+        color: "var(--color-background)",
+        padding: "12px 24px",
+        borderRadius: "8px",
+        textDecoration: "none",
+        fontSize: "14px",
+        fontWeight: 600,
+        minHeight: "44px",
+        justifyContent: "center",
+      }}
+    >
+      <span aria-hidden="true">📍</span>
+      {buttonText}
+    </a>
+  );
+}
+
 export default function CTASection() {
   const config = loadClientConfig();
 
@@ -54,6 +100,7 @@ export default function CTASection() {
             >
               Online Termin buchen
             </Link>
+            <GoogleBusinessButton />
             {showWhatsApp && whatsappUrl && (
               <a
                 href={whatsappUrl}

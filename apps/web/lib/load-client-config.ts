@@ -53,6 +53,14 @@ export type ClientConfig = {
     multiLanguage: boolean;
     advancedReporting: boolean;
   };
+  googleBusiness?: {
+    profileUrl: string;
+    bookingButtonText?: {
+      de?: string;
+      en?: string;
+      tr?: string;
+    };
+  };
 };
 
 /**
