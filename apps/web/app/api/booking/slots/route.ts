@@ -1,7 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { getDb, bookings, services } from "@beauty-booking/db";
-import { eq, and, gte, lte } from "drizzle-orm";
+import { getDb, bookings, services, slotReservations } from "@beauty-booking/db";
+import { eq, and, gte, lte, inArray } from "drizzle-orm";
+import { expireStaleSlotReservations } from "@/lib/slot-reservations";
 import {
   viennaWallClockToUTC,
   formatTimeVienna,
@@ -151,9 +152,36 @@ export async function GET(request: NextRequest) {
       (b) => b.status !== "cancelled" && b.status !== "no_show",
     );
 
+    // Step 3b — Fetch active/submitted reservations for this day
+    const callerToken = searchParams.get("reservationToken");
+
+    const activeReservations = await db
+      .select({
+        slotStart: slotReservations.slotStart,
+        slotEnd: slotReservations.slotEnd,
+        reservationToken: slotReservations.reservationToken,
+      })
+      .from(slotReservations)
+      .where(
+        and(
+          eq(slotReservations.clientId, clientId),
+          inArray(slotReservations.status, ["active", "submitted"]),
+          gte(slotReservations.slotStart, dayStartUTC),
+          lte(slotReservations.slotStart, dayEndUTC)
+        )
+      );
+
+    // Ignore caller's own lock so their countdown doesn't block their own view
+    const reservationsToBlock = callerToken
+      ? activeReservations.filter((r) => r.reservationToken !== callerToken)
+      : activeReservations;
+
     // Step 4 — Generate slots from config-based operating hours
     const stepMinutes = Math.min(30, serviceDurationMinutes);
     const now = new Date();
+
+    // Expire stale reservations before computing availability
+    await expireStaleSlotReservations(db, now);
     const minBookableTime = new Date(now.getTime() + minAdvanceHours * 60 * 60 * 1000);
 
     const openTotalMinutes = openHour * 60 + openMinute;
@@ -188,10 +216,16 @@ export async function GET(request: NextRequest) {
         return slotStartUTC < bEnd && slotEndUTC > bStart;
       });
 
+      const blockedByReservation = reservationsToBlock.some((r) => {
+        const rStart = r.slotStart instanceof Date ? r.slotStart : new Date(String(r.slotStart));
+        const rEnd = r.slotEnd instanceof Date ? r.slotEnd : new Date(String(r.slotEnd));
+        return slotStartUTC.getTime() < rEnd.getTime() && slotEndUTC.getTime() > rStart.getTime();
+      });
+
       slots.push({
         time: formatTimeVienna(slotStartUTC),
         datetime: slotStartUTC.toISOString(),
-        available: !isInPast && !overlapsExisting,
+        available: !isInPast && !overlapsExisting && !blockedByReservation,
       });
     }
 

@@ -20,7 +20,7 @@ interface SlotPickerProps {
   serviceId: string | null;
   clientId: string;
   selectedSlot: string | null;
-  onSlotSelect: (datetime: string, time: string) => void;
+  onSlotSelect: (datetime: string, time: string, token: string) => void;
 }
 
 export default function SlotPicker({
@@ -35,6 +35,12 @@ export default function SlotPicker({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [retryCounter, setRetryCounter] = useState(0);
+
+  // Reservation state
+  const [reservationToken, setReservationToken] = useState<string | null>(null);
+  const [reservationExpiresAt, setReservationExpiresAt] = useState<Date | null>(null);
+  const [reservationCountdownSeconds, setReservationCountdownSeconds] = useState<number>(0);
+  const [lockError, setLockError] = useState<string | null>(null);
 
   // Waiting list state
   const [showWaitingForm, setShowWaitingForm] = useState(false);
@@ -55,10 +61,11 @@ export default function SlotPicker({
     setShowWaitingForm(false);
     setWaitingSubmitted(false);
     setWaitingError(null);
-    fetch(
-      `/api/booking/slots?date=${encodeURIComponent(date)}&serviceId=${encodeURIComponent(serviceId)}&clientId=${encodeURIComponent(clientId)}`,
-      { signal: controller.signal },
-    )
+    const slotsUrl =
+      `/api/booking/slots?date=${encodeURIComponent(date)}&serviceId=${encodeURIComponent(serviceId)}&clientId=${encodeURIComponent(clientId)}` +
+      (reservationToken ? `&reservationToken=${encodeURIComponent(reservationToken)}` : "");
+
+    fetch(slotsUrl, { signal: controller.signal })
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json() as Promise<SlotsResponse>;
@@ -74,7 +81,81 @@ export default function SlotPicker({
       })
       .finally(() => setLoading(false));
     return () => controller.abort();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date, serviceId, clientId, retryCounter]);
+
+  // Countdown timer — clears at 0, refetches, shows expiry message
+  useEffect(() => {
+    if (!reservationExpiresAt) return;
+
+    const tick = () => {
+      const remaining = Math.max(
+        0,
+        Math.floor((reservationExpiresAt.getTime() - Date.now()) / 1000)
+      );
+      setReservationCountdownSeconds(remaining);
+
+      if (remaining === 0) {
+        setReservationToken(null);
+        setReservationExpiresAt(null);
+        setLockError("Rezervasyon süresi doldu. Lütfen yeniden slot seç.");
+        setRetryCounter((c) => c + 1); // refetch availability
+      }
+    };
+
+    const interval = setInterval(tick, 1000);
+    tick(); // immediate first tick
+
+    return () => clearInterval(interval); // prevent memory leak
+  }, [reservationExpiresAt]);
+
+  // Best-effort release on unmount
+  useEffect(() => {
+    return () => {
+      if (reservationToken) {
+        fetch(`/api/booking/reservations/${reservationToken}`, {
+          method: "DELETE",
+          keepalive: true, // survives page unload
+        }).catch(() => {}); // intentionally silent
+      }
+    };
+  }, [reservationToken]);
+
+  async function handleSlotSelect(slot: SlotItem) {
+    setLockError(null);
+    try {
+      const res = await fetch("/api/booking/reservations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          serviceId,
+          date,
+          time: slot.time,
+          replaceToken: reservationToken ?? undefined,
+        }),
+      });
+
+      if (res.status === 409) {
+        setLockError("Bu slot az önce doldu.");
+        setReservationToken(null);
+        setReservationExpiresAt(null);
+        setRetryCounter((c) => c + 1); // refetch availability
+        return;
+      }
+
+      if (!res.ok) {
+        setLockError("Slot rezerve edilemedi. Lütfen tekrar dene.");
+        return;
+      }
+
+      const data = await res.json() as { reservationToken: string; expiresAt: string };
+      setReservationToken(data.reservationToken);
+      setReservationExpiresAt(new Date(data.expiresAt));
+      onSlotSelect(slot.datetime, slot.time, data.reservationToken);
+    } catch {
+      setLockError("Bağlantı hatası. Lütfen tekrar dene.");
+    }
+  }
 
   const allFull =
     !loading && !error && slots.length > 0 && slots.every((s) => !s.available);
@@ -144,7 +225,7 @@ export default function SlotPicker({
             <button
               key={slot.datetime}
               type="button"
-              onClick={() => isAvailable && onSlotSelect(slot.datetime, slot.time)}
+              onClick={() => isAvailable && handleSlotSelect(slot)}
               disabled={!isAvailable}
               className="flex items-center justify-center text-sm font-medium rounded-sm relative transition-colors"
               style={{
@@ -174,6 +255,27 @@ export default function SlotPicker({
           );
         })}
       </div>
+
+      {/* Reservation countdown */}
+      {reservationToken && reservationCountdownSeconds > 0 && (
+        <p style={{ fontSize: "12px", color: "var(--color-text-muted)", marginTop: "8px" }}>
+          Slot rezerve edildi —{" "}
+          {Math.floor(reservationCountdownSeconds / 60)}:
+          {String(reservationCountdownSeconds % 60).padStart(2, "0")} kaldı
+        </p>
+      )}
+      {lockError && (
+        <p style={{
+          fontSize: "13px",
+          color: "var(--color-text)",
+          padding: "8px",
+          marginTop: "8px",
+          border: "1px solid var(--color-accent)",
+          borderRadius: "6px",
+        }}>
+          ⚠ {lockError}
+        </p>
+      )}
 
       {/* Waiting list UI — only shown when all slots are full */}
       {allFull && !waitingSubmitted && (

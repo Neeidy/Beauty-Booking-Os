@@ -48,6 +48,13 @@ export const jobStatusEnum = pgEnum("job_status", [
   "cancelled",
 ]);
 
+export const reservationStatusEnum = pgEnum("reservation_status", [
+  "active",
+  "submitted",
+  "released",
+  "expired",
+]);
+
 export const packageTypeEnum = pgEnum("package_type", [
   "starter",
   "growth",
@@ -173,7 +180,24 @@ export const automationJobs = pgTable("automation_jobs", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-// ── 7. Event Logs (primary debugging table) ────────────────────────────────────
+// ── 7. Slot Reservations ───────────────────────────────────────────────────────
+
+export const slotReservations = pgTable("slot_reservations", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  clientId: uuid("client_id").notNull().references(() => clients.id),
+  serviceId: uuid("service_id").notNull().references(() => services.id),
+  reservationToken: text("reservation_token").notNull().unique(),
+  slotStart: timestamp("slot_start", { withTimezone: true }).notNull(),
+  slotEnd: timestamp("slot_end", { withTimezone: true }).notNull(),
+  status: reservationStatusEnum("status").notNull().default("active"),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  submittedAt: timestamp("submitted_at", { withTimezone: true }),
+  releasedAt: timestamp("released_at", { withTimezone: true }),
+  leadId: uuid("lead_id").references(() => leads.id),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+// ── 8. Event Logs (primary debugging table) ────────────────────────────────────
 
 export const eventLogs = pgTable("event_logs", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -229,3 +253,5 @@ export type EventLog = typeof eventLogs.$inferSelect;
 export type NewEventLog = typeof eventLogs.$inferInsert;
 export type GdprConsent = typeof gdprConsents.$inferSelect;
 export type NewGdprConsent = typeof gdprConsents.$inferInsert;
+export type SlotReservation = typeof slotReservations.$inferSelect;
+export type NewSlotReservation = typeof slotReservations.$inferInsert;

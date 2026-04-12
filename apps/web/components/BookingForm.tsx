@@ -33,6 +33,7 @@ export default function BookingForm() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedSlotDatetime, setSelectedSlotDatetime] = useState<string | null>(null);
   const [selectedSlotTime, setSelectedSlotTime] = useState<string | null>(null);
+  const [reservationToken, setReservationToken] = useState<string | null>(null);
   const [staffList, setStaffList] = useState<PublicStaffMember[]>([]);
   const [staffLoadError, setStaffLoadError] = useState(false);
   const [selectedStaffId, setSelectedStaffId] = useState<string>("");
@@ -92,6 +93,13 @@ export default function BookingForm() {
       return;
     }
 
+    // Valid reservation token required when a slot is selected
+    if (selectedSlotDatetime && !reservationToken) {
+      setSubmitError("Lütfen geçerli bir slot seçin.");
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       // Build the lead payload
       const gdprConsents = [
@@ -133,7 +141,7 @@ export default function BookingForm() {
       }
       if (data.notes) messageParts.push(`Notiz: ${data.notes}`);
 
-      const response = await fetch("/api/lead", {
+      const response = await fetch("/api/booking/submit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -149,6 +157,7 @@ export default function BookingForm() {
           language: "de",
           gdprConsents,
           notes: notesValue || undefined,
+          reservationToken: reservationToken ?? undefined,
           metadata: {
             serviceId: data.serviceId,
             appointmentAt: selectedSlotDatetime,
@@ -337,6 +346,7 @@ export default function BookingForm() {
                 setSelectedDate(d);
                 setSelectedSlotDatetime(null);
                 setSelectedSlotTime(null);
+                setReservationToken(null);
               }}
               disabled={!selectedServiceId}
             />
@@ -362,9 +372,10 @@ export default function BookingForm() {
               serviceId={selectedServiceId ?? null}
               clientId={DEMO_CLIENT_ID}
               selectedSlot={selectedSlotDatetime}
-              onSlotSelect={(dt, t) => {
+              onSlotSelect={(dt, t, tok) => {
                 setSelectedSlotDatetime(dt);
                 setSelectedSlotTime(t);
+                setReservationToken(tok);
               }}
             />
           </div>

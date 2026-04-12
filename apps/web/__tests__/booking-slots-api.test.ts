@@ -11,23 +11,36 @@ const mocks = vi.hoisted(() => {
   // Bookings chain: select().from(bookings).where()  ← directly awaitable
   const mockBookingWhere = vi.fn().mockResolvedValue([]);
 
-  // Route by table: services has "serviceName", bookings do not
+  // Reservations chain: select().from(slotReservations).where()  ← directly awaitable
+  const mockReservationWhere = vi.fn().mockResolvedValue([]);
+
+  // Route by table: services has "serviceName", slotReservations has "slotStart", bookings else
   const mockFrom = vi.fn().mockImplementation((table: Record<string, unknown>) => {
     if ("serviceName" in table) {
       return { where: mockServiceWhere };
+    }
+    if ("slotStart" in table) {
+      return { where: mockReservationWhere };
     }
     return { where: mockBookingWhere };
   });
 
   const mockSelect = vi.fn().mockReturnValue({ from: mockFrom });
 
+  // Update chain for expireStaleSlotReservations: update().set().where()
+  const mockUpdateWhere = vi.fn().mockResolvedValue({ rowCount: 0 });
+  const mockUpdateSet = vi.fn().mockReturnValue({ where: mockUpdateWhere });
+  const mockUpdate = vi.fn().mockReturnValue({ set: mockUpdateSet });
+
   return {
     mockServiceLimit,
     mockServiceWhere,
     mockBookingWhere,
+    mockReservationWhere,
     mockFrom,
     mockSelect,
-    mockDb: { select: mockSelect },
+    mockUpdate,
+    mockDb: { select: mockSelect, update: mockUpdate },
   };
 });
 
@@ -39,6 +52,9 @@ vi.mock("@beauty-booking/db", () => ({
   },
   services: {
     id: {}, serviceName: {}, durationMinutes: {},
+  },
+  slotReservations: {
+    slotStart: {}, slotEnd: {}, reservationToken: {}, status: {}, expiresAt: {}, clientId: {},
   },
 }));
 
