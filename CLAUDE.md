@@ -5,9 +5,9 @@
 
 ## SYSTEM STATUS
 
-- **Tests:** 290/290 passing (V2-11 complete — test count unchanged, no new unit tests this sprint per policy)
+- **Tests:** 306/306 passing (V2-13 complete)
 - **Sprints 1–8:** Production ready (213 tests at launch)
-- **V2 Sprints:** V2-1 ✅ V2-2 ✅ V2-3 ✅ V2-4 ✅ V2-5 ✅ V2-6 ✅ V2-7 ✅ V2-8 ✅ V2-9 ✅ V2-10 ✅ V2-11 ✅
+- **V2 Sprints:** V2-1 ✅ V2-2 ✅ V2-3 ✅ V2-4 ✅ V2-5 ✅ V2-6 ✅ V2-7 ✅ V2-8 ✅ V2-9 ✅ V2-10 ✅ V2-11 ✅ V2-12 ✅ V2-13 ✅
 - **Next:** V2 series complete
 - **packages/db:** schema.ts updated for V2-11 (slot_reservations table). FROZEN again.
 - **DB schema:** Migration 003_slot_reservations.sql applied — slot_reservations table live
@@ -262,6 +262,8 @@ booked | lost | spam
 | V2-9 | Google Reviews Automation | ✅ DONE | 282/282 |
 | V2-10 | Rebooking Hatırlatması | ✅ DONE | 290/290 |
 | V2-11 | Slot Reservation + Locking | ✅ DONE | 290/290 (test count unchanged per sprint policy) |
+| V2-12 | Admin Settings Edit | ✅ DONE | 298/298 |
+| V2-13 | Staff CRUD + Hizmet Bağlantısı | ✅ DONE | 306/306 |
 
 ---
 
@@ -355,6 +357,34 @@ booked | lost | spam
 - Test count: 290/290 (unchanged — sprint policy deferred new unit tests to end-of-system validation)
 - note: 003_slot_reservations.sql applied manually to Supabase (Drizzle-kit generate not used for this migration — raw SQL path)
 - note: migration file location confirmed at packages/db/migrations/003_slot_reservations.sql (drizzle.config.ts out: "./migrations")
+
+---
+
+## V2-12: Admin Settings Edit — COMPLETED
+- feat: GET/PATCH /api/admin/services — list + price/active/description/sortOrder update (clientId ownership check)
+- feat: GET/PATCH /api/admin/config — configSnapshot pattern; operatingHours, bookingRules, closedDates
+- feat: GET /api/booking/slots — DB-first configSnapshot read (operatingHours + closedDates override file config)
+- feat: /admin/settings → SettingsView client component (4 sections: Leistungen, Öffnungszeiten, Geschlossene Tage, Buchungsregeln)
+- feat: Team section intentionally excluded (managed via /admin/staff)
+- test: 298/298 (+8 — services GET/PATCH, config GET/PATCH coverage)
+- durationMinutes and category excluded from ServicePatchSchema — affect slot calculations
+- packages değişikliği YOK, schema değişikliği YOK
+
+---
+
+## V2-13: Staff CRUD + Hizmet Bağlantısı — COMPLETED
+- feat: GET/POST/PATCH/DELETE /api/admin/staff — full CRUD, configSnapshot'a yazar
+- feat: GET /api/public/staff — DB-first, staff.json fallback, serviceIds dahil (active field gizlendi)
+- feat: /admin/staff → StaffManagementView client component
+  ekle/düzenle/sil/aktif-pasif toggle, hizmet bağlantısı checkbox
+- feat: BookingForm servis bazlı staff filtresi (serviceIds boşsa veya hiç eşleşme yoksa tüm staff)
+- feat: Staff id: crypto.randomUUID() ile üretilir
+- feat: StaffMember interface: +serviceIds?: string[]
+- test: 306/306 (+8 — GET/POST/PATCH/DELETE coverage)
+- configSnapshot.staff pattern (V2-12'den) kullanıldı
+- /api/lead contract değişmedi, submit payload değişmedi
+- packages değişikliği YOK, schema değişikliği YOK
+- Deviation: GET 401 test removed (sprint doc had 9 tests, target was +8)
 
 ---
 
