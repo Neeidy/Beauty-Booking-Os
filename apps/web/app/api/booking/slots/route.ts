@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { getDb, bookings, services, slotReservations } from "@beauty-booking/db";
+import { getDb, bookings, services, clients, slotReservations } from "@beauty-booking/db";
 import { eq, and, gte, lte, inArray } from "drizzle-orm";
 import { expireStaleSlotReservations } from "@/lib/slot-reservations";
 import {
@@ -93,12 +93,33 @@ export async function GET(request: NextRequest) {
     let closeMinute = 0;
     let isDayClosed = false;
 
+    // DB-first config: read configSnapshot, fall back to file config
+    let dbConfig: Record<string, unknown> = {};
+    try {
+      const dbForConfig = getDb();
+      const clientRow = await dbForConfig
+        .select({ configSnapshot: clients.configSnapshot })
+        .from(clients)
+        .where(eq(clients.id, CLIENT_ID))
+        .limit(1);
+      dbConfig = (clientRow[0]?.configSnapshot as Record<string, unknown>) ?? {};
+    } catch {
+      // DB read failed — file config fallback continues below
+    }
+
     try {
       const cfg = loadClientConfig(); // SYNC — no await
       if (cfg?.bookingRules?.minAdvanceBookingHours != null) {
         minAdvanceHours = cfg.bookingRules.minAdvanceBookingHours;
       }
-      const dayConfig = cfg.operatingHours?.[jsWeekday];
+      // DB operatingHours overrides file config when present
+      const operatingHours =
+        (dbConfig.operatingHours as Record<string, unknown> | undefined) ??
+        cfg.operatingHours;
+      const dayConfig = operatingHours?.[jsWeekday] as
+        | { open: string; close: string }
+        | null
+        | undefined;
       if (dayConfig === null || dayConfig === undefined) {
         isDayClosed = true;
       } else if (dayConfig.open && dayConfig.close) {
@@ -114,6 +135,12 @@ export async function GET(request: NextRequest) {
         "[slots] Failed to load config, using fallback 09:00–18:00",
         err,
       );
+    }
+
+    // closedDates from DB — if date is in list, mark day closed
+    const closedDates = (dbConfig.closedDates as string[]) ?? [];
+    if (closedDates.includes(date)) {
+      isDayClosed = true;
     }
 
     // Closed day — return early with empty slots
