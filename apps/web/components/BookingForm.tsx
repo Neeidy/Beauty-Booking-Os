@@ -11,6 +11,7 @@ interface PublicStaffMember {
   id: string;
   name: string;
   title: string;
+  serviceIds?: string[];
 }
 import DatePicker from "./DatePicker";
 import SlotPicker from "./SlotPicker";
@@ -382,44 +383,53 @@ export default function BookingForm() {
         )}
 
         {/* Staff preference dropdown — only shown if staff loaded successfully */}
-        {!staffLoadError && staffList.length > 0 && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-            <label
-              style={{
-                fontSize: "13px",
-                color: "var(--color-text-muted)",
-                fontWeight: 500,
-              }}
-            >
-              Wunsch-Mitarbeiter{" "}
-              <span style={{ fontWeight: 400, color: "var(--color-text-muted)" }}>
-                (optional)
-              </span>
-            </label>
-            <select
-              value={selectedStaffId}
-              onChange={(e) => setSelectedStaffId(e.target.value)}
-              style={{
-                border: "1px solid var(--color-accent)",
-                borderRadius: "6px",
-                padding: "10px 12px",
-                fontSize: "14px",
-                color: "var(--color-text)",
-                background: "var(--color-background)",
-                width: "100%",
-                minHeight: "44px",
-                cursor: "pointer",
-              }}
-            >
-              <option value="">Keine Vorauswahl</option>
-              {staffList.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name} — {s.title}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
+        {!staffLoadError && staffList.length > 0 && (() => {
+          // Filter staff by selected service — show all if no match (fallback)
+          const filtered = staffList.filter(s => {
+            if (!s.serviceIds || s.serviceIds.length === 0) return true;
+            if (!selectedServiceId) return true;
+            return s.serviceIds.includes(selectedServiceId);
+          });
+          const filteredStaff = filtered.length > 0 ? filtered : staffList;
+          return (
+            <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+              <label
+                style={{
+                  fontSize: "13px",
+                  color: "var(--color-text-muted)",
+                  fontWeight: 500,
+                }}
+              >
+                Wunsch-Mitarbeiter{" "}
+                <span style={{ fontWeight: 400, color: "var(--color-text-muted)" }}>
+                  (optional)
+                </span>
+              </label>
+              <select
+                value={selectedStaffId}
+                onChange={(e) => setSelectedStaffId(e.target.value)}
+                style={{
+                  border: "1px solid var(--color-accent)",
+                  borderRadius: "6px",
+                  padding: "10px 12px",
+                  fontSize: "14px",
+                  color: "var(--color-text)",
+                  background: "var(--color-background)",
+                  width: "100%",
+                  minHeight: "44px",
+                  cursor: "pointer",
+                }}
+              >
+                <option value="">Keine Vorauswahl</option>
+                {filteredStaff.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name} — {s.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+          );
+        })()}
 
         {/* Notes */}
         <div>

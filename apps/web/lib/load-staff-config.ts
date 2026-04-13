@@ -7,6 +7,7 @@ export interface StaffMember {
   name: string;
   title: string;
   active: boolean;
+  serviceIds?: string[];
 }
 
 interface StaffConfig {
