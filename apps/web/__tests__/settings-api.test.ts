@@ -107,14 +107,14 @@ describe("GET /api/admin/config", () => {
   it("merges DB configSnapshot with file config", async () => {
     vi.mocked(getDb).mockReturnValue({
       select: vi.fn().mockReturnValue(makeChain([
-        { configSnapshot: { staff: [{ id: "s1", name: "Anna", title: "Nail", active: true }] } },
+        { configSnapshot: { operatingHours: { monday: { open: "0900", close: "1800" } } } },
       ])),
     } as any);
     const res = await GET_CONFIG(new Request("http://localhost/api/admin/config") as any);
     const body = await res.json();
     expect(res.status).toBe(200);
-    expect(body.config.staff).toHaveLength(1);
-    expect(body.config.staff[0].name).toBe("Anna");
+    expect(body.config.operatingHours).toBeDefined();
+    expect(body.config.operatingHours.monday.open).toBe("0900");
   });
 });
 

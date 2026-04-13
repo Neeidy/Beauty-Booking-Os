@@ -11,13 +11,6 @@ import { logRequest, logError } from "@/lib/logger";
 const CLIENT_ID =
   process.env.DEMO_CLIENT_ID ?? "00000000-0000-0000-0000-000000000000";
 
-const StaffMemberSchema = z.object({
-  id: z.string(),
-  name: z.string().min(1).max(100),
-  title: z.string().min(1).max(100),
-  active: z.boolean(),
-});
-
 const DayHoursSchema = z
   .object({ open: z.string().regex(/^\d{4}$/), close: z.string().regex(/^\d{4}$/) })
   .nullable();
@@ -40,7 +33,6 @@ const BookingRulesSchema = z.object({
 });
 
 const ConfigPatchSchema = z.object({
-  staff: z.array(StaffMemberSchema).optional(),
   operatingHours: OperatingHoursSchema.optional(),
   bookingRules: BookingRulesSchema.optional(),
   closedDates: z.array(z.string().regex(/^\d{4}-\d{2}-\d{2}$/)).optional(),
@@ -71,7 +63,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const snapshot = (clientRow[0]?.configSnapshot as Record<string, unknown>) ?? {};
 
     const merged = {
-      staff: snapshot.staff ?? fileConfig.staff ?? [],
       operatingHours: snapshot.operatingHours ?? fileConfig.operatingHours ?? {},
       bookingRules: snapshot.bookingRules ?? fileConfig.bookingRules ?? {},
       closedDates: (snapshot.closedDates as string[]) ?? [],

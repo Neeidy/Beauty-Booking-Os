@@ -15,13 +15,6 @@ interface ServiceRow {
   sortOrder: number;
 }
 
-interface StaffMember {
-  id: string;
-  name: string;
-  title: string;
-  active: boolean;
-}
-
 interface DayHours {
   open: string;
   close: string;
@@ -45,7 +38,6 @@ interface BookingRules {
 }
 
 interface AdminConfig {
-  staff: StaffMember[];
   operatingHours: OperatingHours;
   bookingRules: BookingRules;
   closedDates: string[];
@@ -206,57 +198,7 @@ export default function SettingsView() {
         </table>
       </Section>
 
-      {/* ── Section 2: Team ── */}
-      <Section title="Team">
-        <div style={{ display: "grid", gap: "0.75rem" }}>
-          {(editedConfig.staff ?? []).map((member, idx) => (
-            <div key={member.id} style={{
-              display: "grid", gridTemplateColumns: "1fr 1fr auto auto",
-              gap: "0.5rem", alignItems: "center",
-              padding: "10px", border: "1px solid var(--color-accent)", borderRadius: "6px",
-            }}>
-              <input
-                value={member.name}
-                onChange={e => {
-                  const next = [...editedConfig.staff];
-                  next[idx] = { ...next[idx]!, name: e.target.value };
-                  setEditedConfig({ ...editedConfig, staff: next });
-                }}
-                style={inputStyle}
-                placeholder="Name"
-              />
-              <input
-                value={member.title}
-                onChange={e => {
-                  const next = [...editedConfig.staff];
-                  next[idx] = { ...next[idx]!, title: e.target.value };
-                  setEditedConfig({ ...editedConfig, staff: next });
-                }}
-                style={inputStyle}
-                placeholder="Titel"
-              />
-              <label style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "13px" }}>
-                <input
-                  type="checkbox"
-                  checked={member.active}
-                  onChange={e => {
-                    const next = [...editedConfig.staff];
-                    next[idx] = { ...next[idx]!, active: e.target.checked };
-                    setEditedConfig({ ...editedConfig, staff: next });
-                  }}
-                />
-                Aktiv
-              </label>
-            </div>
-          ))}
-        </div>
-        <SaveButton
-          onClick={() => handleConfigSave("staff")}
-          isSaving={savingConfig === "staff"}
-        />
-      </Section>
-
-      {/* ── Section 3: Öffnungszeiten ── */}
+      {/* ── Section 2: Öffnungszeiten ── */}
       <Section title="Öffnungszeiten">
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
