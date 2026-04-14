@@ -13,8 +13,9 @@ export function getDb() {
   }
 
   const client = postgres(databaseUrl, {
-    max: 10,
-    idle_timeout: 30,
+    prepare: false,      // ← YENİ: Transaction pooler için zorunlu
+    max: 1,              // ← DEĞİŞTİ: Serverless'ta her function kendi connection'ını açar, 10 değil 1
+    idle_timeout: 20,
     connect_timeout: 10,
   });
 
