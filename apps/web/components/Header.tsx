@@ -5,68 +5,54 @@ export default function Header() {
   const config = loadClientConfig();
 
   return (
-    <header
-      className="sticky top-0 z-50 border-b"
-      style={{
-        backgroundColor: "var(--color-background)",
-        borderColor: "var(--color-accent)",
-      }}
-    >
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          {/* Logo / Salon Name */}
-          <Link href="/" className="flex items-center gap-2">
-            <span
-              className="text-xl font-heading font-semibold tracking-wide"
-              style={{ color: "var(--color-primary)" }}
-            >
-              {config.clientName}
-            </span>
-          </Link>
+    <nav className="sticky top-0 w-full h-[72px] z-50 bg-white/80 backdrop-blur-xl border-b border-gray-200">
+      <div className="flex justify-between items-center px-8 max-w-7xl mx-auto h-full">
+        {/* Logo */}
+        <Link
+          href="/"
+          className="text-xl font-bold text-slate-900 tracking-tighter font-headline hover:opacity-90 transition-opacity"
+        >
+          <span className="text-vgs-primary mr-1">◆</span>
+          {config.clientName}
+        </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
-            <a
-              href="#hizmetler"
-              className="text-sm font-medium transition-colors hover:opacity-70"
-              style={{ color: "var(--color-text-muted)" }}
-            >
-              Leistungen
-            </a>
-            <a
-              href="#kontakt"
-              className="text-sm font-medium transition-colors hover:opacity-70"
-              style={{ color: "var(--color-text-muted)" }}
-            >
-              Kontakt
-            </a>
-            <Link
-              href="/booking"
-              className="rounded-sm px-5 py-2 text-sm font-medium transition-opacity hover:opacity-90"
-              style={{
-                backgroundColor: "var(--color-secondary)",
-                color: "var(--color-background)",
-              }}
-            >
-              Jetzt Termin buchen
-            </Link>
-          </nav>
-
-          {/* Mobile: CTA only */}
-          <div className="md:hidden">
-            <Link
-              href="/booking"
-              className="rounded-sm px-4 py-2 text-sm font-medium"
-              style={{
-                backgroundColor: "var(--color-secondary)",
-                color: "var(--color-background)",
-              }}
-            >
-              Termin buchen
-            </Link>
-          </div>
+        {/* Desktop nav links */}
+        <div className="hidden md:flex gap-8 items-center font-headline tracking-tight">
+          <a
+            href="#hizmetler"
+            className="text-slate-900 font-semibold border-b-2 border-tertiary pb-1"
+          >
+            Leistungen
+          </a>
+          <a
+            href="#galerie"
+            className="text-slate-500 hover:text-slate-900 transition-colors"
+          >
+            Galerie
+          </a>
+          <a
+            href="#team"
+            className="text-slate-500 hover:text-slate-900 transition-colors"
+          >
+            Team
+          </a>
+          <a
+            href="#kontakt"
+            className="text-slate-500 hover:text-slate-900 transition-colors"
+          >
+            Kontakt
+          </a>
         </div>
+
+        {/* CTA */}
+        <Link
+          href="/booking"
+          className="px-6 py-2 rounded-full font-headline font-medium text-white hover:opacity-90 transition-opacity active:scale-95 duration-200"
+          style={{ backgroundColor: "#037AFF" }}
+        >
+          Jetzt buchen
+        </Link>
       </div>
-    </header>
+    </nav>
   );
 }
