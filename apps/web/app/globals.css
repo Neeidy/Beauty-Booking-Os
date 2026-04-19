@@ -13,3 +13,29 @@ html {
 html {
   scroll-behavior: smooth;
 }
+
+/* ── Stitch / MD3 font variables ─────────────────────────────────────────── */
+:root {
+  --font-headline: 'Plus Jakarta Sans', sans-serif;
+  --font-body-inter: 'Inter', sans-serif;
+}
+
+.font-headline, h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-headline);
+}
+
+/* Material Symbols utility */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: inherit;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+}
