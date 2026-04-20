@@ -41,24 +41,24 @@ const elegantNailsTokens: BrandTokens = {
 };
 
 describe("brandingToCss", () => {
-  it("happy path — demo-salon tokens produce all six --color-* lines with correct values", () => {
+  it("happy path — demo-salon tokens produce all six --brand-* lines with correct values", () => {
     const css = brandingToCss(demoSalonTokens);
-    expect(css).toContain("--color-primary: #2D2926;");
-    expect(css).toContain("--color-secondary: #C9A96E;");
-    expect(css).toContain("--color-accent: #E8DDD0;");
-    expect(css).toContain("--color-background: #FAFAF8;");
-    expect(css).toContain("--color-text: #2D2926;");
-    expect(css).toContain("--color-text-muted: #6B6460;");
+    expect(css).toContain("--brand-primary: #2D2926;");
+    expect(css).toContain("--brand-secondary: #C9A96E;");
+    expect(css).toContain("--brand-accent: #E8DDD0;");
+    expect(css).toContain("--brand-background: #FAFAF8;");
+    expect(css).toContain("--brand-text: #2D2926;");
+    expect(css).toContain("--brand-text-muted: #6B6460;");
   });
 
   it("happy path — elegant-nails tokens reflect navy/red palette, not demo-salon values", () => {
     const css = brandingToCss(elegantNailsTokens);
-    expect(css).toContain("--color-primary: #1A1A2E;");
-    expect(css).toContain("--color-secondary: #E94560;");
-    expect(css).toContain("--color-accent: #F5E6E8;");
-    expect(css).toContain("--color-background: #FAFAFA;");
-    expect(css).toContain("--color-text: #1A1A2E;");
-    expect(css).toContain("--color-text-muted: #5A5A72;");
+    expect(css).toContain("--brand-primary: #1A1A2E;");
+    expect(css).toContain("--brand-secondary: #E94560;");
+    expect(css).toContain("--brand-accent: #F5E6E8;");
+    expect(css).toContain("--brand-background: #FAFAFA;");
+    expect(css).toContain("--brand-text: #1A1A2E;");
+    expect(css).toContain("--brand-text-muted: #5A5A72;");
     // Must NOT contain demo-salon primary
     expect(css).not.toContain("#2D2926");
   });
@@ -77,7 +77,7 @@ describe("brandingToCss", () => {
         primary: undefined as unknown as string,
       },
     };
-    expect(() => brandingToCss(badTokens)).toThrow(/--color-primary/);
+    expect(() => brandingToCss(badTokens)).toThrow(/--brand-primary/);
   });
 
   it("non-string color throws a descriptive error", () => {
@@ -88,7 +88,7 @@ describe("brandingToCss", () => {
         primary: 123 as unknown as string,
       },
     };
-    expect(() => brandingToCss(badTokens)).toThrow(/--color-primary/);
+    expect(() => brandingToCss(badTokens)).toThrow(/--brand-primary/);
   });
 
   it("output contains :root { selector", () => {

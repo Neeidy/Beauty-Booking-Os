@@ -13,12 +13,12 @@ export function brandingToCss(tokens: BrandTokens): string {
   }
 
   const entries: [string, string][] = [
-    ["--color-primary", colors.primary],
-    ["--color-secondary", colors.secondary],
-    ["--color-accent", colors.accent],
-    ["--color-background", colors.background],
-    ["--color-text", colors.text],
-    ["--color-text-muted", colors.textMuted],
+    ["--brand-primary", colors.primary],
+    ["--brand-secondary", colors.secondary],
+    ["--brand-accent", colors.accent],
+    ["--brand-background", colors.background],
+    ["--brand-text", colors.text],
+    ["--brand-text-muted", colors.textMuted],
   ];
 
   for (const [prop, value] of entries) {

@@ -116,14 +116,6 @@ html {
   --density: 1;
 }
 
-/* === TOKEN ALIASES — backward compat === */
-:root {
-  --color-background: var(--color-bg);
-  --color-surface:    var(--color-bg-surface);
-  --color-primary:    var(--color-accent);
-  --color-secondary:  var(--color-bg-surface);
-}
-
 [data-theme="dark"] {
   --color-bg: #0D1619;
   --color-bg-surface: #111827;
