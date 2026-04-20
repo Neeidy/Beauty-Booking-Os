@@ -4,18 +4,16 @@ import RebookingView from "./RebookingView";
 
 export default function AdminRebookingPage() {
   return (
-    <main style={{ padding: "2rem", maxWidth: "1200px" }}>
-      <h1
-        style={{
-          color: "var(--color-text)",
-          fontSize: "1.5rem",
-          fontWeight: 600,
-          marginBottom: "2rem",
-        }}
-      >
-        Rebooking Hatırlatmaları
-      </h1>
-      <RebookingView />
-    </main>
+    <div>
+      <header className="adm-header">
+        <div className="adm-header-title">
+          <span className="breadcrumb">Automatisierung</span>
+          <h2>Rebooking</h2>
+        </div>
+      </header>
+      <div className="adm-body">
+        <RebookingView />
+      </div>
+    </div>
   );
 }

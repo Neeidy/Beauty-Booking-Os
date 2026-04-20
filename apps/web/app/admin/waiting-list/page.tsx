@@ -1,4 +1,3 @@
-import AdminHeader from "../../../components/admin/AdminHeader";
 import WaitingListView from "./WaitingListView";
 
 export const dynamic = "force-dynamic";
@@ -41,11 +40,16 @@ export default async function WaitingListPage() {
   }
 
   return (
-    <>
-      <AdminHeader title="Warteliste" />
-      <main className="p-6" style={{ minHeight: "calc(100vh - 65px)" }}>
+    <div>
+      <header className="adm-header">
+        <div className="adm-header-title">
+          <span className="breadcrumb">Warteliste</span>
+          <h2>Warteliste</h2>
+        </div>
+      </header>
+      <div className="adm-body">
         <WaitingListView initialData={data} />
-      </main>
-    </>
+      </div>
+    </div>
   );
 }

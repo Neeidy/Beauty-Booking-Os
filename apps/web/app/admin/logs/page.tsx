@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import AdminHeader from "../../../components/admin/AdminHeader";
 import LogViewer from "../../../components/admin/LogViewer";
 
 interface EventLog {
@@ -75,8 +74,16 @@ export default function LogsPage() {
 
   return (
     <>
-      <AdminHeader title="Event Logs" />
-      <main className="p-6 space-y-4">
+      <header className="adm-header">
+        <div className="adm-header-title">
+          <span className="breadcrumb">System</span>
+          <h2>Event Logs</h2>
+        </div>
+        <div className="adm-header-actions">
+          <button onClick={fetchLogs} className="btn btn-ghost btn-sm">⟳ Aktualisieren</button>
+        </div>
+      </header>
+      <main className="adm-body">
 
         {/* Filters */}
         <div className="flex flex-wrap gap-3 items-end">
@@ -188,3 +195,5 @@ export default function LogsPage() {
     </>
   );
 }
+
+
