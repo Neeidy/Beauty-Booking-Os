@@ -3,6 +3,13 @@ import type { NextConfig } from "next";
 const ALLOWED_ORIGIN = process.env["NEXT_PUBLIC_SALON_DOMAIN"] ?? "*";
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "images.unsplash.com" },
+      { protocol: "https", hostname: "lh3.googleusercontent.com" },
+    ],
+  },
+
   // Use standalone output for Docker/cloud deployment (Vercel/Linux only)
   // output: "standalone",  // Disabled locally: Windows symlink EPERM when creating .next/standalone
 

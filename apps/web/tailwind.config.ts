@@ -25,6 +25,24 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // ── Design system CSS var tokens ───────────────────────────────────────
+        "ds-accent":        "var(--color-accent)",
+        "ds-purple":        "var(--color-purple)",
+        "ds-rose":          "var(--color-rose)",
+        "ds-emerald":       "var(--color-emerald)",
+        "ds-amber":         "var(--color-amber)",
+        "ds-cyan":          "var(--color-cyan)",
+        "ds-text":          "var(--color-text)",
+        "ds-text-secondary":"var(--color-text-secondary)",
+        "ds-text-muted":    "var(--color-text-muted)",
+        "ds-bg":            "var(--color-bg)",
+        "ds-bg-surface":    "var(--color-bg-surface)",
+        "ds-bg-card":       "var(--color-bg-card)",
+        "ds-border":        "var(--color-border)",
+        "ds-success":       "var(--color-success)",
+        "ds-warning":       "var(--color-warning)",
+        "ds-error":         "var(--color-error)",
+
         // ── Existing branding tokens (keep unchanged) ──────────────────────────
         primary: branding.colors.primary,
         secondary: branding.colors.secondary,
