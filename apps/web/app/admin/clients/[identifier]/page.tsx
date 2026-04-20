@@ -1,7 +1,6 @@
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
-import AdminHeader from "../../../../components/admin/AdminHeader";
 import ClientProfileView from "./ClientProfileView";
 import { getDb, bookings, services, leads } from "@beauty-booking/db";
 import { eq, desc, inArray, asc } from "drizzle-orm";
@@ -196,41 +195,41 @@ export default async function ClientProfilePage({
   }
 
   return (
-    <>
-      <AdminHeader title="Müşteri Profili" />
-      <main className="p-6" style={{ minHeight: "calc(100vh - 65px)" }}>
+    <div>
+      <header className="adm-header">
+        <div className="adm-header-title">
+          <span className="breadcrumb">
+            <Link href="/admin/clients" style={{ color: "inherit" }}>← Kunden</Link>
+            {data?.customer?.name ? ` / ${data.customer.name}` : ""}
+          </span>
+          <h2>{data?.customer?.name ?? "Kundenprofil"}</h2>
+        </div>
+        <div className="adm-header-actions">
+          <Link href="/admin/clients" className="btn btn-ghost btn-sm">← Zurück</Link>
+        </div>
+      </header>
+      <div className="adm-body">
         {data === null ? (
-          <div
-            className="rounded-sm border p-6 text-sm text-center space-y-3"
-            style={{ borderColor: "var(--color-accent)", color: "#dc2626" }}
-          >
-            <p>Profil yüklenemedi</p>
-            <Link
-              href="/admin/leads"
-              className="text-sm underline"
-              style={{ color: "var(--color-secondary)" }}
-            >
-              ← Müşterilere Dön
-            </Link>
+          <div style={{
+            background: "var(--color-error-soft, #fef2f2)",
+            color: "var(--color-error)",
+            border: "1px solid var(--color-error)",
+            borderRadius: "8px",
+            padding: "12px 16px",
+            fontSize: "14px",
+          }}>
+            Profil konnte nicht geladen werden.{" "}
+            <Link href="/admin/leads" style={{ color: "var(--color-accent)", fontWeight: 600 }}>← Zurück</Link>
           </div>
         ) : data.customer === null ? (
-          <div
-            className="flex flex-col items-center justify-center py-24 gap-3 text-sm"
-            style={{ color: "var(--color-text-muted)" }}
-          >
-            <p>Müşteri bulunamadı</p>
-            <Link
-              href="/admin/leads"
-              className="text-sm underline"
-              style={{ color: "var(--color-secondary)" }}
-            >
-              ← Müşterilere Dön
-            </Link>
+          <div style={{ textAlign: "center", padding: "64px 0", color: "var(--color-text-muted)", fontSize: "14px" }}>
+            Kunde nicht gefunden.{" "}
+            <Link href="/admin/leads" style={{ color: "var(--color-accent)" }}>← Zurück</Link>
           </div>
         ) : (
           <ClientProfileView data={data} />
         )}
-      </main>
-    </>
+      </div>
+    </div>
   );
 }
