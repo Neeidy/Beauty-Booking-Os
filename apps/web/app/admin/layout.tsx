@@ -31,11 +31,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const escalationCount = await getEscalationCount();
 
   return (
-    <div className="flex min-h-screen" style={{ backgroundColor: "#f4f4f2" }}>
+    <div className="admin-layout">
       <Sidebar escalationCount={escalationCount} />
-      <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
+      <main className="admin-main">
         {children}
-      </div>
+      </main>
     </div>
   );
 }
