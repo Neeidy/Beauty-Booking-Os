@@ -259,6 +259,54 @@ Never commit with failing tests.
 
 ---
 
+## GSTACK
+
+gstack is installed at `~/.claude/skills/gstack`.
+
+**Web browsing:** use `/browse` from gstack for all web browsing. Never use `mcp__claude-in-chrome__*` tools.
+
+**Note:** `./setup` requires bun (`bun.sh`) — run it once bun is installed to enable the `/browse` browser binary and `/qa` skills.
+
+**Available skills:**
+
+| Skill | Purpose |
+|---|---|
+| `/office-hours` | Product thinking — describe what you're building |
+| `/plan-ceo-review` | CEO review of a feature idea |
+| `/plan-eng-review` | Engineering review of a plan |
+| `/plan-design-review` | Design review of a plan |
+| `/plan-devex-review` | DX/ergonomics review |
+| `/design-consultation` | Design consultation session |
+| `/design-shotgun` | Rapid multi-angle design exploration |
+| `/design-html` | Generate HTML/CSS design |
+| `/design-review` | Catch AI design slop |
+| `/review` | Code review before shipping |
+| `/ship` | Ship a PR end-to-end |
+| `/land-and-deploy` | Land and deploy after merge |
+| `/canary` | Canary deploy check |
+| `/benchmark` | Benchmark performance |
+| `/browse` | Web browsing (requires bun setup) |
+| `/connect-chrome` | Connect to Chrome browser |
+| `/qa` | Full QA pass on a URL |
+| `/qa-only` | QA without setup steps |
+| `/setup-browser-cookies` | Set up browser cookies |
+| `/setup-deploy` | Set up deploy pipeline |
+| `/retro` | Sprint retrospective |
+| `/investigate` | Deep investigation of a problem |
+| `/document-release` | Document a release |
+| `/codex` | Codex-style agentic task |
+| `/cso` | Security audit (OWASP + STRIDE) |
+| `/autoplan` | Auto-generate an implementation plan |
+| `/devex-review` | Developer experience review |
+| `/careful` | Extra-careful implementation mode |
+| `/freeze` | Freeze a file from AI edits |
+| `/guard` | Guard against regressions |
+| `/unfreeze` | Unfreeze a frozen file |
+| `/gstack-upgrade` | Upgrade gstack to latest |
+| `/learn` | Learn from codebase patterns |
+
+---
+
 ## SESSION END CHECKLIST
 
 Every Claude Code session must end with:
