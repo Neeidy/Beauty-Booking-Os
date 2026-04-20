@@ -42,3 +42,5 @@ NOTLAR.txt
 
 .vercel
 .env*.local
+.claude/worktrees/
+pixel-agents/
