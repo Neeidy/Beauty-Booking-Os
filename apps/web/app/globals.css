@@ -1,11 +1,12 @@
 @import "tailwindcss";
 @config "../tailwind.config.ts";
 
-/* Brand color CSS custom properties are injected at runtime by
-   apps/web/app/layout.tsx via brandingToCss(). Do not redefine them here. */
+/* Branding tokens (--brand-*) are injected at runtime by
+   apps/web/app/layout.tsx via brandingToCss(). Design tokens (--color-*) are
+   defined below and must not be overridden by branding injection. */
 
 html {
-  background-color: var(--color-background);
+  background-color: var(--color-bg);
   color: var(--color-text);
 }
 
