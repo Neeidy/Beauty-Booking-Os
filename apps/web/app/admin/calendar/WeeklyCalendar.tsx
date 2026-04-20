@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import CalendarCell from "./CalendarCell";
+import CalendarTimeIndicator from "../../../components/admin/CalendarTimeIndicator";
 
 interface CalendarBooking {
   id: string;
@@ -35,7 +35,7 @@ interface WeeklyCalendarProps {
   initialData: CalendarResponse;
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+const HOURS = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 
 function addDays(dateStr: string, days: number): string {
   const d = new Date(`${dateStr}T12:00:00Z`);
@@ -62,7 +62,19 @@ function formatDisplayDate(dateStr: string): string {
   }).format(new Date(`${dateStr}T12:00:00Z`));
 }
 
-// ── Component ─────────────────────────────────────────────────────────────────
+function getApptColor(serviceName: string | null): string {
+  const s = (serviceName ?? "").toLowerCase();
+  if (/nagel|nail|acryl|gel|pediküre|maniküre/.test(s)) return "purple";
+  if (/haar|hair|schnitt|coloration|balayage|friseur/.test(s)) return "amber";
+  if (/facial|gesicht|hydra|peeling|skin|kosmetik/.test(s)) return "emerald";
+  if (/wimpern|brauen|lash|brow|waxing|epilasyon/.test(s)) return "rose";
+  return "accent";
+}
+
+function parseTimeToMinutes(timeStr: string): { h: number; m: number } {
+  const [h, m] = timeStr.split(":").map(Number);
+  return { h: h ?? 0, m: m ?? 0 };
+}
 
 export default function WeeklyCalendar({ initialData }: WeeklyCalendarProps) {
   const [data, setData] = useState(initialData);
@@ -88,132 +100,115 @@ export default function WeeklyCalendar({ initialData }: WeeklyCalendarProps) {
   const weekEndDisplay = formatDisplayDate(data.weekEnd);
 
   return (
-    <div
-      style={{ opacity: isLoading ? 0.5 : 1, pointerEvents: isLoading ? "none" : "auto" }}
-    >
-      {/* ── Top navigation bar ─────────────────────────────────────────────── */}
-      <div className="flex items-center gap-3 mb-4 flex-wrap">
-        <button
-          onClick={() => navigateToWeek(prevWeek)}
-          className="px-3 py-1.5 text-sm rounded-sm border"
-          style={{
-            borderColor: "var(--color-accent)",
-            color: "var(--color-primary)",
-            backgroundColor: "var(--color-background)",
-          }}
-        >
-          ←
-        </button>
-
-        <span
-          className="text-sm font-medium"
-          style={{ color: "var(--color-primary)" }}
-        >
-          {weekStartDisplay} – {weekEndDisplay}
-        </span>
-
-        <button
-          onClick={() => navigateToWeek(nextWeek)}
-          className="px-3 py-1.5 text-sm rounded-sm border"
-          style={{
-            borderColor: "var(--color-accent)",
-            color: "var(--color-primary)",
-            backgroundColor: "var(--color-background)",
-          }}
-        >
-          →
-        </button>
-
-        <button
-          onClick={() => !isCurrentWeek && navigateToWeek(todayMondayStr)}
-          disabled={isCurrentWeek}
-          className="px-3 py-1.5 text-sm rounded-sm border"
-          style={{
-            borderColor: isCurrentWeek ? "var(--color-accent)" : "var(--color-secondary)",
-            color: isCurrentWeek ? "var(--color-text-muted)" : "var(--color-secondary)",
-            backgroundColor: "var(--color-background)",
-            opacity: isCurrentWeek ? 0.5 : 1,
-            cursor: isCurrentWeek ? "default" : "pointer",
-          }}
-        >
-          Heute
-        </button>
-
-        <span
-          className="text-xs ml-auto"
-          style={{ color: "var(--color-text-muted)" }}
-        >
-          {data.totalBookings} Termin{data.totalBookings !== 1 ? "e" : ""}
-        </span>
-      </div>
-
-      {/* ── Desktop: 7-column grid ─────────────────────────────────────────── */}
-      <div className="hidden md:grid md:grid-cols-7 gap-2">
-        {data.days.map((day) => {
-          const dayNumber = parseInt(day.date.slice(8), 10);
-          return (
-            <div key={day.date}>
-              {/* Column header */}
-              <div
-                className="text-center py-2 rounded-sm mb-1"
-                style={{
-                  backgroundColor: day.isToday ? "var(--color-accent)" : "transparent",
-                }}
-              >
-                <p
-                  className="text-xs"
-                  style={{ color: "var(--color-text-muted)" }}
-                >
-                  {day.dayShort}
-                </p>
-                <p
-                  className={day.isToday ? "text-base font-bold" : "text-base"}
-                  style={{ color: "var(--color-primary)" }}
-                >
-                  {dayNumber}
-                </p>
-              </div>
-              <CalendarCell day={day} />
-            </div>
-          );
-        })}
-      </div>
-
-      {/* ── Mobile: vertical stack ─────────────────────────────────────────── */}
-      <div className="flex flex-col gap-3 md:hidden">
-        {data.days.map((day) => (
-          <div
-            key={day.date}
-            className="rounded-sm border"
-            style={{
-              borderColor: "var(--color-accent)",
-              backgroundColor: day.isToday ? "var(--color-accent)" : "var(--color-background)",
-            }}
+    <div style={{ opacity: isLoading ? 0.5 : 1, pointerEvents: isLoading ? "none" : "auto" }}>
+      {/* Cal Header */}
+      <header className="cal-header">
+        <div className="cal-header-left">
+          <button
+            className="cal-ico-btn"
+            aria-label="Vorherige Woche"
+            onClick={() => navigateToWeek(prevWeek)}
           >
-            {/* Day header */}
-            <div
-              className="flex items-center justify-between px-3 py-2 border-b"
-              style={{ borderColor: "var(--color-accent)" }}
-            >
-              <span
-                className={`text-sm ${day.isToday ? "font-bold" : "font-medium"}`}
-                style={{ color: "var(--color-primary)" }}
-              >
-                {day.dayName}
-              </span>
-              <span
-                className="text-xs"
-                style={{ color: "var(--color-text-muted)" }}
-              >
-                {day.date.slice(5)}
-              </span>
-            </div>
-            {/* Bookings */}
-            <div className="p-2">
-              <CalendarCell day={day} />
-            </div>
+            ‹
+          </button>
+          <div className="cal-date-range">
+            {weekStartDisplay} – {weekEndDisplay}
           </div>
-        ))}
+          <button
+            className="cal-ico-btn"
+            aria-label="Nächste Woche"
+            onClick={() => navigateToWeek(nextWeek)}
+          >
+            ›
+          </button>
+          <button
+            className="cal-today-btn"
+            onClick={() => !isCurrentWeek && navigateToWeek(todayMondayStr)}
+            disabled={isCurrentWeek}
+          >
+            Heute
+          </button>
+        </div>
+        <div className="cal-header-right">
+          <span className="cal-count">{data.totalBookings} Termine diese Woche</span>
+        </div>
+      </header>
+
+      {/* Cal Grid */}
+      <div className="cal-scroll">
+        <div className="cal-grid">
+          {/* Day headers */}
+          <div className="cal-day-headers">
+            <div className="cal-gutter-top" />
+            {data.days.map((day) => {
+              const dayNum = parseInt(day.date.slice(8), 10);
+              return (
+                <div key={day.date} className={`cal-day-head${day.isToday ? " today" : ""}`}>
+                  {day.isToday ? (
+                    <>
+                      <div className="cal-today-pill">{dayNum}</div>
+                      <div className="cal-today-label">{day.dayShort}</div>
+                    </>
+                  ) : (
+                    <>
+                      {day.dayShort}<span>{dayNum}</span>
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Body */}
+          <div className="cal-body">
+            {/* Gutter */}
+            <div className="cal-gutter">
+              {HOURS.map((h) => (
+                <div key={h} className="cal-hour">
+                  {String(h).padStart(2, "0")}:00
+                </div>
+              ))}
+            </div>
+
+            {/* Day columns */}
+            {data.days.map((day) => (
+              <div key={day.date} className={`cal-col${day.isToday ? " today-col" : ""}`}>
+                <div className="cal-col-lines" />
+                {day.bookings.map((booking) => {
+                  const { h, m } = parseTimeToMinutes(booking.appointmentTime);
+                  const topPx = ((h - 8) * 60 + m) * (96 / 60);
+                  const heightPx = Math.max(booking.durationMinutes * (96 / 60), 32);
+                  const color = getApptColor(booking.serviceName);
+                  const isCancelled = booking.status === "cancelled" || booking.status === "no_show";
+                  const isPending = booking.status === "pending";
+
+                  return (
+                    <div
+                      key={booking.id}
+                      className={`cal-appt ${color}${isCancelled ? " cancelled" : ""}${isPending ? " pending" : ""}${day.isToday ? " today" : ""}`}
+                      style={{ top: `${topPx}px`, height: `${heightPx}px` }}
+                    >
+                      <div className="cal-appt-time">{booking.appointmentTime}</div>
+                      <div className="cal-appt-name" style={{ textDecoration: isCancelled ? "line-through" : undefined }}>
+                        {booking.customerName}
+                      </div>
+                      {booking.serviceName && (
+                        <div className="cal-appt-svc">{booking.serviceName}</div>
+                      )}
+                      <span
+                        className="cal-staff"
+                        style={{ background: `var(--color-${color === "accent" ? "accent" : color})` }}
+                      >
+                        {booking.customerName.charAt(0)}
+                      </span>
+                    </div>
+                  );
+                })}
+                {day.isToday && <CalendarTimeIndicator />}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

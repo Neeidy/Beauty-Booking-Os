@@ -1,4 +1,4 @@
-import AdminHeader from "../../../components/admin/AdminHeader";
+import Link from "next/link";
 import WeeklyCalendar from "./WeeklyCalendar";
 
 export const dynamic = "force-dynamic";
@@ -56,20 +56,27 @@ export default async function CalendarPage({
   }
 
   return (
-    <>
-      <AdminHeader title="Takvim" />
-      <main className="p-6" style={{ minHeight: "calc(100vh - 65px)" }}>
-        {data === null ? (
-          <div
-            className="rounded-sm border p-6 text-sm text-center"
-            style={{ borderColor: "var(--color-accent)", color: "#dc2626" }}
-          >
-            Takvim yüklenemedi
+    <div className="adm-body" style={{ padding: 0 }}>
+      {data === null ? (
+        <div className="adm-body" style={{ paddingTop: "32px", textAlign: "center" }}>
+          <div style={{
+            display: "inline-block",
+            background: "var(--color-error-soft, #fef2f2)",
+            color: "var(--color-error)",
+            border: "1px solid var(--color-error)",
+            borderRadius: "8px",
+            padding: "12px 24px",
+            fontSize: "14px",
+          }}>
+            Kalender konnte nicht geladen werden.{" "}
+            <Link href="/admin/calendar" style={{ color: "var(--color-accent)", fontWeight: 600 }}>
+              Erneut versuchen
+            </Link>
           </div>
-        ) : (
-          <WeeklyCalendar initialData={data} />
-        )}
-      </main>
-    </>
+        </div>
+      ) : (
+        <WeeklyCalendar initialData={data} />
+      )}
+    </div>
   );
 }
