@@ -34,120 +34,70 @@ export default function BookingCard({ booking, column, onStatusChange }: Booking
   }
 
   return (
-    <div
-      className="rounded-sm border p-3 space-y-1.5"
-      style={{
-        backgroundColor: "var(--color-background)",
-        borderColor: "var(--color-accent)",
-      }}
-    >
-      {/* Time + Duration */}
-      <div className="flex items-baseline justify-between">
-        <span
-          className="text-lg font-bold"
-          style={{ color: "var(--color-primary)" }}
-        >
-          {booking.appointmentTime}
-        </span>
-        <span className="text-xs" style={{ color: "var(--color-text-muted)" }}>
-          {booking.durationMinutes} dk
-        </span>
+    <article className="kanban-card">
+      <div className="kanban-card-top">
+        <div className="kanban-name">{booking.customerName}</div>
+        <div className="kanban-when">{booking.appointmentTime}</div>
       </div>
-
-      {/* Customer name */}
-      <p className="text-sm font-medium" style={{ color: "var(--color-primary)" }}>
-        {booking.customerName}
-      </p>
-
-      {/* Service */}
-      {booking.serviceName ? (
-        <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>
-          {booking.serviceName}
-        </p>
-      ) : (
-        <p className="text-xs italic" style={{ color: "var(--color-text-muted)" }}>
-          Hizmet belirtilmemiş
-        </p>
+      {booking.serviceName && (
+        <div className="kanban-msg">{booking.serviceName} · {booking.durationMinutes} min</div>
       )}
-
-      {/* Contact */}
-      <p
-        className="text-xs truncate"
-        style={{ color: "var(--color-text-muted)", maxWidth: "100%" }}
-        title={booking.customerContact}
-      >
-        {booking.customerContact}
-      </p>
-
-      {/* Notes */}
-      {booking.notes && (
-        <p
-          className="text-xs"
-          style={{
-            color: "var(--color-text-muted)",
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-          }}
-        >
-          {booking.notes}
-        </p>
-      )}
-
-      {/* Action buttons */}
+      <div className="kanban-meta">
+        {booking.customerContact && (
+          <span className="kanban-pill">{booking.customerContact}</span>
+        )}
+        {booking.notes && (
+          <span className="kanban-pill" title={booking.notes}>
+            {booking.notes.slice(0, 30)}{booking.notes.length > 30 ? "…" : ""}
+          </span>
+        )}
+      </div>
       {column !== "completed" && (
-        <div className="flex gap-2 pt-1">
-          {column === "unconfirmed" && (
-            <>
-              <button
-                onClick={() => handleAction("confirmed")}
-                disabled={loading}
-                className="flex-1 text-xs px-2 py-1 rounded-sm font-medium disabled:opacity-40"
-                style={{ backgroundColor: "var(--color-secondary)", color: "#fff" }}
-              >
-                {loading ? "..." : "Onayla"}
-              </button>
-              <button
-                onClick={() => handleAction("cancelled")}
-                disabled={loading}
-                className="flex-1 text-xs px-2 py-1 rounded-sm font-medium disabled:opacity-40 border"
-                style={{
-                  borderColor: "var(--color-accent)",
-                  color: "var(--color-text-muted)",
-                  backgroundColor: "transparent",
-                }}
-              >
-                {loading ? "..." : "İptal"}
-              </button>
-            </>
-          )}
-          {column === "confirmed" && (
-            <>
-              <button
-                onClick={() => handleAction("completed")}
-                disabled={loading}
-                className="flex-1 text-xs px-2 py-1 rounded-sm font-medium disabled:opacity-40"
-                style={{ backgroundColor: "var(--color-secondary)", color: "#fff" }}
-              >
-                {loading ? "..." : "Tamamlandı"}
-              </button>
-              <button
-                onClick={() => handleAction("no_show")}
-                disabled={loading}
-                className="flex-1 text-xs px-2 py-1 rounded-sm font-medium disabled:opacity-40 border"
-                style={{
-                  borderColor: "var(--color-accent)",
-                  color: "var(--color-text-muted)",
-                  backgroundColor: "transparent",
-                }}
-              >
-                {loading ? "..." : "Gelmedi"}
-              </button>
-            </>
-          )}
+        <div className="kanban-card-foot">
+          <div className="kanban-act-btns">
+            {column === "unconfirmed" && (
+              <>
+                <button
+                  className="kanban-ico-btn"
+                  title="Bestätigen"
+                  disabled={loading}
+                  onClick={() => handleAction("confirmed")}
+                >
+                  ✓
+                </button>
+                <button
+                  className="kanban-ico-btn"
+                  title="Absagen"
+                  disabled={loading}
+                  onClick={() => handleAction("cancelled")}
+                >
+                  ✗
+                </button>
+              </>
+            )}
+            {column === "confirmed" && (
+              <>
+                <button
+                  className="kanban-ico-btn"
+                  title="Abgeschlossen"
+                  disabled={loading}
+                  onClick={() => handleAction("completed")}
+                >
+                  ✓
+                </button>
+                <button
+                  className="kanban-ico-btn"
+                  title="Nicht erschienen"
+                  disabled={loading}
+                  onClick={() => handleAction("no_show")}
+                >
+                  ✗
+                </button>
+              </>
+            )}
+          </div>
         </div>
       )}
-    </div>
+    </article>
   );
 }

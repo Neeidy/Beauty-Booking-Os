@@ -1,4 +1,3 @@
-import AdminHeader from "../../../components/admin/AdminHeader";
 import FrontDeskBoard from "./FrontDeskBoard";
 
 interface FrontDeskBooking {
@@ -62,20 +61,33 @@ export default async function FrontDeskPage() {
   }
 
   return (
-    <>
-      <AdminHeader title={`Front Desk — ${formattedDate}`} />
-      <main className="p-6" style={{ minHeight: "calc(100vh - 65px)" }}>
+    <div>
+      <header className="adm-header">
+        <div className="adm-header-title">
+          <span className="breadcrumb">Lead Management</span>
+          <h2>Front Desk</h2>
+        </div>
+        <div className="adm-header-actions">
+          <span style={{ fontSize: "13px", color: "var(--color-text-muted)" }}>{formattedDate}</span>
+        </div>
+      </header>
+
+      <div className="adm-body">
         {data === null ? (
-          <div
-            className="rounded-sm border p-6 text-sm text-center"
-            style={{ borderColor: "var(--color-accent)", color: "#dc2626" }}
-          >
+          <div style={{
+            background: "var(--color-error-soft, #fef2f2)",
+            color: "var(--color-error)",
+            border: "1px solid var(--color-error)",
+            borderRadius: "8px",
+            padding: "12px 16px",
+            fontSize: "14px",
+          }}>
             Daten konnten nicht geladen werden
           </div>
         ) : (
           <FrontDeskBoard initialData={data} />
         )}
-      </main>
-    </>
+      </div>
+    </div>
   );
 }
