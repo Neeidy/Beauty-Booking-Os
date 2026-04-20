@@ -8,7 +8,7 @@
 - **Tests:** 306/306 passing (V2-13 complete)
 - **Sprints 1–8:** Production ready (213 tests at launch)
 - **V2 Sprints:** V2-1 ✅ V2-2 ✅ V2-3 ✅ V2-4 ✅ V2-5 ✅ V2-6 ✅ V2-7 ✅ V2-8 ✅ V2-9 ✅ V2-10 ✅ V2-11 ✅ V2-12 ✅ V2-13 ✅
-- **Next:** V2 series complete
+- **Next:** Frontend Redesign Workstream
 - **packages/db:** schema.ts updated for V2-11 (slot_reservations table). FROZEN again.
 - **DB schema:** Migration 003_slot_reservations.sql applied — slot_reservations table live
 
@@ -17,15 +17,18 @@
 ## ACTIVE CONSTRAINTS (read before every task)
 
 ```
-packages/**           FROZEN — never touch during V2 sprints
-DB schema             NO changes, no migrations (until V2-11)
+Frontend redesign reference: docs/Beauty Os Design/ — this is the ONLY source of truth
+for all CSS classes, colors, layout, and component structure. Never invent styles.
+
+packages/**           FROZEN — never touch
+DB schema             FROZEN — slot_reservations migration applied, no further changes
 /api/lead route       DO NOT MODIFY
 /api/lead contract    top-level appointmentAt NEVER accepted — metadata only
 Status enum           no_show (underscore) — never "noshow"
 AI model              "claude-sonnet-4-20250514" — exact string, always
-CSS vars              ONLY: --color-background, --color-primary,
-                      --color-secondary, --color-accent,
-                      --color-text, --color-text-muted
+CSS vars              use tokens.css variables (--color-bg, --color-accent, --color-text etc.)
+                      — see docs/Beauty Os Design/assets/tokens.css
+                      Branding vars injected at runtime use --brand-* prefix (never --color-*)
 Timezone helpers      formatToParts + Date.UTC — toLocaleString FORBIDDEN
 dynamic export        export const dynamic = "force-dynamic" on every route
 services field        services.serviceName (not services.name — verified V2-4)
@@ -62,7 +65,7 @@ const CLIENT_ID = process.env.DEMO_CLIENT_ID ?? "00000000-0000-0000-0000-0000000
 // SYNC — no await, no async
 loadClientConfig(slug?: string): ClientConfig
 
-// SYNC — no await. On error returns []. Never throws. (V2-7'de eklenecek)
+// SYNC — no await. On error returns []. Never throws.
 getActiveStaff(): StaffMember[]   // lib/load-staff-config.ts
 
 // toDateString: m is 0-indexed (JS Date.getMonth() convention)
@@ -91,32 +94,6 @@ Config fail → fallback 09:00–18:00, never crash.
 
 ---
 
-## V2-7 STAFF CONFIG FORMAT (henüz oluşturulmadı)
-
-```json
-// clients/demo-salon/staff.json
-{
-  "staff": [
-    {
-      "id": "staff_1",
-      "name": "Anna",
-      "title": "Nageldesignerin",
-      "active": true
-    }
-  ]
-}
-```
-- DB tablosu yok — config-driven
-- `lib/load-staff-config.ts`: SYNC, hata → `[]` döner, form devam eder
-- Public endpoint: id/name/title only (no internal fields)
-- Admin endpoint: full data
-- BookingForm dropdown: fetch fail → dropdown gizlenir, form çalışmaya devam eder
-- `/api/lead` contract DEĞİŞMEZ — staff seçimi `notes` alanına yazılır:
-  `"Mitarbeiter-Wunsch: [name]"`
-- Staff slot blocking yok (DB gerektirir) — sadece preference capture
-
----
-
 ## TECH STACK
 
 | Layer | Technology |
@@ -141,29 +118,36 @@ apps/web/
     api/
       lead/route.ts              ← DO NOT MODIFY
       booking/[id]/status/       ← PATCH booking status
-      booking/slots/             ← GET public slot availability (V2-4/V2-6)
-      admin/front-desk/          ← V2-1
-      admin/waiting-list/        ← V2-5
-      admin/staff/               ← V2-7 eklenecek (auth required)
-      waiting-list/              ← V2-5 public POST
-      public/staff/              ← V2-7 eklenecek (no auth, id/name/title only)
+      booking/slots/             ← GET public slot availability
+      booking/reservations/      ← POST/DELETE slot reservation
+      booking/submit/            ← POST booking submit
+      admin/front-desk/          ← kanban
+      admin/waiting-list/        ← waiting list
+      admin/staff/               ← auth required, full CRUD
+      admin/services/            ← services list + patch
+      admin/config/              ← config snapshot patch
+      admin/rebooking/           ← rebooking job admin
+      waiting-list/              ← public POST
+      public/staff/              ← no auth, id/name/title only
     admin/
-      front-desk/                ← V2-1 kanban
-      clients/[identifier]/      ← V2-2 customer profile
-      calendar/                  ← V2-3 weekly view
-      waiting-list/              ← V2-5 admin view
-      settings/                  ← V2-6 read-only config view
-      staff/                     ← V2-7 eklenecek (team kartları)
+      front-desk/                ← kanban
+      clients/[identifier]/      ← customer profile
+      calendar/                  ← weekly view
+      waiting-list/              ← admin view
+      settings/                  ← config edit
+      staff/                     ← team management
+      rebooking/                 ← rebooking jobs
   components/
-    BookingForm.tsx              ← V2-4 complete. V2-7 adds staff dropdown.
+    BookingForm.tsx              ← slot + staff + reservation flow
     DatePicker.tsx               ← DO NOT MODIFY
-    SlotPicker.tsx               ← V2-5/V2-6 complete
+    SlotPicker.tsx               ← reservation countdown + keepalive
     admin/Sidebar.tsx
   lib/
     admin-auth.ts
     load-client-config.ts        ← SYNC, readFileSync
-    load-staff-config.ts         ← V2-7 eklenecek (SYNC, error → [])
-    vienna-helpers.ts            ← V2-6, 6 exports
+    load-staff-config.ts         ← SYNC, error → []
+    slot-reservations.ts         ← 5 helpers + TTL constants
+    vienna-helpers.ts            ← 6 exports
     booking-form-schema.ts
 
 packages/                        ← FROZEN
@@ -177,7 +161,7 @@ clients/
     client.config.json
     services.json
     branding.json
-    staff.json                   ← V2-7 eklenecek
+    staff.json
 ```
 
 ---
@@ -199,7 +183,7 @@ description, active, sortOrder, createdAt
 `metadata.waitingList: true, requestedDate, requestedServiceId,
 waitingList_notified, waitingList_registeredAt`
 
-**Staff** → V2-7'de config-only. DB tablosu yok. Preference → `bookings.notes`
+**Staff** → config-only (clients/demo-salon/staff.json + configSnapshot). DB tablosu yok. Preference → `bookings.notes`
 
 **slot_reservations:** id, clientId, serviceId, reservationToken (unique), slotStart (TIMESTAMPTZ),
 slotEnd (TIMESTAMPTZ), status (reservation_status enum), expiresAt, submittedAt, releasedAt,
@@ -261,130 +245,9 @@ booked | lost | spam
 | V2-8 | Google Business Booking | ✅ DONE | 278/278 |
 | V2-9 | Google Reviews Automation | ✅ DONE | 282/282 |
 | V2-10 | Rebooking Hatırlatması | ✅ DONE | 290/290 |
-| V2-11 | Slot Reservation + Locking | ✅ DONE | 290/290 (test count unchanged per sprint policy) |
+| V2-11 | Slot Reservation + Locking | ✅ DONE | 290/290 |
 | V2-12 | Admin Settings Edit | ✅ DONE | 298/298 |
 | V2-13 | Staff CRUD + Hizmet Bağlantısı | ✅ DONE | 306/306 |
-
----
-
-## V2-7: Staff Profilleri (Config-Driven) — COMPLETED
-- feat: clients/demo-salon/staff.json oluşturuldu (3 aktif üye)
-- feat: apps/web/lib/load-staff-config.ts — SYNC getActiveStaff() + getAllStaff()
-  getActiveStaff: active: true filtrelenmiş (public + BookingForm için)
-  getAllStaff: tüm üyeler (admin için)
-- feat: GET /api/public/staff — no auth, id/name/title only (active field gizlendi)
-- feat: GET /api/admin/staff — auth required, full data (inactive dahil)
-- feat: /admin/staff — team kartları, avatar initials, server component
-- feat: BookingForm staff dropdown — fetch fail → gizlenir, form çalışmaya devam eder
-- feat: Staff seçimi → notes: "Mitarbeiter-Wunsch: [name]" — /api/lead contract DOKUNULMADI
-- feat: Sidebar "Team" linki /admin/staff, aktif state
-- fix: load-staff-config path uses resolve(cwd, "..", "..", "clients", ...) — loadClientConfig pattern
-- test: 274/274 (+4 yeni)
-- Yapılmadı: Staff slot blocking (DB gerektirir → V2-11 veya sonrası)
-- Schema değişikliği YOK, packages değişikliği YOK
-
----
-
-## V2-8: Google Business Booking — COMPLETED
-- feat: ClientConfig type'a googleBusiness?: { profileUrl, bookingButtonText? } eklendi
-- feat: client.config.json → googleBusiness config (demo URL, 3 dil)
-- feat: CTASection.tsx'e GoogleBusinessButton eklendi (config yoksa gizlenir)
-- feat: Google link → ?source=google_business query param ile /booking'e yönlendirir
-- feat: BookingForm URL'den bookingSource detection (web_form | google_business)
-- feat: metadata.bookingSource submit payload'a eklendi — /api/lead contract DOKUNULMADI
-- fix: GoogleBusinessButton CTASection.tsx'e eklendi — (marketing)/page.tsx mevcut değildi
-- test: 278/278 (+4 yeni — config loading ve fallback testleri)
-- Schema değişikliği YOK, packages değişikliği YOK
-
----
-
-## V2-9: Google Reviews Otomasyonu — COMPLETED
-- feat: ClientConfig.googleBusiness.reviewUrl? type eklendi; profileUrl optional, bookingButtonText Record<string,string>
-- feat: client.config.json → googleBusiness.reviewUrl (demo placeholder)
-- feat: POST /api/admin/bookings/[id]/reviews — admin manuel trigger (auth required)
-  completed booking için reviewUrl döner, config yoksa 400
-- feat: POST /api/jobs/reviews — scheduler endpoint (WEBHOOK_SECRET auth, dev mode allow)
-  completed booking'ler için send_review_link job'u oluşturur
-  duplicate önleme: aynı booking için ikinci job oluşturulmaz
-- test: 282/282 (+4 yeni — admin trigger 4 case)
-- automationJobs insert: id verilmez (defaultRandom), attempts/maxAttempts explicit, duplicate idempotent
-- Schema değişikliği YOK, packages değişikliği YOK
-
----
-
-## V2-10: Rebooking Hatırlatması — COMPLETED
-- feat: ClientConfig.rebookingWeeks? (default 4, clamp 2-12)
-- feat: client.config.json → rebookingWeeks: 4
-- feat: POST /api/jobs/rebooking — WEBHOOK_SECRET auth (dev mode allow)
-  GDPR: gdprConsents tablosu (consentType="reminder_messages", granted=true, revokedAt IS NULL)
-  Job: status="scheduled", scheduledAt=now+weeks, executedAt=null
-  Duplicate önleme, no-lead skip, summary response
-- feat: GET /api/admin/rebooking — job listesi, leftJoin customerName, orderBy desc
-- feat: POST /api/admin/rebooking — admin manuel trigger (proxies to jobs route)
-- feat: /admin/rebooking — server shell + RebookingView client component
-  "Şimdi Çalıştır" button, result summary, job list with status badges
-  Tarih: Intl.DateTimeFormat Vienna timezone
-- feat: Sidebar "Rebooking" nav item (🔄 emoji, aktif state)
-- test: 290/290 (+8: auth, consent, duplicate, clamp×2, GET list, GET auth, POST auth)
-- fix: makeSelectChain thenable (then method) — handles await without .limit()
-- bookings.metadata KULLANILMADI — field yok, GDPR gdprConsents'ten
-- Schema değişikliği YOK, packages değişikliği YOK
-
----
-
-## V2-11: Slot Reservation + Locking — COMPLETED
-- feat: slot_reservations table + reservationStatusEnum + migration 003_slot_reservations.sql + RLS
-- feat: DB-level overlap protection via exclusion constraint (btree_gist — confirmed available on Supabase)
-- feat: apps/web/lib/slot-reservations.ts — 5 helpers + 2 TTL constants (ACTIVE_TTL_MINUTES=10, SUBMITTED_TTL_MINUTES=60)
-  generateReservationToken (crypto.randomUUID, edge-runtime safe), calculateReservationWindow,
-  createReservationExpiry, extendSubmittedExpiry, expireStaleSlotReservations
-- feat: POST /api/booking/reservations — service verify, Vienna→UTC, expiry, replaceToken release,
-  booking conflict check, reservation conflict check, insert with DB constraint catch → 409
-- feat: DELETE /api/booking/reservations/[token] — idempotent, always 200, sets releasedAt
-- feat: POST /api/booking/submit — reservation validation (status/expiry/serviceId/slotStart match),
-  forwards to /api/lead via internal fetch, transitions to submitted + extended expiry
-- feat: GET /api/booking/slots — expireStaleSlotReservations on each call, queries active/submitted
-  reservations, ?reservationToken ignore-own-lock, blockedByReservation in slot loop
-- feat: SlotPicker — handleSlotSelect (POST reservation on click), countdown useEffect (clearInterval cleanup),
-  keepalive DELETE on unmount, reservationToken passed to parent via onSlotSelect(dt, t, token)
-- feat: BookingForm — reservationToken state, submit guard (slot without token → error),
-  submit endpoint changed to /api/booking/submit, reservationToken in body, date change clears token
-- /api/lead untouched
-- DB exception applied: packages/db/src/schema.ts + migration (only schema touch in V2 series)
-- bookingFormSchema cannot be .extend()ed (ZodEffects from .refine()) — submit route uses z.passthrough() validation
-- Deviation: expireStaleSlotReservations called before transaction (not inside) to avoid Drizzle tx type mismatch
-- fix: booking-slots-api.test.ts mock updated — added slotReservations export + update chain to mockDb
-- Test count: 290/290 (unchanged — sprint policy deferred new unit tests to end-of-system validation)
-- note: 003_slot_reservations.sql applied manually to Supabase (Drizzle-kit generate not used for this migration — raw SQL path)
-- note: migration file location confirmed at packages/db/migrations/003_slot_reservations.sql (drizzle.config.ts out: "./migrations")
-
----
-
-## V2-12: Admin Settings Edit — COMPLETED
-- feat: GET/PATCH /api/admin/services — list + price/active/description/sortOrder update (clientId ownership check)
-- feat: GET/PATCH /api/admin/config — configSnapshot pattern; operatingHours, bookingRules, closedDates
-- feat: GET /api/booking/slots — DB-first configSnapshot read (operatingHours + closedDates override file config)
-- feat: /admin/settings → SettingsView client component (4 sections: Leistungen, Öffnungszeiten, Geschlossene Tage, Buchungsregeln)
-- feat: Team section intentionally excluded (managed via /admin/staff)
-- test: 298/298 (+8 — services GET/PATCH, config GET/PATCH coverage)
-- durationMinutes and category excluded from ServicePatchSchema — affect slot calculations
-- packages değişikliği YOK, schema değişikliği YOK
-
----
-
-## V2-13: Staff CRUD + Hizmet Bağlantısı — COMPLETED
-- feat: GET/POST/PATCH/DELETE /api/admin/staff — full CRUD, configSnapshot'a yazar
-- feat: GET /api/public/staff — DB-first, staff.json fallback, serviceIds dahil (active field gizlendi)
-- feat: /admin/staff → StaffManagementView client component
-  ekle/düzenle/sil/aktif-pasif toggle, hizmet bağlantısı checkbox
-- feat: BookingForm servis bazlı staff filtresi (serviceIds boşsa veya hiç eşleşme yoksa tüm staff)
-- feat: Staff id: crypto.randomUUID() ile üretilir
-- feat: StaffMember interface: +serviceIds?: string[]
-- test: 306/306 (+8 — GET/POST/PATCH/DELETE coverage)
-- configSnapshot.staff pattern (V2-12'den) kullanıldı
-- /api/lead contract değişmedi, submit payload değişmedi
-- packages değişikliği YOK, schema değişikliği YOK
-- Deviation: GET 401 test removed (sprint doc had 9 tests, target was +8)
 
 ---
 
