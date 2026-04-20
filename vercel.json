@@ -1,8 +1,7 @@
 {
-  "buildCommand": "pnpm --filter @beauty-booking/web build",
+  "buildCommand": "pnpm --filter @beauty/web build",
   "outputDirectory": "apps/web/.next",
   "installCommand": "pnpm install --frozen-lockfile",
-  "framework": "nextjs",
   "crons": [
     {
       "path": "/api/jobs/reminders/run",

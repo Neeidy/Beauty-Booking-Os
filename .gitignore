@@ -39,3 +39,6 @@ coverage/
 
 # Local developer notes (may contain sensitive info)
 NOTLAR.txt
+
+.vercel
+.env*.local
