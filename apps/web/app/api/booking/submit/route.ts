@@ -128,7 +128,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     // Step 5 — Forward to /api/lead
-    const origin = request.nextUrl.origin;
+    // Prefer NEXT_PUBLIC_APP_URL (set in Vercel env) over request.nextUrl.origin
+    // to avoid internal hostname resolution issues in serverless environments.
+    const origin = process.env["NEXT_PUBLIC_APP_URL"] ?? request.nextUrl.origin;
     let leadRes: Response;
     try {
       leadRes = await fetch(`${origin}/api/lead`, {

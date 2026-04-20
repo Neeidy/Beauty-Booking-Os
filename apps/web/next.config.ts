@@ -57,18 +57,18 @@ const nextConfig: NextConfig = {
               ? [
                   "default-src 'self'",
                   "script-src 'self' 'unsafe-inline'",
-                  "style-src 'self' 'unsafe-inline'",
+                  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
                   "img-src 'self' data: https:",
-                  "font-src 'self' data:",
+                  "font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com",
                   "connect-src 'self'",
                   "frame-ancestors 'none'",
                 ].join("; ")
               : [
                   "default-src 'self'",
                   "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // unsafe-eval needed for Next.js HMR in dev
-                  "style-src 'self' 'unsafe-inline'",
+                  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
                   "img-src 'self' data: https:",
-                  "font-src 'self' data:",
+                  "font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com",
                   "connect-src 'self' ws: wss:", // ws needed for HMR websocket
                   "frame-ancestors 'none'",
                 ].join("; "),
