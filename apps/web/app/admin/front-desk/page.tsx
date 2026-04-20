@@ -61,7 +61,7 @@ export default async function FrontDeskPage() {
   }
 
   return (
-    <div>
+    <>
       <header className="adm-header">
         <div className="adm-header-title">
           <span className="breadcrumb">Lead Management</span>
@@ -88,6 +88,6 @@ export default async function FrontDeskPage() {
           <FrontDeskBoard initialData={data} />
         )}
       </div>
-    </div>
+    </>
   );
 }

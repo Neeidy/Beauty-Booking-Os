@@ -57,7 +57,7 @@ export default function RootLayout({
         />
         <style dangerouslySetInnerHTML={{ __html: brandCss }} />
       </head>
-      <body className="font-sans antialiased" style={{ backgroundColor: "var(--color-background)" }}>
+      <body className="font-sans antialiased" style={{ backgroundColor: "var(--color-bg)" }}>
         {children}
       </body>
     </html>

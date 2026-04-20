@@ -4,7 +4,7 @@ import SettingsView from "./SettingsView";
 
 export default function SettingsPage() {
   return (
-    <div>
+    <>
       <header className="adm-header">
         <div className="adm-header-title">
           <span className="breadcrumb">System</span>
@@ -14,6 +14,6 @@ export default function SettingsPage() {
       <div className="adm-body">
         <SettingsView />
       </div>
-    </div>
+    </>
   );
 }

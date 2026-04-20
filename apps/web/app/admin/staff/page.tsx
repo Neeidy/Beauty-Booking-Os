@@ -4,7 +4,7 @@ import StaffManagementView from "./StaffManagementView";
 
 export default function AdminStaffPage() {
   return (
-    <div>
+    <>
       <header className="adm-header">
         <div className="adm-header-title">
           <span className="breadcrumb">Team</span>
@@ -14,6 +14,6 @@ export default function AdminStaffPage() {
       <div className="adm-body">
         <StaffManagementView />
       </div>
-    </div>
+    </>
   );
 }

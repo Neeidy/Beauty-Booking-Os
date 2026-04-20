@@ -40,7 +40,7 @@ export default async function WaitingListPage() {
   }
 
   return (
-    <div>
+    <>
       <header className="adm-header">
         <div className="adm-header-title">
           <span className="breadcrumb">Warteliste</span>
@@ -50,6 +50,6 @@ export default async function WaitingListPage() {
       <div className="adm-body">
         <WaitingListView initialData={data} />
       </div>
-    </div>
+    </>
   );
 }

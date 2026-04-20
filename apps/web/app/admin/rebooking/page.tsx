@@ -4,7 +4,7 @@ import RebookingView from "./RebookingView";
 
 export default function AdminRebookingPage() {
   return (
-    <div>
+    <>
       <header className="adm-header">
         <div className="adm-header-title">
           <span className="breadcrumb">Automatisierung</span>
@@ -14,6 +14,6 @@ export default function AdminRebookingPage() {
       <div className="adm-body">
         <RebookingView />
       </div>
-    </div>
+    </>
   );
 }
