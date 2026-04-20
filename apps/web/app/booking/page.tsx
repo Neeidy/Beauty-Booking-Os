@@ -15,22 +15,22 @@ export default function BookingPage() {
     <>
       {/* Top Bar */}
       <div className="booking-topbar">
-        <div className="booking-topbar-inner container">
+        <div className="container-wide booking-topbar-inner">
           <Link href="/" className="booking-back">← Zurück</Link>
           <Link href="/" className="site-brand">
-            <span className="site-brand-diamond" />
-            <span>{config.clientName}</span>
+            <span className="site-brand-diamond"></span>
+            {config.clientName}
           </Link>
-          <div style={{ width: "80px" }} />
+          <span style={{ width: "80px" }}></span>
         </div>
       </div>
 
       {/* Page Body */}
-      <div className="booking-wrap">
+      <main className="booking-wrap">
         <div className="booking-card">
           <BookingForm />
         </div>
-      </div>
+      </main>
     </>
   );
 }

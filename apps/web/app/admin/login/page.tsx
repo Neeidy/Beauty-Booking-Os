@@ -34,44 +34,75 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "var(--color-background)" }}>
-      <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <h1 className="font-heading text-2xl font-semibold" style={{ color: "var(--color-primary)" }}>
-            {process.env["NEXT_PUBLIC_SALON_NAME"] ?? "Beauty Booking OS"}
-          </h1>
-          <p className="text-sm mt-1" style={{ color: "var(--color-text-muted)" }}>Admin Panel</p>
+    <div style={{
+      minHeight: "100vh",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      background: "var(--color-bg-surface)",
+      padding: "16px",
+    }}>
+      <div style={{ width: "100%", maxWidth: "420px" }}>
+        {/* Brand */}
+        <div style={{ textAlign: "center", marginBottom: "32px" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", marginBottom: "8px" }}>
+            <span style={{
+              width: "14px", height: "14px",
+              transform: "rotate(45deg)",
+              background: "var(--color-accent)",
+              borderRadius: "3px",
+              display: "inline-block",
+              flexShrink: 0,
+            }} />
+            <span style={{ fontWeight: 700, fontSize: "18px", color: "var(--color-text)" }}>
+              {process.env["NEXT_PUBLIC_SALON_NAME"] ?? "Beauty Booking OS"}
+            </span>
+          </div>
+          <p style={{ fontSize: "13px", color: "var(--color-text-muted)", margin: 0 }}>Admin Panel</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="rounded-sm border p-8 space-y-4" style={{ borderColor: "var(--color-accent)", backgroundColor: "#fff" }}>
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium mb-1" style={{ color: "var(--color-primary)" }}>
-              Passwort
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              required
-              autoFocus
-              className="w-full border rounded-sm px-3 py-2 text-sm outline-none"
-              style={{ borderColor: "var(--color-accent)", color: "var(--color-primary)" }}
-              placeholder="Admin-Passwort eingeben"
-            />
-          </div>
+        {/* Card */}
+        <div style={{
+          background: "var(--color-bg-card)",
+          border: "1px solid var(--color-border)",
+          borderRadius: "var(--radius-xl)",
+          boxShadow: "var(--shadow-elevated)",
+          padding: "40px",
+        }}>
+          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+            <div className="form-row">
+              <label htmlFor="password" className="form-label">Passwort</label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                required
+                autoFocus
+                className="form-input"
+                style={{ width: "100%", boxSizing: "border-box" }}
+                placeholder="Admin-Passwort eingeben"
+              />
+            </div>
 
-          {error && <p className="text-xs text-red-600">{error}</p>}
+            {error && (
+              <p style={{ fontSize: "13px", color: "#dc2626", margin: 0 }}>{error}</p>
+            )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-sm py-2.5 text-sm font-semibold disabled:opacity-60"
-            style={{ backgroundColor: "var(--color-primary)", color: "var(--color-background)" }}
-          >
-            {loading ? "Wird angemeldet…" : "Anmelden"}
-          </button>
-        </form>
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn btn-primary btn-full"
+              style={{ opacity: loading ? 0.6 : 1 }}
+            >
+              {loading ? "Wird angemeldet…" : "Anmelden"}
+            </button>
+          </form>
+        </div>
+
+        <p style={{ textAlign: "center", marginTop: "24px", fontSize: "12px", color: "var(--color-text-faint)" }}>
+          Beauty Booking OS · Admin
+        </p>
       </div>
     </div>
   );
