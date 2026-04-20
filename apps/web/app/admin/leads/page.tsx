@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import AdminHeader from "../../../components/admin/AdminHeader";
 import LeadTable from "../../../components/admin/LeadTable";
 
 interface Lead {
@@ -75,8 +74,16 @@ export default function LeadsPage() {
 
   return (
     <>
-      <AdminHeader title="Leads" />
-      <main className="p-6 space-y-4">
+      <header className="adm-header">
+        <div className="adm-header-title">
+          <span className="breadcrumb">CRM</span>
+          <h2>Leads</h2>
+        </div>
+        <div className="adm-header-actions">
+          <button onClick={fetchLeads} className="btn btn-ghost btn-sm">⟳ Aktualisieren</button>
+        </div>
+      </header>
+      <main className="adm-body">
 
         {/* Filters */}
         <div className="flex flex-wrap gap-3 items-end">
@@ -147,13 +154,6 @@ export default function LeadsPage() {
               style={{ borderColor: "var(--color-accent)", color: "var(--color-primary)" }}
             />
           </div>
-          <button
-            onClick={fetchLeads}
-            className="rounded-sm px-4 py-1.5 text-sm font-medium"
-            style={{ backgroundColor: "var(--color-secondary)", color: "#fff" }}
-          >
-            Aktualisieren
-          </button>
         </div>
 
         {/* Results info */}

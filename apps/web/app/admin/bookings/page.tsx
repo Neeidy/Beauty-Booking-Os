@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import AdminHeader from "../../../components/admin/AdminHeader";
 import BookingTable from "../../../components/admin/BookingTable";
 
 interface Booking {
@@ -75,8 +74,16 @@ export default function BookingsPage() {
 
   return (
     <>
-      <AdminHeader title="Buchungen" />
-      <main className="p-6 space-y-4">
+      <header className="adm-header">
+        <div className="adm-header-title">
+          <span className="breadcrumb">Buchungen</span>
+          <h2>Buchungen</h2>
+        </div>
+        <div className="adm-header-actions">
+          <button onClick={fetchBookings} className="btn btn-ghost btn-sm">⟳ Aktualisieren</button>
+        </div>
+      </header>
+      <main className="adm-body">
 
         {/* Filters */}
         <div className="flex flex-wrap gap-3 items-end">
@@ -119,13 +126,6 @@ export default function BookingsPage() {
               style={{ borderColor: "var(--color-accent)", color: "var(--color-primary)" }}
             />
           </div>
-          <button
-            onClick={fetchBookings}
-            className="rounded-sm px-4 py-1.5 text-sm font-medium"
-            style={{ backgroundColor: "var(--color-secondary)", color: "#fff" }}
-          >
-            Aktualisieren
-          </button>
         </div>
 
         {data && (

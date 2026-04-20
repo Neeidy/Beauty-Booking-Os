@@ -1,7 +1,6 @@
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
-import AdminHeader from "../../../components/admin/AdminHeader";
 import { getDb, leads } from "@beauty-booking/db";
 import { eq, asc } from "drizzle-orm";
 
@@ -61,62 +60,84 @@ export default async function ClientsPage() {
 
   return (
     <>
-      <AdminHeader title="Müşteriler" />
-      <main className="p-6" style={{ minHeight: "calc(100vh - 65px)" }}>
+      <header className="adm-header">
+        <div className="adm-header-title">
+          <span className="breadcrumb">CRM</span>
+          <h2>Kunden</h2>
+        </div>
+        <div className="adm-header-actions">
+          <span className="text-sm" style={{ color: "var(--color-text-muted)" }}>
+            {customers.length} gesamt
+          </span>
+        </div>
+      </header>
+      <main className="adm-body">
         {customers.length === 0 ? (
           <div
             className="rounded-sm border p-6 text-sm text-center"
-            style={{ borderColor: "var(--color-accent)", color: "var(--color-text-muted)" }}
+            style={{ borderColor: "var(--color-border)", color: "var(--color-text-muted)" }}
           >
-            Henüz müşteri yok
+            Noch keine Kunden vorhanden.
           </div>
         ) : (
-          <div className="rounded-sm border overflow-hidden" style={{ borderColor: "var(--color-accent)" }}>
-            <table className="w-full text-sm">
-              <thead>
-                <tr style={{ backgroundColor: "var(--color-primary)", color: "var(--color-background)" }}>
-                  <th className="text-left px-4 py-3 font-medium">İsim</th>
-                  <th className="text-left px-4 py-3 font-medium">Telefon</th>
-                  <th className="text-left px-4 py-3 font-medium">E-posta</th>
-                  <th className="text-left px-4 py-3 font-medium">Dil</th>
-                  <th className="text-left px-4 py-3 font-medium">İlk Kayıt</th>
-                  <th className="px-4 py-3" />
-                </tr>
-              </thead>
-              <tbody>
-                {customers.map((c, i) => {
-                  const identifier = c.phone
-                    ? encodeURIComponent(c.phone)
-                    : c.id;
-                  const bg = i % 2 === 0 ? "transparent" : "rgba(0,0,0,0.03)";
-                  const date = new Intl.DateTimeFormat("de-AT", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                    timeZone: "Europe/Vienna",
-                  }).format(new Date(c.firstSeenAt));
-                  return (
-                    <tr key={c.id} style={{ backgroundColor: bg, color: "var(--color-text)" }}>
-                      <td className="px-4 py-3">{c.name ?? "—"}</td>
-                      <td className="px-4 py-3">{c.phone ?? "—"}</td>
-                      <td className="px-4 py-3">{c.email ?? "—"}</td>
-                      <td className="px-4 py-3">{c.language ?? "—"}</td>
-                      <td className="px-4 py-3">{date}</td>
-                      <td className="px-4 py-3 text-right">
-                        <Link
-                          href={`/admin/clients/${identifier}`}
-                          className="text-xs underline"
-                          style={{ color: "var(--color-secondary)" }}
-                        >
-                          Profili Gör
-                        </Link>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <table className="clients-table">
+            <thead>
+              <tr>
+                <th>Kunde</th>
+                <th>Telefon</th>
+                <th>E-Mail</th>
+                <th>Sprache</th>
+                <th>Erstkontakt</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {customers.map((c) => {
+                const identifier = c.phone
+                  ? encodeURIComponent(c.phone)
+                  : c.id;
+                const initials = (c.name ?? "?")
+                  .split(" ")
+                  .map((w) => w[0])
+                  .slice(0, 2)
+                  .join("")
+                  .toUpperCase();
+                const date = new Intl.DateTimeFormat("de-AT", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                  timeZone: "Europe/Vienna",
+                }).format(new Date(c.firstSeenAt));
+                return (
+                  <tr key={c.id}>
+                    <td>
+                      <div className="client-name-cell">
+                        <div className="client-avatar">{initials}</div>
+                        <div>
+                          <div style={{ fontWeight: 500, fontSize: "14px" }}>{c.name ?? "—"}</div>
+                          {c.email && (
+                            <div style={{ fontSize: "12px", color: "var(--color-text-muted)" }}>{c.email}</div>
+                          )}
+                        </div>
+                      </div>
+                    </td>
+                    <td>{c.phone ?? "—"}</td>
+                    <td>{c.email ?? "—"}</td>
+                    <td>{c.language ?? "—"}</td>
+                    <td>{date}</td>
+                    <td>
+                      <Link
+                        href={`/admin/clients/${identifier}`}
+                        className="btn btn-ghost btn-sm"
+                      >
+                        Profil →
+                      </Link>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         )}
       </main>
     </>
