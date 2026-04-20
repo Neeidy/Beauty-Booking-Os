@@ -26,14 +26,13 @@ export default function DashboardPage() {
   });
 
   return (
-    <div className="adm-body">
-      {/* Header */}
-      <div className="adm-header" style={{ marginBottom: "24px" }}>
+    <>
+      <header className="adm-header">
         <div className="adm-header-title">
           <h2>Guten Morgen, Admin 👋</h2>
           <div style={{ fontSize: "13px", color: "var(--color-text-muted)", marginTop: "2px" }}>{today}</div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+        <div className="adm-header-actions">
           {stats?.escalationQueue != null && stats.escalationQueue > 0 && (
             <Link
               href="/admin/escalations"
@@ -61,7 +60,8 @@ export default function DashboardPage() {
             A
           </div>
         </div>
-      </div>
+      </header>
+      <main className="adm-body">
 
       {error && (
         <div style={{
@@ -210,6 +210,7 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
-    </div>
+      </main>
+    </>
   );
 }
