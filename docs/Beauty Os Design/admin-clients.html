@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kunden — Vienna Glow Studio Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/tokens.css?v=3">
+<link rel="stylesheet" href="assets/admin.css?v=3">
+<link rel="stylesheet" href="assets/admin-v2.css?v=1">
+</head>
+<body data-route="clients" data-adm="clients">
+<div id="shell-mount"></div>
+<div class="admin-layout">
+  <aside class="admin-sidebar" id="admin-sidebar-mount"></aside>
+  <main class="admin-main">
+    <header class="adm-header">
+      <div class="adm-header-title">
+        <span class="breadcrumb">CRM</span>
+        <h2>Kunden <span style="color:var(--color-text-muted);font-weight:400;font-size:14px;margin-left:8px">· 342 aktiv</span></h2>
+      </div>
+      <div class="adm-header-actions">
+        <button class="btn btn-ghost btn-sm">Exportieren</button>
+        <button class="btn btn-primary btn-sm">+ Neuer Kunde</button>
+      </div>
+    </header>
+    <div class="adm-toolbar">
+      <div class="adm-search"><input type="search" placeholder="Name, E-Mail oder Telefon..."></div>
+      <button class="adm-filter-chip active">Alle</button>
+      <button class="adm-filter-chip">⭐ VIP (12)</button>
+      <button class="adm-filter-chip">Aktiv (90 T)</button>
+      <button class="adm-filter-chip">Inaktiv (>180 T)</button>
+      <button class="adm-filter-chip">Neu (30 T)</button>
+    </div>
+    <div class="adm-body">
+      <table class="clients-table">
+        <thead>
+          <tr>
+            <th>Kunde</th>
+            <th>Termine</th>
+            <th>Umsatz</th>
+            <th>Letzter Besuch</th>
+            <th>Nächster Termin</th>
+            <th>Quelle</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr onclick="location.href='admin-client-detail.html'">
+            <td>
+              <div class="client-name-cell">
+                <div class="client-avatar">KH</div>
+                <div class="client-name-wrap">
+                  <span class="client-name">Katrin Huber <span class="client-vip">VIP</span></span>
+                  <span class="client-email">katrin.huber@example.at</span>
+                </div>
+              </div>
+            </td>
+            <td class="client-stat">24</td>
+            <td class="client-stat">€ 1.840,00</td>
+            <td>20. Mär 2026</td>
+            <td><strong style="color:var(--color-accent)">Do, 16. Apr · 11:00</strong></td>
+            <td><span class="src-badge">🌐 Web</span></td>
+            <td style="color:var(--color-text-faint)">→</td>
+          </tr>
+          <tr onclick="location.href='admin-client-detail.html'">
+            <td>
+              <div class="client-name-cell">
+                <div class="client-avatar v2">IR</div>
+                <div class="client-name-wrap">
+                  <span class="client-name">Isabella Richter</span>
+                  <span class="client-email">i.richter@gmail.com</span>
+                </div>
+              </div>
+            </td>
+            <td class="client-stat">11</td>
+            <td class="client-stat">€ 1.089,00</td>
+            <td>28. Mär 2026</td>
+            <td>Fr, 17. Apr · 15:30</td>
+            <td><span class="src-badge">📱 Google</span></td>
+            <td style="color:var(--color-text-faint)">→</td>
+          </tr>
+          <tr onclick="location.href='admin-client-detail.html'">
+            <td>
+              <div class="client-name-cell">
+                <div class="client-avatar v3">PK</div>
+                <div class="client-name-wrap">
+                  <span class="client-name">Pınar Koç</span>
+                  <span class="client-email">pinar.k@outlook.com</span>
+                </div>
+              </div>
+            </td>
+            <td class="client-stat">8</td>
+            <td class="client-stat">€ 640,00</td>
+            <td>5. Apr 2026</td>
+            <td>Sa, 18. Apr · 10:00</td>
+            <td><span class="src-badge">📸 Instagram</span></td>
+            <td style="color:var(--color-text-faint)">→</td>
+          </tr>
+          <tr onclick="location.href='admin-client-detail.html'">
+            <td>
+              <div class="client-name-cell">
+                <div class="client-avatar v4">EN</div>
+                <div class="client-name-wrap">
+                  <span class="client-name">Elena Novak <span class="client-vip">VIP</span></span>
+                  <span class="client-email">elena.novak@yahoo.com</span>
+                </div>
+              </div>
+            </td>
+            <td class="client-stat">31</td>
+            <td class="client-stat">€ 2.475,00</td>
+            <td>2. Apr 2026</td>
+            <td>—</td>
+            <td><span class="src-badge">🌐 Web</span></td>
+            <td style="color:var(--color-text-faint)">→</td>
+          </tr>
+          <tr onclick="location.href='admin-client-detail.html'">
+            <td>
+              <div class="client-name-cell">
+                <div class="client-avatar">AM</div>
+                <div class="client-name-wrap">
+                  <span class="client-name">Anna Müller</span>
+                  <span class="client-email">anna@example.com</span>
+                </div>
+              </div>
+            </td>
+            <td class="client-stat">4</td>
+            <td class="client-stat">€ 220,00</td>
+            <td>12. Feb 2026</td>
+            <td>—</td>
+            <td><span class="src-badge">📱 Google</span></td>
+            <td style="color:var(--color-text-faint)">→</td>
+          </tr>
+          <tr onclick="location.href='admin-client-detail.html'">
+            <td>
+              <div class="client-name-cell">
+                <div class="client-avatar v2">FY</div>
+                <div class="client-name-wrap">
+                  <span class="client-name">Fatma Yıldız</span>
+                  <span class="client-email">f.yildiz@gmx.at</span>
+                </div>
+              </div>
+            </td>
+            <td class="client-stat">6</td>
+            <td class="client-stat">€ 390,00</td>
+            <td>22. Mär 2026</td>
+            <td>—</td>
+            <td><span class="src-badge">☎ Telefon</span></td>
+            <td style="color:var(--color-text-faint)">→</td>
+          </tr>
+          <tr onclick="location.href='admin-client-detail.html'">
+            <td>
+              <div class="client-name-cell">
+                <div class="client-avatar v3">JB</div>
+                <div class="client-name-wrap">
+                  <span class="client-name">Julia Baumgartner</span>
+                  <span class="client-email">jbaumgartner@t-online.at</span>
+                </div>
+              </div>
+            </td>
+            <td class="client-stat">2</td>
+            <td class="client-stat">€ 155,00</td>
+            <td>15. Jan 2026</td>
+            <td>—</td>
+            <td><span class="src-badge">🌐 Web</span></td>
+            <td style="color:var(--color-text-faint)">→</td>
+          </tr>
+          <tr onclick="location.href='admin-client-detail.html'">
+            <td>
+              <div class="client-name-cell">
+                <div class="client-avatar v4">LD</div>
+                <div class="client-name-wrap">
+                  <span class="client-name">Leila Demir</span>
+                  <span class="client-email">leila.demir@hotmail.com</span>
+                </div>
+              </div>
+            </td>
+            <td class="client-stat">1</td>
+            <td class="client-stat">€ 55,00</td>
+            <td>—</td>
+            <td>Sa, 18. Apr · 14:00 (vorgemerkt)</td>
+            <td><span class="src-badge">📸 Instagram</span></td>
+            <td style="color:var(--color-text-faint)">→</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+<script src="assets/shell.js"></script>
+<script src="assets/shell-init.js"></script>
+</body>
+</html>

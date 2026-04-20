@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Site Map — Vienna Glow Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/tokens.css?v=3">
+<style>
+  body { background: var(--color-bg-surface); font-family: var(--font-body); color: var(--color-text); margin: 0; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 60px 24px 80px; }
+  .hdr { margin-bottom: 40px; }
+  .hdr h1 { font-size: 32px; font-weight: 700; margin: 0 0 6px; letter-spacing: -0.02em; }
+  .hdr p { color: var(--color-text-muted); font-size: 15px; margin: 0; max-width: 620px; line-height: 1.55; }
+  .group { margin-bottom: 40px; }
+  .group-title {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 16px;
+  }
+  .group-title h2 { font-size: 15px; font-weight: 600; margin: 0; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-text-muted); }
+  .group-title span { font-size: 11px; color: var(--color-text-faint); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 18px 20px;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+    position: relative;
+  }
+  .card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-elevated);
+    text-decoration: none;
+  }
+  .card-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-text-faint);
+  }
+  .card-tag.v2 { color: var(--color-accent); }
+  .card h3 { font-size: 15px; font-weight: 600; margin: 0; }
+  .card p { font-size: 12px; color: var(--color-text-muted); margin: 0; line-height: 1.5; }
+  .card-file {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 10px;
+    color: var(--color-text-faint);
+    margin-top: auto;
+    padding-top: 6px;
+  }
+  .count-badge {
+    display: inline-flex;
+    padding: 2px 9px;
+    border-radius: var(--radius-pill);
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hdr">
+    <h1>Vienna Glow Studio · Design Site Map</h1>
+    <p>Alle Screens dieser Design-Referenz. Routen, Dateinamen und Sprint-IDs stimmen mit CLAUDE.md überein und können 1:1 auf die Next.js-Integration übertragen werden.</p>
+  </header>
+
+  <section class="group">
+    <div class="group-title"><h2>Public</h2><span class="count-badge">4 Screens</span></div>
+    <div class="grid">
+      <a class="card" href="index.html">
+        <div class="card-tag">Marketing</div>
+        <h3>Landing Page</h3>
+        <p>Hero, Services, Gallery, Team, Testimonials, Trust, Standort, CTA, Footer</p>
+        <div class="card-file">/ · index.html</div>
+      </a>
+      <a class="card" href="booking.html">
+        <div class="card-tag">Buchung</div>
+        <h3>Buchungsflow</h3>
+        <p>4 Schritte — Service, Mitarbeiter:in, Slot, Bestätigung mit Lock-Countdown</p>
+        <div class="card-file">/booking · booking.html</div>
+      </a>
+      <a class="card" href="waiting-list.html">
+        <div class="card-tag">Warteliste</div>
+        <h3>Warteliste (Public)</h3>
+        <p>Formular für Kund:innen, wenn der Wunschtermin ausgebucht ist</p>
+        <div class="card-file">/waiting-list · waiting-list.html</div>
+      </a>
+      <a class="card" href="review-thanks.html">
+        <div class="card-tag">Reviews</div>
+        <h3>Review Einladung</h3>
+        <p>Nach Termin — Sternebewertung + Google Review CTA + Rebooking-Hinweis</p>
+        <div class="card-file">/r/[token] · review-thanks.html</div>
+      </a>
+    </div>
+  </section>
+
+  <section class="group">
+    <div class="group-title"><h2>Admin Panel</h2><span class="count-badge">9 Screens</span></div>
+    <div class="grid">
+      <a class="card" href="admin-dashboard.html">
+        <div class="card-tag">Overview</div>
+        <h3>Dashboard</h3>
+        <p>KPIs, heutige Termine, Quick Stats, Leads-Kurzliste</p>
+        <div class="card-file">/admin · admin-dashboard.html</div>
+      </a>
+      <a class="card" href="admin-front-desk.html">
+        <div class="card-tag">Lead Mgmt</div>
+        <h3>Front Desk (Kanban)</h3>
+        <p>5 Lanes — new → contacted → qualified → booked → lost — mit AI-Confidence</p>
+        <div class="card-file">/admin/front-desk · admin-front-desk.html</div>
+      </a>
+      <a class="card" href="admin-calendar.html">
+        <div class="card-tag">Kalender</div>
+        <h3>Kalender</h3>
+        <p>Wochenansicht mit 10 Terminen, Live-Zeitindikator, Status-Farben</p>
+        <div class="card-file">/admin/calendar · admin-calendar.html</div>
+      </a>
+      <a class="card" href="admin-clients.html">
+        <div class="card-tag">CRM</div>
+        <h3>Kunden</h3>
+        <p>Tabelle mit VIP-Badges · klickbare Zeilen öffnen das Kundenprofil</p>
+        <div class="card-file">/admin/clients · admin-clients.html</div>
+      </a>
+      <a class="card" href="admin-client-detail.html">
+        <div class="card-tag">CRM</div>
+        <h3>Kundenprofil</h3>
+        <p>Stats, Timeline, Notizen, Einwilligungen, Tabs für Termine / Kommunikation</p>
+        <div class="card-file">/admin/clients/[id] · admin-client-detail.html</div>
+      </a>
+      <a class="card" href="admin-waiting-list.html">
+        <div class="card-tag">Warteliste</div>
+        <h3>Warteliste (Admin)</h3>
+        <p>7 Einträge mit Status — Wartend · Benachrichtigt · Gebucht · Abgelaufen</p>
+        <div class="card-file">/admin/waiting-list · admin-waiting-list.html</div>
+      </a>
+      <a class="card" href="admin-staff.html">
+        <div class="card-tag">Team</div>
+        <h3>Team</h3>
+        <p>Karten für 6 aktive + 1 inaktive Mitarbeiter:in mit Service-Zuordnung</p>
+        <div class="card-file">/admin/staff · admin-staff.html</div>
+      </a>
+      <a class="card" href="admin-rebooking.html">
+        <div class="card-tag">Rebooking</div>
+        <h3>Rebooking</h3>
+        <p>Conversion 31%, geplante Erinnerungen, CRON Job-Läufe</p>
+        <div class="card-file">/admin/rebooking · admin-rebooking.html</div>
+      </a>
+      <a class="card" href="admin-settings.html">
+        <div class="card-tag">Einstellungen</div>
+        <h3>Einstellungen</h3>
+        <p>Leistungen, Öffnungszeiten, geschlossene Tage, Buchungsregeln</p>
+        <div class="card-file">/admin/settings · admin-settings.html</div>
+      </a>
+      <a class="card" href="admin-logs.html">
+        <div class="card-tag">System</div>
+        <h3>AI Agent Logs</h3>
+        <p>Event-Stream — inquiry-triage · slot-reservation · rebooking-scheduler · notify</p>
+        <div class="card-file">/admin/logs · admin-logs.html</div>
+      </a>
+    </div>
+  </section>
+
+  <section class="group">
+    <div class="group-title"><h2>GDPR & Legal</h2><span class="count-badge">3 Screens</span></div>
+    <div class="grid">
+      <a class="card" href="gdpr-consent.html">
+        <div class="card-tag">DSGVO</div>
+        <h3>Datenschutz & Einwilligung</h3>
+        <p>Zwecke, Speicherdauer, Auftragsverarbeiter, Rechte-Übersicht</p>
+        <div class="card-file">/privacy · gdpr-consent.html</div>
+      </a>
+      <a class="card" href="gdpr-export.html">
+        <div class="card-tag">DSGVO Art. 15</div>
+        <h3>Datenauszug</h3>
+        <p>JSON/CSV/PDF — Identitätsbestätigung per E-Mail-Link</p>
+        <div class="card-file">/privacy/export · gdpr-export.html</div>
+      </a>
+      <a class="card" href="gdpr-delete.html">
+        <div class="card-tag">DSGVO Art. 17</div>
+        <h3>Datenlöschung</h3>
+        <p>Dreifach-Bestätigung · 30-tägige Karenzzeit · § 132 BAO Hinweis</p>
+        <div class="card-file">/privacy/delete · gdpr-delete.html</div>
+      </a>
+    </div>
+  </section>
+
+  <section class="group">
+    <div class="group-title"><h2>E-Mail Templates</h2><span class="count-badge">1 Screen</span></div>
+    <div class="grid">
+      <a class="card" href="email-rebooking.html">
+        <div class="card-tag">E-Mail</div>
+        <h3>Rebooking Reminder</h3>
+        <p>HTML-E-Mail-Vorschau mit Template-Variablen & drei vorgeschlagenen Slots</p>
+        <div class="card-file">template: rebooking_reminder_v2</div>
+      </a>
+    </div>
+  </section>
+
+  <footer style="margin-top:40px;padding-top:24px;border-top:1px solid var(--color-border);font-size:12px;color:var(--color-text-muted);text-align:center">
+    17 Screens · Light + Dark Mode · Mobile responsive · Tokens in <code>assets/tokens.css</code> — bereit für Next.js Integration
+  </footer>
+</div>
+</body>
+</html>

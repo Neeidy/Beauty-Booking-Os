@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Next.js Web (apps/web)",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@beauty-booking/web", "run", "dev"],
+      "port": 3030
+    },
+    {
+      "name": "Drizzle Studio (packages/db)",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@beauty-booking/db", "run", "db:studio"],
+      "port": 4983
+    }
+  ]
+}

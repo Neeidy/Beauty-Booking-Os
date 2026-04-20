@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin · Dashboard — Vienna Glow Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/tokens.css?v=3">
+<link rel="stylesheet" href="assets/admin.css?v=3">
+</head>
+<body data-route="dashboard" data-adm="dashboard">
+<div id="shell-mount"></div>
+
+<div class="admin-layout">
+  <aside class="admin-sidebar" id="admin-sidebar-mount"></aside>
+
+  <main class="admin-main dash-main">
+    <header class="dash-header">
+      <div>
+        <h3>Guten Morgen, Admin 👋</h3>
+        <div class="dash-date">Donnerstag, 9. April 2026</div>
+      </div>
+      <div class="dash-header-right">
+        <button class="dash-bell" aria-label="Notifications">🔔</button>
+        <div class="dash-avatar">A</div>
+      </div>
+    </header>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-num" style="color:var(--color-accent)">8</div>
+        <div class="stat-label">Heute Termine</div>
+        <div class="stat-trend up">↑ +2 vs gestern</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color:var(--color-emerald)">€ 1.240</div>
+        <div class="stat-label">Wochenumsatz</div>
+        <div class="stat-trend up">↑ +18% WoW</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color:var(--color-amber)">5</div>
+        <div class="stat-label">Neue Leads</div>
+        <div class="stat-trend neutral">3 offen</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color:var(--color-rose)">2</div>
+        <div class="stat-label">Ausstehend</div>
+        <div class="stat-trend warn">Bestätigung nötig →</div>
+      </div>
+    </div>
+
+    <div class="dash-row">
+      <!-- Appointments table -->
+      <div class="dash-card">
+        <div class="dash-card-head">
+          <h4>Termine heute</h4>
+          <a href="admin-calendar.html">Zum Kalender →</a>
+        </div>
+        <table class="appt-table">
+          <thead>
+            <tr>
+              <th>Zeit</th>
+              <th>Kunde</th>
+              <th>Leistung</th>
+              <th>Mitarbeiter</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="appt-time">09:00</td>
+              <td class="appt-name">Anna K.</td>
+              <td><div class="appt-svc-cell"><span class="dot" style="background:var(--color-purple)"></span>Gel Manikür</div></td>
+              <td><div class="appt-staff-cell"><span class="dot" style="background:var(--color-purple)"></span>Anna</div></td>
+              <td><span class="status-pill ok">● Bestätigt</span></td>
+              <td class="appt-actions-cell"><button>•••</button></td>
+            </tr>
+            <tr>
+              <td class="appt-time">10:00</td>
+              <td class="appt-name">Sofia M.</td>
+              <td><div class="appt-svc-cell"><span class="dot" style="background:var(--color-amber)"></span>Haarschnitt</div></td>
+              <td><div class="appt-staff-cell"><span class="dot" style="background:var(--color-amber)"></span>Sofia</div></td>
+              <td><span class="status-pill ok">● Bestätigt</span></td>
+              <td class="appt-actions-cell"><button>•••</button></td>
+            </tr>
+            <tr>
+              <td class="appt-time">11:00</td>
+              <td class="appt-name">Yasmin A.</td>
+              <td><div class="appt-svc-cell"><span class="dot" style="background:var(--color-purple)"></span>Gel Pediküre</div></td>
+              <td><div class="appt-staff-cell"><span class="dot" style="background:var(--color-purple)"></span>Anna</div></td>
+              <td><span class="status-pill ok">● Bestätigt</span></td>
+              <td class="appt-actions-cell"><button>•••</button></td>
+            </tr>
+            <tr>
+              <td class="appt-time">13:00</td>
+              <td class="appt-name">Maria S.</td>
+              <td><div class="appt-svc-cell"><span class="dot" style="background:var(--color-rose)"></span>Brow Lamination</div></td>
+              <td><div class="appt-staff-cell"><span class="dot" style="background:var(--color-emerald)"></span>Lena</div></td>
+              <td><span class="status-pill pending">● Ausstehend</span></td>
+              <td class="appt-actions-cell"><button>•••</button></td>
+            </tr>
+            <tr>
+              <td class="appt-time">14:00</td>
+              <td class="appt-name">Brigitte K.</td>
+              <td><div class="appt-svc-cell"><span class="dot" style="background:var(--color-emerald)"></span>Gesichtsbehandlung</div></td>
+              <td><div class="appt-staff-cell"><span class="dot" style="background:var(--color-emerald)"></span>Lena</div></td>
+              <td><span class="status-pill pending">● Ausstehend</span></td>
+              <td class="appt-actions-cell"><button>•••</button></td>
+            </tr>
+            <tr>
+              <td class="appt-time">15:30</td>
+              <td class="appt-name">Klaus M.</td>
+              <td><div class="appt-svc-cell"><span class="dot" style="background:var(--color-cyan)"></span>Herrenschnitt</div></td>
+              <td><div class="appt-staff-cell"><span class="dot" style="background:var(--color-cyan)"></span>Sofia</div></td>
+              <td><span class="status-pill ok">● Bestätigt</span></td>
+              <td class="appt-actions-cell"><button>•••</button></td>
+            </tr>
+            <tr>
+              <td class="appt-time">17:00</td>
+              <td class="appt-name">Petra H.</td>
+              <td><div class="appt-svc-cell"><span class="dot" style="background:var(--color-emerald)"></span>HydraFacial</div></td>
+              <td><div class="appt-staff-cell"><span class="dot" style="background:var(--color-emerald)"></span>Lena</div></td>
+              <td><span class="status-pill cancel">● Abgesagt</span></td>
+              <td class="appt-actions-cell"><button>•••</button></td>
+            </tr>
+            <tr>
+              <td class="appt-time">18:30</td>
+              <td class="appt-name">Thomas R.</td>
+              <td><div class="appt-svc-cell"><span class="dot" style="background:var(--color-cyan)"></span>Barbershop</div></td>
+              <td><div class="appt-staff-cell"><span class="dot" style="background:var(--color-cyan)"></span>Sofia</div></td>
+              <td><span class="status-pill ok">● Bestätigt</span></td>
+              <td class="appt-actions-cell"><button>•••</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Leads -->
+      <div class="dash-card">
+        <div class="dash-card-head">
+          <h4>Neue Leads</h4>
+          <a href="#">Alle anzeigen →</a>
+        </div>
+        <div class="lead-list">
+          <div class="lead-item">
+            <div>
+              <div class="lead-name">Nicole R.</div>
+              <div class="lead-svc">
+                <span class="lead-source-ic" style="color:var(--color-rose)">IG</span>
+                Wimpernlifting · Instagram DM
+              </div>
+            </div>
+            <div class="lead-meta">
+              <span class="lead-conf high"><span class="dot" style="background:var(--color-emerald)"></span>94%</span>
+              <span>vor 12 min</span>
+            </div>
+          </div>
+          <div class="lead-item">
+            <div>
+              <div class="lead-name">Julia B.</div>
+              <div class="lead-svc">
+                <span class="lead-source-ic" style="color:var(--color-accent)">W</span>
+                Coloration · Web Formular
+              </div>
+            </div>
+            <div class="lead-meta">
+              <span class="lead-conf high"><span class="dot" style="background:var(--color-emerald)"></span>88%</span>
+              <span>vor 34 min</span>
+            </div>
+          </div>
+          <div class="lead-item low">
+            <div>
+              <div class="lead-name">Unknown caller</div>
+              <div class="lead-svc">
+                <span class="lead-source-ic" style="color:var(--color-amber)">📞</span>
+                Anfrage · Telefon AI
+              </div>
+            </div>
+            <div class="lead-meta">
+              <span class="lead-conf mid"><span class="dot" style="background:var(--color-amber)"></span>67%</span>
+              <span>vor 1 h</span>
+            </div>
+          </div>
+          <div class="lead-item">
+            <div>
+              <div class="lead-name">Melanie T.</div>
+              <div class="lead-svc">
+                <span class="lead-source-ic" style="color:var(--color-rose)">IG</span>
+                Brow Lamination · Instagram
+              </div>
+            </div>
+            <div class="lead-meta">
+              <span class="lead-conf high"><span class="dot" style="background:var(--color-emerald)"></span>91%</span>
+              <span>vor 2 h</span>
+            </div>
+          </div>
+          <div class="lead-item">
+            <div>
+              <div class="lead-name">Ela G.</div>
+              <div class="lead-svc">
+                <span class="lead-source-ic" style="color:var(--color-accent)">W</span>
+                HydraFacial · Web
+              </div>
+            </div>
+            <div class="lead-meta">
+              <span class="lead-conf high"><span class="dot" style="background:var(--color-emerald)"></span>96%</span>
+              <span>vor 3 h</span>
+            </div>
+          </div>
+        </div>
+        <div class="ai-cost">KI-Kosten heute: € 0.08 · Diese Woche: € 0.41</div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="assets/shell.js"></script>
+<script src="assets/shell-init.js"></script>
+</body>
+</html>

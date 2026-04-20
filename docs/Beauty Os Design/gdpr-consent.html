@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Datenschutz & Einwilligung — Vienna Glow Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/tokens.css?v=3">
+<link rel="stylesheet" href="assets/booking.css?v=3">
+<style>
+  body { background: var(--color-bg-surface); }
+  .gdpr-wrap { padding: 120px 16px 96px; max-width: 760px; margin: 0 auto; }
+  .gdpr-card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-elevated);
+    padding: 48px;
+  }
+  .gdpr-head {
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 24px;
+  }
+  .gdpr-head h1 {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0 0 6px;
+  }
+  .gdpr-head .lead {
+    color: var(--color-text-muted);
+    font-size: 15px;
+  }
+  .gdpr-section { margin-bottom: 28px; }
+  .gdpr-section h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 8px;
+    color: var(--color-text);
+  }
+  .gdpr-section p {
+    margin: 0 0 8px;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--color-text-secondary);
+  }
+  .gdpr-purpose {
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: 32px 1fr auto;
+    gap: 12px;
+    align-items: start;
+    margin-bottom: 10px;
+  }
+  .gdpr-purpose-ico {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+  .gdpr-purpose-title { font-weight: 600; font-size: 13px; color: var(--color-text); margin-bottom: 2px; }
+  .gdpr-purpose-desc { font-size: 12px; color: var(--color-text-muted); line-height: 1.55; }
+  .gdpr-purpose-req {
+    font-size: 10px;
+    padding: 2px 8px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    color: var(--color-text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .gdpr-purpose-req.required { background: color-mix(in srgb, var(--color-accent) 15%, transparent); color: var(--color-accent); border-color: color-mix(in srgb, var(--color-accent) 30%, transparent); }
+  .rights-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .right-tile {
+    padding: 14px;
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-align: center;
+  }
+  .right-tile-ico { font-size: 22px; margin-bottom: 6px; }
+  .right-tile-title { font-weight: 600; font-size: 12px; color: var(--color-text); margin-bottom: 4px; }
+  .right-tile a { color: var(--color-accent); font-size: 11px; font-weight: 500; text-decoration: none; }
+  .right-tile a:hover { text-decoration: underline; }
+  @media (max-width: 640px) {
+    .gdpr-card { padding: 28px 20px; }
+    .rights-list { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body data-route="gdpr-consent">
+<div id="shell-mount"></div>
+
+<div class="booking-topbar">
+  <div class="container-wide booking-topbar-inner">
+    <a href="index.html" class="booking-back">← Zurück</a>
+    <a href="index.html" class="site-brand"><span class="site-brand-diamond"></span> Vienna Glow Studio</a>
+    <span style="width:80px"></span>
+  </div>
+</div>
+
+<main class="gdpr-wrap">
+  <div class="gdpr-card">
+    <header class="gdpr-head">
+      <h1>Datenschutz & Einwilligung</h1>
+      <p class="lead">Gemäß DSGVO (EU 2016/679). Stand: 12.04.2026 · Verantwortlich: Vienna Glow Studio GmbH, Mariahilfer Straße 88, 1070 Wien</p>
+    </header>
+
+    <section class="gdpr-section">
+      <h3>Welche Daten wir verarbeiten</h3>
+      <p>Für die Buchung und Durchführung Ihres Termins verarbeiten wir ausschließlich folgende personenbezogene Daten: Vor- und Nachname, E-Mail-Adresse, Telefonnummer, gebuchte Leistung, Terminzeitpunkt sowie freiwillige Notizen (z. B. Wünsche, Allergien).</p>
+      <p>Eine Verarbeitung von Zahlungsdaten erfolgt nicht — die Bezahlung findet vor Ort statt.</p>
+    </section>
+
+    <section class="gdpr-section">
+      <h3>Zwecke der Verarbeitung</h3>
+
+      <div class="gdpr-purpose">
+        <div class="gdpr-purpose-ico">📅</div>
+        <div>
+          <div class="gdpr-purpose-title">Terminverwaltung (Art. 6 Abs. 1 lit. b DSGVO — Vertrag)</div>
+          <div class="gdpr-purpose-desc">Bestätigungs-E-Mail, Terminerinnerung 24 Std vorher, Änderungen und Stornierungen. Ohne diese Verarbeitung ist keine Buchung möglich.</div>
+        </div>
+        <span class="gdpr-purpose-req required">Erforderlich</span>
+      </div>
+
+      <div class="gdpr-purpose">
+        <div class="gdpr-purpose-ico">💬</div>
+        <div>
+          <div class="gdpr-purpose-title">Rebooking-Erinnerungen (Art. 6 Abs. 1 lit. a — Einwilligung)</div>
+          <div class="gdpr-purpose-desc">Erinnerung per E-Mail/SMS, wenn der übliche Intervall für Ihre Leistung abgelaufen ist (z. B. Nachfüllen, Auffrischung). Jederzeit abbestellbar.</div>
+        </div>
+        <span class="gdpr-purpose-req">Optional</span>
+      </div>
+
+      <div class="gdpr-purpose">
+        <div class="gdpr-purpose-ico">⭐</div>
+        <div>
+          <div class="gdpr-purpose-title">Bewertungseinladung (Art. 6 Abs. 1 lit. a — Einwilligung)</div>
+          <div class="gdpr-purpose-desc">Einladung zur Bewertung auf Google, 24 Stunden nach dem Termin. Einmalig, kein Follow-up.</div>
+        </div>
+        <span class="gdpr-purpose-req">Optional</span>
+      </div>
+
+      <div class="gdpr-purpose">
+        <div class="gdpr-purpose-ico">📋</div>
+        <div>
+          <div class="gdpr-purpose-title">Warteliste (Art. 6 Abs. 1 lit. a — Einwilligung)</div>
+          <div class="gdpr-purpose-desc">Benachrichtigung, wenn ein passender Slot frei wird. Speicherung maximal 90 Tage.</div>
+        </div>
+        <span class="gdpr-purpose-req">Optional</span>
+      </div>
+    </section>
+
+    <section class="gdpr-section">
+      <h3>Speicherdauer</h3>
+      <p><strong>Buchungs- und Kundendaten:</strong> 7 Jahre (§ 132 BAO – österreichische Aufbewahrungspflicht).</p>
+      <p><strong>Marketing-Einwilligungen:</strong> bis zum Widerruf oder maximal 24 Monate nach letztem Termin.</p>
+      <p><strong>Wartelisten-Anfragen:</strong> 90 Tage, danach automatisch gelöscht.</p>
+      <p><strong>AI-Agent-Logs:</strong> 30 Tage, nur pseudonymisiert (keine Klartextnamen).</p>
+    </section>
+
+    <section class="gdpr-section">
+      <h3>Ihre Rechte</h3>
+      <p>Sie haben jederzeit das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung, Datenübertragbarkeit und Widerspruch gegen die Verarbeitung Ihrer Daten.</p>
+      <div class="rights-list">
+        <div class="right-tile">
+          <div class="right-tile-ico">📥</div>
+          <div class="right-tile-title">Datenauszug</div>
+          <a href="gdpr-export.html">Jetzt anfordern →</a>
+        </div>
+        <div class="right-tile">
+          <div class="right-tile-ico">🗑️</div>
+          <div class="right-tile-title">Daten löschen</div>
+          <a href="gdpr-delete.html">Antrag stellen →</a>
+        </div>
+        <div class="right-tile">
+          <div class="right-tile-ico">✉️</div>
+          <div class="right-tile-title">Beschwerde</div>
+          <a href="mailto:dsb@viennaglowstudio.at">dsb@viennaglow…at</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="gdpr-section">
+      <h3>Drittempfänger</h3>
+      <p>Wir setzen folgende Auftragsverarbeiter ein, mit denen DSGVO-konforme Verträge bestehen:</p>
+      <ul style="font-size:13px;color:var(--color-text-secondary);line-height:1.75;padding-left:20px">
+        <li><strong>Resend</strong> (E-Mail-Versand · EU-Server, Frankfurt)</li>
+        <li><strong>Twilio</strong> (SMS-Versand · EU-Server, Dublin)</li>
+        <li><strong>Anthropic</strong> (AI-Triage · Zero Data Retention aktiv, keine Trainingsnutzung)</li>
+        <li><strong>Vercel</strong> (Hosting · EU-Region, Frankfurt)</li>
+      </ul>
+    </section>
+
+    <div style="padding-top:24px;border-top:1px solid var(--color-border);display:flex;gap:10px;flex-wrap:wrap">
+      <a href="gdpr-export.html" class="btn btn-ghost">Datenauszug anfordern</a>
+      <a href="gdpr-delete.html" class="btn btn-ghost">Löschung beantragen</a>
+      <a href="index.html" class="btn btn-primary" style="margin-left:auto">Verstanden, weiter zur Website</a>
+    </div>
+  </div>
+</main>
+
+<script src="assets/shell.js"></script>
+<script src="assets/shell-init.js"></script>
+</body>
+</html>

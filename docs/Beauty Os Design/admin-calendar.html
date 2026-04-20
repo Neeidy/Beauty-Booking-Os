@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin · Kalender — Vienna Glow Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/tokens.css?v=3">
+<link rel="stylesheet" href="assets/admin.css?v=3">
+</head>
+<body data-route="calendar" data-adm="calendar">
+<div id="shell-mount"></div>
+
+<div class="admin-layout">
+  <aside class="admin-sidebar" id="admin-sidebar-mount"></aside>
+
+  <!-- MAIN -->
+  <main class="admin-main">
+    <header class="cal-header">
+      <div class="cal-header-left">
+        <button class="cal-ico-btn" aria-label="Previous week">‹</button>
+        <div class="cal-date-range">6. Apr – 12. Apr 2026</div>
+        <button class="cal-ico-btn" aria-label="Next week">›</button>
+        <button class="cal-today-btn">Heute</button>
+      </div>
+      <div class="cal-header-right">
+        <span class="cal-count">12 Termine diese Woche</span>
+        <div class="cal-view-toggle">
+          <button>Tag</button>
+          <button class="active">Woche</button>
+          <button>Monat</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="cal-scroll">
+      <div class="cal-grid">
+        <!-- Day headers -->
+        <div class="cal-day-headers">
+          <div class="cal-gutter-top"></div>
+          <div class="cal-day-head">Mo<span>6</span></div>
+          <div class="cal-day-head">Di<span>7</span></div>
+          <div class="cal-day-head">Mi<span>8</span></div>
+          <div class="cal-day-head today"><div class="cal-today-pill">9</div><div class="cal-today-label">Do</div></div>
+          <div class="cal-day-head">Fr<span>10</span></div>
+          <div class="cal-day-head">Sa<span>11</span></div>
+          <div class="cal-day-head">So<span>12</span></div>
+        </div>
+
+        <!-- Body: gutter + 7 columns, 13 hour rows -->
+        <div class="cal-body">
+          <div class="cal-gutter">
+            <div class="cal-hour">08:00</div>
+            <div class="cal-hour">09:00</div>
+            <div class="cal-hour">10:00</div>
+            <div class="cal-hour">11:00</div>
+            <div class="cal-hour">12:00</div>
+            <div class="cal-hour">13:00</div>
+            <div class="cal-hour">14:00</div>
+            <div class="cal-hour">15:00</div>
+            <div class="cal-hour">16:00</div>
+            <div class="cal-hour">17:00</div>
+            <div class="cal-hour">18:00</div>
+            <div class="cal-hour">19:00</div>
+            <div class="cal-hour">20:00</div>
+            <div class="cal-now-marker" style="top:calc(96px * 6 + 32px)"><span class="cal-now-dot"></span></div>
+          </div>
+
+          <!-- MON -->
+          <div class="cal-col">
+            <div class="cal-col-lines"></div>
+            <div class="cal-appt purple" style="top:calc(96px * 1); height:96px">
+              <div class="cal-appt-time">09:00 – 10:00</div>
+              <div class="cal-appt-name">Anna K.</div>
+              <div class="cal-appt-svc">Gel Manikür</div>
+              <span class="cal-staff" style="background:var(--color-purple)">A</span>
+            </div>
+            <div class="cal-appt amber" style="top:calc(96px * 6); height:144px">
+              <div class="cal-appt-time">14:00 – 15:30</div>
+              <div class="cal-appt-name">Sofia M.</div>
+              <div class="cal-appt-svc">Haarschnitt &amp; Föhnen</div>
+              <span class="cal-staff" style="background:var(--color-amber)">S</span>
+            </div>
+          </div>
+
+          <!-- TUE -->
+          <div class="cal-col">
+            <div class="cal-col-lines"></div>
+            <div class="cal-appt rose" style="top:calc(96px * 2); height:72px">
+              <div class="cal-appt-time">10:00 – 10:45</div>
+              <div class="cal-appt-name">Lena W.</div>
+              <div class="cal-appt-svc">Wimpernlifting</div>
+              <span class="cal-staff" style="background:var(--color-rose)">L</span>
+            </div>
+            <div class="cal-appt rose" style="top:calc(96px * 5); height:96px">
+              <div class="cal-appt-time">13:00 – 14:00</div>
+              <div class="cal-appt-name">Maria S.</div>
+              <div class="cal-appt-svc">Brow Lamination</div>
+              <span class="cal-staff" style="background:var(--color-rose)">L</span>
+            </div>
+          </div>
+
+          <!-- WED -->
+          <div class="cal-col">
+            <div class="cal-col-lines"></div>
+            <div class="cal-appt emerald" style="top:calc(96px * 1.5); height:72px">
+              <div class="cal-appt-time">09:30 – 10:15</div>
+              <div class="cal-appt-name">Petra H.</div>
+              <div class="cal-appt-svc">HydraFacial</div>
+              <span class="cal-staff" style="background:var(--color-emerald)">L</span>
+            </div>
+            <div class="cal-appt cyan" style="top:calc(96px * 7); height:96px">
+              <div class="cal-appt-time">15:00 – 16:00</div>
+              <div class="cal-appt-name">Klaus M.</div>
+              <div class="cal-appt-svc">Herrenschnitt</div>
+              <span class="cal-staff" style="background:var(--color-cyan)">S</span>
+            </div>
+          </div>
+
+          <!-- THU (today) -->
+          <div class="cal-col today-col">
+            <div class="cal-col-lines"></div>
+            <div class="cal-appt purple today" style="top:calc(96px * 3); height:144px">
+              <div class="cal-appt-time">11:00 – 12:30</div>
+              <div class="cal-appt-name">Yasmin A.</div>
+              <div class="cal-appt-svc">Gel Pediküre</div>
+              <span class="cal-staff" style="background:var(--color-purple)">A</span>
+              <span class="cal-status ok" aria-label="confirmed"></span>
+            </div>
+            <div class="cal-appt emerald today pending" style="top:calc(96px * 6); height:96px">
+              <div class="cal-appt-time">14:00 – 15:00</div>
+              <div class="cal-appt-name">Brigitte K.</div>
+              <div class="cal-appt-svc">Gesichtsbehandlung</div>
+              <span class="cal-staff" style="background:var(--color-emerald)">L</span>
+              <span class="cal-status pending" aria-label="pending"></span>
+              <div class="cal-appt-actions">
+                <button aria-label="confirm">✓</button>
+                <button aria-label="decline">✗</button>
+              </div>
+            </div>
+            <!-- now line -->
+            <div class="cal-now-line" style="top:calc(96px * 6 + 32px)"></div>
+          </div>
+
+          <!-- FRI -->
+          <div class="cal-col">
+            <div class="cal-col-lines"></div>
+            <div class="cal-appt cyan" style="top:calc(96px * 1); height:96px">
+              <div class="cal-appt-time">09:00 – 10:00</div>
+              <div class="cal-appt-name">Thomas R.</div>
+              <div class="cal-appt-svc">Barbershop &amp; Rasur</div>
+              <span class="cal-staff" style="background:var(--color-cyan)">S</span>
+            </div>
+          </div>
+
+          <!-- SAT -->
+          <div class="cal-col">
+            <div class="cal-col-lines"></div>
+            <div class="cal-appt rose" style="top:calc(96px * 2.5); height:144px">
+              <div class="cal-appt-time">10:30 – 12:00</div>
+              <div class="cal-appt-name">Nathalie P.</div>
+              <div class="cal-appt-svc">Braut Make-up</div>
+              <span class="cal-staff" style="background:var(--color-rose)">L</span>
+            </div>
+          </div>
+
+          <!-- SUN -->
+          <div class="cal-col">
+            <div class="cal-col-lines"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="cal-notif">
+      <span class="cal-notif-ic">✓</span>
+      <span>Neue Buchung — <strong>Anna K.</strong>, Gel Manikür, Do 09. Apr um 11:00</span>
+      <button class="cal-notif-close">×</button>
+    </div>
+  </main>
+</div>
+
+<script src="assets/shell.js"></script>
+<script src="assets/shell-init.js"></script>
+<script>
+document.querySelector('.cal-notif-close')?.addEventListener('click', (e) => {
+  e.currentTarget.parentElement.style.display = 'none';
+});
+</script>
+</body>
+</html>

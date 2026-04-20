@@ -1,0 +1,39 @@
+<!-- Shell partial: floating controls only (no nav) -->
+<div class="floating-controls">
+  <button class="theme-toggle" data-theme-toggle aria-label="Toggle theme">
+    <span class="icon" data-theme-icon>☀</span>
+    <span data-theme-label>Light</span>
+  </button>
+</div>
+
+<div class="tweaks-panel">
+  <div class="tweaks-header">
+    <span>Tweaks</span>
+    <button data-tweaks-close style="color:var(--color-text-muted);font-size:16px;line-height:1;">×</button>
+  </div>
+  <div class="tweaks-row">
+    <label>Accent</label>
+    <div class="tweaks-swatches">
+      <button class="tweaks-swatch" data-accent="#037AFF" style="background:#037AFF"></button>
+      <button class="tweaks-swatch" data-accent="#8B5CF6" style="background:#8B5CF6"></button>
+      <button class="tweaks-swatch" data-accent="#F43F5E" style="background:#F43F5E"></button>
+      <button class="tweaks-swatch" data-accent="#10B981" style="background:#10B981"></button>
+      <button class="tweaks-swatch" data-accent="#F59E0B" style="background:#F59E0B"></button>
+      <button class="tweaks-swatch" data-accent="#111827" style="background:#111827"></button>
+    </div>
+  </div>
+  <div class="tweaks-row">
+    <label>Font scale</label>
+    <input type="range" min="0.85" max="1.2" step="0.05" value="1" data-font-scale>
+  </div>
+  <div class="tweaks-row">
+    <label>Corner radius</label>
+    <input type="range" min="0" max="2" step="0.25" value="1" data-radius>
+  </div>
+  <div class="tweaks-row">
+    <label>Density</label>
+    <input type="range" min="0.8" max="1.15" step="0.05" value="1" data-density>
+  </div>
+</div>
+
+<button class="tweaks-fab" data-tweaks-open aria-label="Open tweaks">⚙</button>

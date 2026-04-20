@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Warteliste — Vienna Glow Studio Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/tokens.css?v=3">
+<link rel="stylesheet" href="assets/admin.css?v=3">
+<link rel="stylesheet" href="assets/admin-v2.css?v=1">
+</head>
+<body data-route="waiting-list" data-adm="waiting-list">
+<div id="shell-mount"></div>
+<div class="admin-layout">
+  <aside class="admin-sidebar" id="admin-sidebar-mount"></aside>
+  <main class="admin-main">
+    <header class="adm-header">
+      <div class="adm-header-title">
+        <span class="breadcrumb">Warteliste</span>
+        <h2>Warteliste <span style="color:var(--color-text-muted);font-weight:400;font-size:14px;margin-left:8px">· 7 wartend</span></h2>
+      </div>
+      <div class="adm-header-actions">
+        <button class="btn btn-ghost btn-sm">⟳ Erneut prüfen</button>
+        <button class="btn btn-primary btn-sm">+ Manuell hinzufügen</button>
+      </div>
+    </header>
+    <div class="adm-toolbar">
+      <div class="adm-search"><input type="search" placeholder="Kunde, Leistung, Datum..."></div>
+      <button class="adm-filter-chip active">Alle (7)</button>
+      <button class="adm-filter-chip">⏳ Wartend (4)</button>
+      <button class="adm-filter-chip">📣 Benachrichtigt (2)</button>
+      <button class="adm-filter-chip">✓ Gebucht (1)</button>
+      <button class="adm-filter-chip">Abgelaufen (0)</button>
+    </div>
+    <div class="adm-body">
+      <table class="clients-table wl-table">
+        <thead>
+          <tr>
+            <th>Kunde</th>
+            <th>Gewünschte Leistung</th>
+            <th>Wunschdatum</th>
+            <th>Registriert</th>
+            <th>Status</th>
+            <th>Aktion</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="client-name-cell"><div class="client-avatar">MH</div><div class="client-name-wrap"><span class="client-name">Marco Hofer</span><span class="client-email">+43 664 555 12 34</span></div></div></td>
+            <td><strong>Herrenhaarschnitt + Bart</strong><div style="font-size:11px;color:var(--color-text-muted)">60 Min · Ali B. bevorzugt</div></td>
+            <td>Sa, 18. Apr<div style="font-size:11px;color:var(--color-text-muted)">ganztags</div></td>
+            <td>vor 2 Tagen</td>
+            <td><span class="wl-status pending">⏳ Wartend</span></td>
+            <td><button class="btn btn-ghost btn-sm">Slot anbieten</button></td>
+          </tr>
+          <tr>
+            <td><div class="client-name-cell"><div class="client-avatar v2">EN</div><div class="client-name-wrap"><span class="client-name">Elena Novak</span><span class="client-email">elena.novak@yahoo.com</span></div></div></td>
+            <td><strong>HydraFacial Deluxe</strong><div style="font-size:11px;color:var(--color-text-muted)">75 Min · Lena K.</div></td>
+            <td>Do, 23. Apr<div style="font-size:11px;color:var(--color-text-muted)">Nachmittag</div></td>
+            <td>vor 5 Std</td>
+            <td><span class="wl-status notified">📣 Benachrichtigt 14:22</span></td>
+            <td><button class="btn btn-ghost btn-sm">Nochmal senden</button></td>
+          </tr>
+          <tr>
+            <td><div class="client-name-cell"><div class="client-avatar v3">FY</div><div class="client-name-wrap"><span class="client-name">Fatma Yıldız</span><span class="client-email">+43 680 444 77 88</span></div></div></td>
+            <td><strong>Balayage + Toning</strong><div style="font-size:11px;color:var(--color-text-muted)">120 Min · Sofia B.</div></td>
+            <td>Fr, 24. Apr<div style="font-size:11px;color:var(--color-text-muted)">nach 16:00</div></td>
+            <td>gestern</td>
+            <td><span class="wl-status pending">⏳ Wartend</span></td>
+            <td><button class="btn btn-ghost btn-sm">Slot anbieten</button></td>
+          </tr>
+          <tr>
+            <td><div class="client-name-cell"><div class="client-avatar v4">PK</div><div class="client-name-wrap"><span class="client-name">Pınar Koç</span><span class="client-email">pinar.k@outlook.com</span></div></div></td>
+            <td><strong>Brow Lamination</strong><div style="font-size:11px;color:var(--color-text-muted)">45 Min</div></td>
+            <td>Sa, 18. Apr · 10:00</td>
+            <td>vor 3 Tagen</td>
+            <td><span class="wl-status booked">✓ Gebucht 18. Apr 10:00</span></td>
+            <td style="color:var(--color-text-faint);font-size:12px">Abgeschlossen</td>
+          </tr>
+          <tr>
+            <td><div class="client-name-cell"><div class="client-avatar">SL</div><div class="client-name-wrap"><span class="client-name">Sophia Leitner</span><span class="client-email">sophia.l@gmx.at</span></div></div></td>
+            <td><strong>Gel Manikür</strong><div style="font-size:11px;color:var(--color-text-muted)">60 Min</div></td>
+            <td>Do, 17. Apr<div style="font-size:11px;color:var(--color-text-muted)">Nachmittag</div></td>
+            <td>vor 1 Std</td>
+            <td><span class="wl-status pending">⏳ Wartend</span></td>
+            <td><button class="btn btn-ghost btn-sm">Slot anbieten</button></td>
+          </tr>
+          <tr>
+            <td><div class="client-name-cell"><div class="client-avatar v2">LD</div><div class="client-name-wrap"><span class="client-name">Leila Demir</span><span class="client-email">leila.demir@hotmail.com</span></div></div></td>
+            <td><strong>Epilasyon Ganzkörper</strong><div style="font-size:11px;color:var(--color-text-muted)">90 Min</div></td>
+            <td>Sa, 2. Mai<div style="font-size:11px;color:var(--color-text-muted)">Vormittag</div></td>
+            <td>vor 2 Std</td>
+            <td><span class="wl-status notified">📣 Benachrichtigt 12:05</span></td>
+            <td><button class="btn btn-ghost btn-sm">Nochmal senden</button></td>
+          </tr>
+          <tr>
+            <td><div class="client-name-cell"><div class="client-avatar v3">DW</div><div class="client-name-wrap"><span class="client-name">Daniel Weber</span><span class="client-email">d.weber@example.com</span></div></div></td>
+            <td><strong>Haarschnitt + Färbung</strong><div style="font-size:11px;color:var(--color-text-muted)">90 Min</div></td>
+            <td>Fr, 24. Apr · 18:00</td>
+            <td>heute</td>
+            <td><span class="wl-status pending">⏳ Wartend</span></td>
+            <td><button class="btn btn-ghost btn-sm">Slot anbieten</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+<script src="assets/shell.js"></script>
+<script src="assets/shell-init.js"></script>
+</body>
+</html>

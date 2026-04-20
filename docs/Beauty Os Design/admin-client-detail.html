@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Katrin Huber — Vienna Glow Studio Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/tokens.css?v=3">
+<link rel="stylesheet" href="assets/admin.css?v=3">
+<link rel="stylesheet" href="assets/admin-v2.css?v=1">
+</head>
+<body data-route="clients" data-adm="clients">
+<div id="shell-mount"></div>
+<div class="admin-layout">
+  <aside class="admin-sidebar" id="admin-sidebar-mount"></aside>
+  <main class="admin-main">
+    <header class="adm-header">
+      <div class="adm-header-title">
+        <span class="breadcrumb"><a href="admin-clients.html" style="color:inherit">← Kunden</a> / Katrin Huber</span>
+        <h2>Katrin Huber <span class="client-vip" style="vertical-align:middle">VIP</span></h2>
+      </div>
+      <div class="adm-header-actions">
+        <button class="btn btn-ghost btn-sm">📤 Daten exportieren</button>
+        <button class="btn btn-ghost btn-sm">🗑 Löschanfrage</button>
+        <button class="btn btn-primary btn-sm">+ Neuer Termin</button>
+      </div>
+    </header>
+    <div class="adm-body">
+      <div class="profile-layout">
+        <aside class="profile-card">
+          <div class="profile-hero">
+            <div class="profile-avatar">KH</div>
+            <div class="profile-name">Katrin Huber</div>
+            <div class="profile-sub">Kundin seit Okt 2022 · DE/AT</div>
+          </div>
+          <div class="profile-kv">
+            <div class="profile-kv-row">
+              <span class="profile-kv-label">E-Mail</span>
+              <span class="profile-kv-val">katrin.huber@example.at</span>
+            </div>
+            <div class="profile-kv-row">
+              <span class="profile-kv-label">Telefon</span>
+              <span class="profile-kv-val">+43 664 123 45 67</span>
+            </div>
+            <div class="profile-kv-row">
+              <span class="profile-kv-label">Geburtstag</span>
+              <span class="profile-kv-val">14. Juli · 42</span>
+            </div>
+            <div class="profile-kv-row">
+              <span class="profile-kv-label">Bevorzugte Stylistin</span>
+              <span class="profile-kv-val">Anna M.</span>
+            </div>
+            <div class="profile-kv-row">
+              <span class="profile-kv-label">Quelle (Lead)</span>
+              <span class="profile-kv-val"><span class="src-badge">🌐 Web</span></span>
+            </div>
+            <div class="profile-kv-row">
+              <span class="profile-kv-label">Sprache</span>
+              <span class="profile-kv-val">Deutsch</span>
+            </div>
+          </div>
+          <div class="profile-actions">
+            <button class="btn btn-ghost btn-sm">☎ Anrufen</button>
+            <button class="btn btn-ghost btn-sm">✉ Nachricht senden</button>
+          </div>
+          <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--color-border);font-size:11px;color:var(--color-text-faint)">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+              <span>Einwilligungen</span>
+              <span style="color:var(--color-emerald)">✓ DSGVO</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+              <span>Erinnerungen (SMS/E-Mail)</span>
+              <span style="color:var(--color-emerald)">aktiv</span>
+            </div>
+            <div style="display:flex;justify-content:space-between">
+              <span>Newsletter</span>
+              <span style="color:var(--color-text-muted)">abbestellt</span>
+            </div>
+          </div>
+        </aside>
+
+        <div class="profile-main">
+          <div class="profile-stats">
+            <div class="profile-stat"><div class="profile-stat-val">24</div><div class="profile-stat-lbl">Termine gesamt</div></div>
+            <div class="profile-stat"><div class="profile-stat-val" style="color:var(--color-emerald)">€ 1.840</div><div class="profile-stat-lbl">Gesamtumsatz</div></div>
+            <div class="profile-stat"><div class="profile-stat-val">€ 76,70</div><div class="profile-stat-lbl">Ø Termin</div></div>
+            <div class="profile-stat"><div class="profile-stat-val">3</div><div class="profile-stat-lbl">No-Shows</div></div>
+          </div>
+
+          <div>
+            <div class="profile-tabs">
+              <button class="profile-tab active">Historie (24)</button>
+              <button class="profile-tab">Notizen (4)</button>
+              <button class="profile-tab">Nachrichten (18)</button>
+              <button class="profile-tab">Einwilligungen</button>
+              <button class="profile-tab">Aktivitäten</button>
+            </div>
+
+            <div class="timeline">
+              <div class="timeline-item">
+                <div class="timeline-date">16. APR<br>2026</div>
+                <div class="timeline-axis"><div class="timeline-dot"></div></div>
+                <div class="timeline-body">
+                  <div class="timeline-top">
+                    <span class="timeline-svc">Gel Manikür</span>
+                    <span class="timeline-meta">11:00 · Anna M. · € 45,00</span>
+                  </div>
+                  <div style="font-size:12px;color:var(--color-accent);font-weight:500">🔒 Vorgemerkt · Slot reserviert</div>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-date">20. MÄR<br>2026</div>
+                <div class="timeline-axis"><div class="timeline-dot completed"></div></div>
+                <div class="timeline-body">
+                  <div class="timeline-top">
+                    <span class="timeline-svc">Gel Manikür + Nail Art</span>
+                    <span class="timeline-meta">14:30 · Anna M. · € 75,00</span>
+                  </div>
+                  <div style="font-size:12px;color:var(--color-text-muted)">Notiz: "Rosa Bordeaux, kurze Länge"</div>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-date">22. FEB<br>2026</div>
+                <div class="timeline-axis"><div class="timeline-dot completed"></div></div>
+                <div class="timeline-body">
+                  <div class="timeline-top">
+                    <span class="timeline-svc">HydraFacial Classic</span>
+                    <span class="timeline-meta">10:00 · Lena K. · € 89,00</span>
+                  </div>
+                  <div style="font-size:12px;color:var(--color-text-muted)">★★★★★ · "Sehr entspannend, Haut fühlt sich fantastisch an"</div>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-date">8. FEB<br>2026</div>
+                <div class="timeline-axis"><div class="timeline-dot cancelled"></div></div>
+                <div class="timeline-body">
+                  <div class="timeline-top">
+                    <span class="timeline-svc">Wimpernlifting</span>
+                    <span class="timeline-meta" style="color:var(--color-rose)">abgesagt · 2 Std vorher</span>
+                  </div>
+                  <div style="font-size:12px;color:var(--color-text-muted)">Grund: "Kranker Sohn"</div>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-date">25. JAN<br>2026</div>
+                <div class="timeline-axis"><div class="timeline-dot completed"></div></div>
+                <div class="timeline-body">
+                  <div class="timeline-top">
+                    <span class="timeline-svc">Gel Manikür</span>
+                    <span class="timeline-meta">11:00 · Anna M. · € 45,00</span>
+                  </div>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-date">14. DEZ<br>2025</div>
+                <div class="timeline-axis"><div class="timeline-dot no-show"></div></div>
+                <div class="timeline-body">
+                  <div class="timeline-top">
+                    <span class="timeline-svc">Brow Lamination</span>
+                    <span class="timeline-meta" style="color:var(--color-amber)">no_show</span>
+                  </div>
+                  <div style="font-size:12px;color:var(--color-text-muted)">Gebühr: € 15,00 (halbiert, VIP)</div>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-date">22. NOV<br>2025</div>
+                <div class="timeline-axis"><div class="timeline-dot completed"></div></div>
+                <div class="timeline-body">
+                  <div class="timeline-top">
+                    <span class="timeline-svc">Gel Manikür + Gel Pediküre</span>
+                    <span class="timeline-meta">15:00 · Anna M. · € 95,00</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="assets/shell.js"></script>
+<script src="assets/shell-init.js"></script>
+</body>
+</html>

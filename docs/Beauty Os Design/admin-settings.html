@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Einstellungen — Vienna Glow Studio Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/tokens.css?v=3">
+<link rel="stylesheet" href="assets/admin.css?v=3">
+<link rel="stylesheet" href="assets/admin-v2.css?v=1">
+</head>
+<body data-route="settings" data-adm="settings">
+<div id="shell-mount"></div>
+<div class="admin-layout">
+  <aside class="admin-sidebar" id="admin-sidebar-mount"></aside>
+  <main class="admin-main">
+    <header class="adm-header">
+      <div class="adm-header-title">
+        <span class="breadcrumb">Studio-Einstellungen</span>
+        <h2>Einstellungen</h2>
+      </div>
+      <div class="adm-header-actions">
+        <button class="btn btn-ghost btn-sm">Verwerfen</button>
+        <button class="btn btn-primary btn-sm">Änderungen speichern</button>
+      </div>
+    </header>
+    <div class="adm-body">
+      <div class="settings-layout">
+
+        <nav class="settings-side">
+          <div class="settings-side-link active" onclick="document.getElementById('sec-services').scrollIntoView({behavior:'smooth'})">Leistungen & Preise</div>
+          <div class="settings-side-link" onclick="document.getElementById('sec-hours').scrollIntoView({behavior:'smooth'})">Öffnungszeiten</div>
+          <div class="settings-side-link" onclick="document.getElementById('sec-closed').scrollIntoView({behavior:'smooth'})">Geschlossene Tage</div>
+          <div class="settings-side-link" onclick="document.getElementById('sec-rules').scrollIntoView({behavior:'smooth'})">Buchungsregeln</div>
+        </nav>
+
+        <div class="settings-main">
+
+          <!-- Leistungen -->
+          <section id="sec-services" class="settings-section">
+            <div class="settings-section-title">
+              <div>
+                <h4>Leistungen & Preise</h4>
+                <div class="hint">8 aktive Leistungen · letzte Änderung vor 3 Tagen</div>
+              </div>
+              <button class="btn btn-ghost btn-sm">+ Leistung hinzufügen</button>
+            </div>
+            <div class="svc-edit-row svc-head">
+              <div>Name</div>
+              <div>Dauer (Min)</div>
+              <div>Preis (€)</div>
+              <div>Kategorie</div>
+              <div></div>
+            </div>
+            <div class="svc-edit-row">
+              <input value="Gel Manikür">
+              <input value="60" type="number">
+              <input value="45.00" type="number" step="0.50">
+              <input value="Nägel">
+              <button class="btn btn-ghost btn-sm" style="padding:4px 8px">✕</button>
+            </div>
+            <div class="svc-edit-row">
+              <input value="Gel Pediküre">
+              <input value="75" type="number">
+              <input value="55.00" type="number" step="0.50">
+              <input value="Nägel">
+              <button class="btn btn-ghost btn-sm" style="padding:4px 8px">✕</button>
+            </div>
+            <div class="svc-edit-row">
+              <input value="Nail Art Design">
+              <input value="90" type="number">
+              <input value="65.00" type="number" step="0.50">
+              <input value="Nägel">
+              <button class="btn btn-ghost btn-sm" style="padding:4px 8px">✕</button>
+            </div>
+            <div class="svc-edit-row">
+              <input value="Herrenhaarschnitt">
+              <input value="30" type="number">
+              <input value="25.00" type="number" step="0.50">
+              <input value="Haare">
+              <button class="btn btn-ghost btn-sm" style="padding:4px 8px">✕</button>
+            </div>
+            <div class="svc-edit-row">
+              <input value="Haarschnitt Damen">
+              <input value="60" type="number">
+              <input value="55.00" type="number" step="0.50">
+              <input value="Haare">
+              <button class="btn btn-ghost btn-sm" style="padding:4px 8px">✕</button>
+            </div>
+            <div class="svc-edit-row">
+              <input value="Balayage + Toning">
+              <input value="120" type="number">
+              <input value="165.00" type="number" step="0.50">
+              <input value="Haare">
+              <button class="btn btn-ghost btn-sm" style="padding:4px 8px">✕</button>
+            </div>
+            <div class="svc-edit-row">
+              <input value="HydraFacial Classic">
+              <input value="45" type="number">
+              <input value="89.00" type="number" step="0.50">
+              <input value="Gesichtsbehandlung">
+              <button class="btn btn-ghost btn-sm" style="padding:4px 8px">✕</button>
+            </div>
+            <div class="svc-edit-row">
+              <input value="Wimpernlifting">
+              <input value="60" type="number">
+              <input value="75.00" type="number" step="0.50">
+              <input value="Brows & Lashes">
+              <button class="btn btn-ghost btn-sm" style="padding:4px 8px">✕</button>
+            </div>
+          </section>
+
+          <!-- Öffnungszeiten -->
+          <section id="sec-hours" class="settings-section">
+            <div class="settings-section-title">
+              <div>
+                <h4>Öffnungszeiten</h4>
+                <div class="hint">Standard-Wochenzeiten · Ausnahmen unter "Geschlossene Tage"</div>
+              </div>
+            </div>
+            <div class="hours-grid">
+              <div class="hours-row">
+                <div class="day">Montag</div>
+                <label class="gdpr-check"><input type="checkbox" checked><span>geöffnet</span></label>
+                <input type="time" value="09:00">
+                <input type="time" value="19:00">
+              </div>
+              <div class="hours-row">
+                <div class="day">Dienstag</div>
+                <label class="gdpr-check"><input type="checkbox" checked><span>geöffnet</span></label>
+                <input type="time" value="09:00">
+                <input type="time" value="19:00">
+              </div>
+              <div class="hours-row">
+                <div class="day">Mittwoch</div>
+                <label class="gdpr-check"><input type="checkbox" checked><span>geöffnet</span></label>
+                <input type="time" value="09:00">
+                <input type="time" value="19:00">
+              </div>
+              <div class="hours-row">
+                <div class="day">Donnerstag</div>
+                <label class="gdpr-check"><input type="checkbox" checked><span>geöffnet</span></label>
+                <input type="time" value="09:00">
+                <input type="time" value="20:00">
+              </div>
+              <div class="hours-row">
+                <div class="day">Freitag</div>
+                <label class="gdpr-check"><input type="checkbox" checked><span>geöffnet</span></label>
+                <input type="time" value="09:00">
+                <input type="time" value="20:00">
+              </div>
+              <div class="hours-row">
+                <div class="day">Samstag</div>
+                <label class="gdpr-check"><input type="checkbox" checked><span>geöffnet</span></label>
+                <input type="time" value="09:00">
+                <input type="time" value="17:00">
+              </div>
+              <div class="hours-row closed">
+                <div class="day" style="color:var(--color-text-muted)">Sonntag</div>
+                <label class="gdpr-check"><input type="checkbox"><span>geöffnet</span></label>
+                <input type="time" value="00:00">
+                <input type="time" value="00:00">
+              </div>
+            </div>
+          </section>
+
+          <!-- Geschlossene Tage -->
+          <section id="sec-closed" class="settings-section">
+            <div class="settings-section-title">
+              <div>
+                <h4>Geschlossene Tage & Feiertage</h4>
+                <div class="hint">Einzelne Tage oder Zeiträume, an denen keine Buchungen möglich sind</div>
+              </div>
+              <button class="btn btn-ghost btn-sm">+ Tag hinzufügen</button>
+            </div>
+            <div class="closed-dates">
+              <div class="closed-date-row">
+                <div><strong>01. Mai 2026</strong> <span style="color:var(--color-text-muted);margin-left:8px">· Staatsfeiertag (Tag der Arbeit)</span></div>
+                <button class="btn btn-ghost btn-sm">Entfernen</button>
+              </div>
+              <div class="closed-date-row">
+                <div><strong>14. Mai 2026</strong> <span style="color:var(--color-text-muted);margin-left:8px">· Christi Himmelfahrt</span></div>
+                <button class="btn btn-ghost btn-sm">Entfernen</button>
+              </div>
+              <div class="closed-date-row">
+                <div><strong>25. Mai 2026</strong> <span style="color:var(--color-text-muted);margin-left:8px">· Pfingstmontag</span></div>
+                <button class="btn btn-ghost btn-sm">Entfernen</button>
+              </div>
+              <div class="closed-date-row">
+                <div><strong>03. – 17. Aug 2026</strong> <span style="color:var(--color-text-muted);margin-left:8px">· Betriebsurlaub · 15 Tage</span></div>
+                <button class="btn btn-ghost btn-sm">Entfernen</button>
+              </div>
+              <div class="closed-date-row">
+                <div><strong>24. – 31. Dez 2026</strong> <span style="color:var(--color-text-muted);margin-left:8px">· Weihnachtsferien · 8 Tage</span></div>
+                <button class="btn btn-ghost btn-sm">Entfernen</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- Buchungsregeln -->
+          <section id="sec-rules" class="settings-section">
+            <div class="settings-section-title">
+              <div>
+                <h4>Buchungsregeln</h4>
+                <div class="hint">Gültig für Online-Buchungen über die Website und Google Business</div>
+              </div>
+            </div>
+            <div class="form-grid">
+              <div class="form-row">
+                <label class="form-label">Minimale Vorlaufzeit</label>
+                <select class="form-input">
+                  <option>0 Stunden (sofort buchbar)</option>
+                  <option selected>2 Stunden</option>
+                  <option>4 Stunden</option>
+                  <option>12 Stunden</option>
+                  <option>24 Stunden</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label class="form-label">Maximale Vorausbuchung</label>
+                <select class="form-input">
+                  <option>30 Tage</option>
+                  <option selected>60 Tage</option>
+                  <option>90 Tage</option>
+                  <option>180 Tage</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label class="form-label">Slot-Raster</label>
+                <select class="form-input">
+                  <option selected>15 Minuten</option>
+                  <option>30 Minuten</option>
+                  <option>60 Minuten</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label class="form-label">Slot-Reservation Lock</label>
+                <select class="form-input">
+                  <option>3 Minuten</option>
+                  <option selected>5 Minuten</option>
+                  <option>10 Minuten</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label class="form-label">Stornierung bis</label>
+                <select class="form-input">
+                  <option>Jederzeit</option>
+                  <option selected>24 Stunden vor Termin</option>
+                  <option>48 Stunden vor Termin</option>
+                  <option>Nur telefonisch</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label class="form-label">Auto-Bestätigung</label>
+                <select class="form-input">
+                  <option selected>Ja, sofort bestätigen</option>
+                  <option>Nur nach manueller Prüfung</option>
+                </select>
+              </div>
+              <div class="form-row form-row-full">
+                <label class="form-label">Puffer zwischen Terminen (pro Mitarbeiter:in)</label>
+                <select class="form-input">
+                  <option>Kein Puffer</option>
+                  <option selected>5 Minuten</option>
+                  <option>10 Minuten</option>
+                  <option>15 Minuten</option>
+                </select>
+              </div>
+              <div class="form-row form-row-full">
+                <label class="form-label">Erinnerungs-E-Mail (Stunden vor Termin)</label>
+                <input class="form-input" type="number" value="24">
+              </div>
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="assets/shell.js"></script>
+<script src="assets/shell-init.js"></script>
+</body>
+</html>

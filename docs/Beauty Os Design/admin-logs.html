@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Logs — Vienna Glow Studio Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/tokens.css?v=3">
+<link rel="stylesheet" href="assets/admin.css?v=3">
+<link rel="stylesheet" href="assets/admin-v2.css?v=1">
+<style>
+  :root { --font-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace; }
+  .logs-filter-bar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 14px 32px;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    flex-wrap: wrap;
+  }
+  .logs-filter-bar select, .logs-filter-bar input {
+    padding: 7px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-card);
+    font-size: 12px;
+    color: var(--color-text);
+    font-family: inherit;
+  }
+  .log-agent-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px;
+    border-radius: var(--radius-pill);
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    font-family: var(--font-body);
+  }
+  .log-agent-badge.triage { background: color-mix(in srgb, var(--color-accent) 12%, transparent); color: var(--color-accent); border-color: color-mix(in srgb, var(--color-accent) 30%, transparent); }
+  .log-agent-badge.rebook { background: color-mix(in srgb, var(--color-purple) 12%, transparent); color: var(--color-purple); border-color: color-mix(in srgb, var(--color-purple) 30%, transparent); }
+  .log-agent-badge.notify { background: color-mix(in srgb, var(--color-cyan) 12%, transparent); color: var(--color-cyan); border-color: color-mix(in srgb, var(--color-cyan) 30%, transparent); }
+  .log-agent-badge.review { background: color-mix(in srgb, var(--color-amber) 12%, transparent); color: var(--color-amber); border-color: color-mix(in srgb, var(--color-amber) 30%, transparent); }
+  .log-agent-badge.slot { background: color-mix(in srgb, var(--color-emerald) 12%, transparent); color: var(--color-emerald); border-color: color-mix(in srgb, var(--color-emerald) 30%, transparent); }
+
+  .log-ts { color: var(--color-text-faint); font-size: 11px; white-space: nowrap; }
+  .log-msg { font-family: var(--font-mono); font-size: 12px; color: var(--color-text); }
+  .log-expand {
+    padding: 12px 16px 16px;
+    background: var(--color-bg-surface);
+    border-top: 1px solid var(--color-border);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    white-space: pre-wrap;
+    line-height: 1.55;
+  }
+  tr.expanded-row td { padding: 0 !important; border-bottom: 1px solid var(--color-border); }
+</style>
+</head>
+<body data-route="logs" data-adm="logs">
+<div id="shell-mount"></div>
+<div class="admin-layout">
+  <aside class="admin-sidebar" id="admin-sidebar-mount"></aside>
+  <main class="admin-main">
+    <header class="adm-header">
+      <div class="adm-header-title">
+        <span class="breadcrumb">System · event_logs</span>
+        <h2>AI Agent Logs <span style="color:var(--color-text-muted);font-weight:400;font-size:14px;margin-left:8px">· 1.247 Events heute</span></h2>
+      </div>
+      <div class="adm-header-actions">
+        <button class="btn btn-ghost btn-sm">⟳ Live</button>
+        <button class="btn btn-ghost btn-sm">Exportieren (CSV)</button>
+      </div>
+    </header>
+
+    <div class="logs-filter-bar">
+      <select><option>Letzte 24 Stunden</option><option>Letzte 7 Tage</option><option>Letzte 30 Tage</option><option>Benutzerdefiniert</option></select>
+      <select><option>Alle Agents</option><option>inquiry-triage</option><option>slot-reservation</option><option>rebooking-scheduler</option><option>notify-worker</option><option>review-agent</option></select>
+      <select><option>Alle Level</option><option>info</option><option>success</option><option>warn</option><option>error</option></select>
+      <input type="search" placeholder="Entity ID, Kunde, Keyword..." style="flex:1;min-width:200px">
+      <div style="display:flex;gap:8px;margin-left:auto;font-size:12px;color:var(--color-text-muted)">
+        <span>✓ 1.182 success</span>
+        <span>⚠ 52 warn</span>
+        <span>✕ 13 error</span>
+      </div>
+    </div>
+
+    <div class="adm-body">
+      <table class="logs-table">
+        <thead>
+          <tr>
+            <th style="width:120px">Timestamp</th>
+            <th style="width:80px">Level</th>
+            <th style="width:150px">Agent</th>
+            <th>Event / Message</th>
+            <th style="width:90px">Tokens</th>
+            <th style="width:70px">Dauer</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="log-ts">14:32:18.421</td>
+            <td><span class="log-level success">success</span></td>
+            <td><span class="log-agent-badge triage">inquiry-triage</span></td>
+            <td>
+              <div class="log-msg">lead_qualified lead_id=ld_7f2a customer="Sophie Becker" confidence=0.92 → lane=qualified</div>
+              <div class="log-meta">source=website · intent=hydrafacial · preferred=Lena K. · claude-sonnet-4-5</div>
+            </td>
+            <td class="log-tokens">1.847 / 312</td>
+            <td class="log-duration">1.42s</td>
+          </tr>
+          <tr>
+            <td class="log-ts">14:31:55.108</td>
+            <td><span class="log-level info">info</span></td>
+            <td><span class="log-agent-badge slot">slot-reservation</span></td>
+            <td>
+              <div class="log-msg">reservation_created token=rsv_9b4d staff=sofia_b slot=2026-04-12T09:00 lock_ttl=300s</div>
+              <div class="log-meta">customer=fiona.m@example.com · service=balayage · expires=14:36:55</div>
+            </td>
+            <td class="log-tokens">—</td>
+            <td class="log-duration">42ms</td>
+          </tr>
+          <tr>
+            <td class="log-ts">14:31:02.774</td>
+            <td><span class="log-level success">success</span></td>
+            <td><span class="log-agent-badge notify">notify-worker</span></td>
+            <td>
+              <div class="log-msg">email_sent template=booking_confirmed to="tom.bauer@gmx.at" provider=resend msg_id=6a9f12</div>
+              <div class="log-meta">booking_id=bk_4c2e · appointment=2026-04-10T10:00 · opens_expected=24h</div>
+            </td>
+            <td class="log-tokens">—</td>
+            <td class="log-duration">312ms</td>
+          </tr>
+          <tr>
+            <td class="log-ts">14:30:44.893</td>
+            <td><span class="log-level warn">warn</span></td>
+            <td><span class="log-agent-badge triage">inquiry-triage</span></td>
+            <td>
+              <div class="log-msg">low_confidence_triage lead_id=ld_7f29 confidence=0.48 → manual_review_required</div>
+              <div class="log-meta">reason="ambiguous_service_intent" · message_length=14 · source=instagram</div>
+            </td>
+            <td class="log-tokens">1.204 / 89</td>
+            <td class="log-duration">0.98s</td>
+          </tr>
+          <tr>
+            <td class="log-ts">14:28:19.220</td>
+            <td><span class="log-level success">success</span></td>
+            <td><span class="log-agent-badge rebook">rebooking-scheduler</span></td>
+            <td>
+              <div class="log-msg">rebooking_scheduled customer_id=cu_2a8f interval=21d next_send=2026-04-29T08:00</div>
+              <div class="log-meta">last_service=gel_manikür · avg_interval=21.3d · optin=true</div>
+            </td>
+            <td class="log-tokens">486 / 72</td>
+            <td class="log-duration">0.62s</td>
+          </tr>
+          <tr>
+            <td class="log-ts">14:26:03.015</td>
+            <td><span class="log-level info">info</span></td>
+            <td><span class="log-agent-badge slot">slot-reservation</span></td>
+            <td>
+              <div class="log-msg">reservation_released token=rsv_8a1c reason=expired ttl_seconds=300</div>
+              <div class="log-meta">staff=ali_b · slot=2026-04-11T14:30 · customer_action=abandoned</div>
+            </td>
+            <td class="log-tokens">—</td>
+            <td class="log-duration">18ms</td>
+          </tr>
+          <tr>
+            <td class="log-ts">14:22:11.660</td>
+            <td><span class="log-level error">error</span></td>
+            <td><span class="log-agent-badge notify">notify-worker</span></td>
+            <td>
+              <div class="log-msg">sms_delivery_failed provider=twilio to="+43664****" error_code=21211 → queued_retry</div>
+              <div class="log-meta">template=waitlist_slot_offered · retries=1/3 · next_retry=14:32:11</div>
+            </td>
+            <td class="log-tokens">—</td>
+            <td class="log-duration">1.08s</td>
+          </tr>
+          <tr>
+            <td class="log-ts">14:20:58.442</td>
+            <td><span class="log-level success">success</span></td>
+            <td><span class="log-agent-badge review">review-agent</span></td>
+            <td>
+              <div class="log-msg">review_invite_sent booking_id=bk_4b91 customer="Elena N." google_cid=CID_xxx</div>
+              <div class="log-meta">completed_at=2026-04-09T16:30 · sent_after=22h · token=rv_f2a8</div>
+            </td>
+            <td class="log-tokens">384 / 156</td>
+            <td class="log-duration">0.71s</td>
+          </tr>
+          <tr>
+            <td class="log-ts">14:18:32.901</td>
+            <td><span class="log-level info">info</span></td>
+            <td><span class="log-agent-badge triage">inquiry-triage</span></td>
+            <td>
+              <div class="log-msg">lead_created lead_id=ld_7f31 source=google_business message="Balayage Termin?" → new</div>
+              <div class="log-meta">gbm_thread=gbm_8812 · first_response_sla=5min · assigned=auto</div>
+            </td>
+            <td class="log-tokens">—</td>
+            <td class="log-duration">24ms</td>
+          </tr>
+          <tr>
+            <td class="log-ts">14:15:07.550</td>
+            <td><span class="log-level success">success</span></td>
+            <td><span class="log-agent-badge notify">notify-worker</span></td>
+            <td>
+              <div class="log-msg">waitlist_notification_sent entries=3 channel=email,sms</div>
+              <div class="log-meta">slot_freed=2026-04-18T10:00 · first_matching=pınar_koç · notified_within=2min</div>
+            </td>
+            <td class="log-tokens">—</td>
+            <td class="log-duration">1.24s</td>
+          </tr>
+          <tr>
+            <td class="log-ts">14:12:48.109</td>
+            <td><span class="log-level success">success</span></td>
+            <td><span class="log-agent-badge slot">slot-reservation</span></td>
+            <td>
+              <div class="log-msg">booking_confirmed token=rsv_9a21 → booking_id=bk_4c2e payment=not_required</div>
+              <div class="log-meta">elapsed_from_reserve=2min 44s · conversion=true</div>
+            </td>
+            <td class="log-tokens">—</td>
+            <td class="log-duration">156ms</td>
+          </tr>
+          <tr>
+            <td class="log-ts">14:08:12.803</td>
+            <td><span class="log-level warn">warn</span></td>
+            <td><span class="log-agent-badge rebook">rebooking-scheduler</span></td>
+            <td>
+              <div class="log-msg">rebooking_skipped customer_id=cu_4c81 reason=opt_out preferences.marketing=false</div>
+              <div class="log-meta">last_visit=180d · would_have_sent=hydrafacial_reminder · gdpr_respected=true</div>
+            </td>
+            <td class="log-tokens">—</td>
+            <td class="log-duration">12ms</td>
+          </tr>
+          <tr>
+            <td class="log-ts">14:05:19.047</td>
+            <td><span class="log-level success">success</span></td>
+            <td><span class="log-agent-badge triage">inquiry-triage</span></td>
+            <td>
+              <div class="log-msg">auto_reply_generated lead_id=ld_7f22 tone=freundlich_professionell → awaiting_customer</div>
+              <div class="log-meta">template=clarification_needed · question="Welches Datum?" · claude-sonnet-4-5</div>
+            </td>
+            <td class="log-tokens">2.104 / 287</td>
+            <td class="log-duration">1.88s</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;font-size:12px;color:var(--color-text-muted)">
+        <div>Zeige 13 von 1.247 Events · Sortiert: neueste zuerst</div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-ghost btn-sm">← Zurück</button>
+          <button class="btn btn-ghost btn-sm">Weiter →</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="assets/shell.js"></script>
+<script src="assets/shell-init.js"></script>
+</body>
+</html>

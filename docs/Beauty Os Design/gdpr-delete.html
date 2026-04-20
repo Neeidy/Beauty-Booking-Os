@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daten löschen — Vienna Glow Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/tokens.css?v=3">
+<link rel="stylesheet" href="assets/booking.css?v=3">
+<style>
+  body { background: var(--color-bg-surface); }
+  .wl-wrap { padding: 120px 16px 96px; max-width: 620px; margin: 0 auto; }
+  .wl-card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-elevated);
+    padding: 40px;
+  }
+  .wl-header { text-align: center; padding-bottom: 24px; border-bottom: 1px solid var(--color-border); margin-bottom: 24px; }
+  .wl-icon {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--color-rose) 15%, transparent);
+    color: var(--color-rose);
+    font-size: 28px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 14px;
+  }
+  .wl-header h3 { font-size: 22px; font-weight: 700; margin: 0 0 6px; }
+  .wl-header p { color: var(--color-text-muted); font-size: 14px; }
+  .warn-box {
+    background: color-mix(in srgb, var(--color-amber) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-amber) 35%, transparent);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    margin-bottom: 22px;
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+  .warn-box strong { color: var(--color-amber); }
+  .retain-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 0 20px;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 22px;
+  }
+  .retain-row {
+    display: flex;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    align-items: flex-start;
+  }
+  .retain-ico {
+    width: 20px; height: 20px;
+    border-radius: 4px;
+    background: color-mix(in srgb, var(--color-amber) 15%, transparent);
+    color: var(--color-amber);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .retain-row strong { color: var(--color-text); display: block; margin-bottom: 2px; }
+  .retain-row small { font-size: 11px; color: var(--color-text-muted); display: block; margin-top: 2px; }
+</style>
+</head>
+<body data-route="gdpr-delete">
+<div id="shell-mount"></div>
+
+<div class="booking-topbar">
+  <div class="container-wide booking-topbar-inner">
+    <a href="gdpr-consent.html" class="booking-back">← Datenschutz</a>
+    <a href="index.html" class="site-brand"><span class="site-brand-diamond"></span> Vienna Glow Studio</a>
+    <span style="width:80px"></span>
+  </div>
+</div>
+
+<main class="wl-wrap">
+  <div class="wl-card">
+    <div class="wl-header">
+      <div class="wl-icon">🗑️</div>
+      <h3>Löschung Ihrer Daten beantragen</h3>
+      <p>Art. 17 DSGVO — Recht auf Vergessenwerden. Dieser Vorgang ist unumkehrbar.</p>
+    </div>
+
+    <div class="warn-box">
+      <strong>⚠ Vor der Löschung beachten:</strong> Sie verlieren Ihre gesamte Buchungshistorie, Stammdaten und Terminvorlieben. Zukünftige Buchungen müssen als Neu-Kund:in erfolgen. Wir können Ihre bisherigen Termine nicht mehr für Sie einsehen.
+    </div>
+
+    <h4 style="font-size:14px;font-weight:600;margin:0 0 10px">Was wir gesetzlich aufbewahren müssen:</h4>
+    <div class="retain-list">
+      <div class="retain-row">
+        <div class="retain-ico">i</div>
+        <div>
+          <strong>Rechnungsrelevante Daten — 7 Jahre</strong>
+          Pseudonymisiert (ohne Name, nur Datum + Leistung + Betrag) gemäß § 132 BAO (österreichische Bundesabgabenordnung).
+        </div>
+      </div>
+      <div class="retain-row">
+        <div class="retain-ico">i</div>
+        <div>
+          <strong>Löschungsnachweis — unbegrenzt</strong>
+          Zeitstempel + anonymisierte Ticket-ID, damit wir bei einer Datenschutzbehörden-Prüfung nachweisen können, dass Ihre Löschung durchgeführt wurde.
+        </div>
+      </div>
+      <div class="retain-row">
+        <div class="retain-ico">i</div>
+        <div>
+          <strong>Aktive Buchungen in der Zukunft</strong>
+          <small>Haben Sie noch einen bevorstehenden Termin? Dieser wird erst nach Ablauf gelöscht — oder stornieren Sie ihn zuerst.</small>
+        </div>
+      </div>
+    </div>
+
+    <form>
+      <div class="form-grid">
+        <div class="form-row form-row-full">
+          <label class="form-label">E-Mail-Adresse (die wir für Sie gespeichert haben)</label>
+          <input class="form-input" type="email" placeholder="anna@example.at">
+        </div>
+        <div class="form-row form-row-full">
+          <label class="form-label">Grund (optional)</label>
+          <select class="form-input">
+            <option>— Angabe nicht erforderlich —</option>
+            <option>Nutze den Service nicht mehr</option>
+            <option>Umzug</option>
+            <option>Datenschutzbedenken</option>
+            <option>Sonstiges</option>
+          </select>
+        </div>
+        <div class="form-row form-row-full">
+          <label class="form-label">Anmerkungen <span class="form-opt">(optional)</span></label>
+          <textarea class="form-input" rows="2" placeholder="Feedback, das uns hilft besser zu werden..."></textarea>
+        </div>
+      </div>
+
+      <div class="gdpr" style="margin-top:20px;display:flex;flex-direction:column;gap:10px">
+        <label class="gdpr-check"><input type="checkbox">
+          <span>Ich bestätige, dass ich die <strong>unumkehrbaren Folgen</strong> der Löschung verstanden habe und die Löschung für alle meine Daten gemäß Art. 17 DSGVO beantragen möchte.</span>
+        </label>
+        <label class="gdpr-check"><input type="checkbox">
+          <span>Ich habe zur Kenntnis genommen, dass rechnungsrelevante Daten <strong>7 Jahre pseudonymisiert</strong> aufbewahrt werden müssen (§ 132 BAO).</span>
+        </label>
+        <label class="gdpr-check"><input type="checkbox">
+          <span>Ich bestätige, dass ich die in unseren Systemen gespeicherte E-Mail-Adresse bin und nicht in fremdem Namen handle.</span>
+        </label>
+      </div>
+
+      <button type="button" class="btn btn-lg btn-full" style="margin-top:22px;background:var(--color-rose);color:#fff;border:none">Löschung endgültig beantragen</button>
+      <p style="text-align:center;margin-top:14px;font-size:12px;color:var(--color-text-muted)">
+        Verifizierungslink per E-Mail · 30-tägige Karenzzeit zum Widerruf · Gebührenfrei
+      </p>
+    </form>
+  </div>
+</main>
+
+<script src="assets/shell.js"></script>
+<script src="assets/shell-init.js"></script>
+</body>
+</html>

@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Termin buchen — Vienna Glow Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/tokens.css?v=3">
+<link rel="stylesheet" href="assets/booking.css?v=3">
+</head>
+<body data-route="booking" style="--color-accent: #E11D74; --color-accent-hover: #C41660; --color-accent-soft: rgba(225, 29, 116, 0.08);">
+<div id="shell-mount"></div>
+
+<div class="booking-topbar">
+  <div class="container-wide booking-topbar-inner">
+    <a href="index.html" class="booking-back">← Zurück</a>
+    <a href="index.html" class="site-brand">
+      <span class="site-brand-diamond"></span>
+      Vienna Glow Studio
+    </a>
+    <span style="width:80px"></span>
+  </div>
+</div>
+
+<main class="booking-wrap">
+  <div class="booking-card">
+    <!-- STEPPER -->
+    <ol class="stepper" id="stepper">
+      <li data-step="1" class="active">
+        <span class="stepper-circle">1</span>
+        <span class="stepper-label">Leistung</span>
+      </li>
+      <li data-step="2">
+        <span class="stepper-circle">2</span>
+        <span class="stepper-label">Termin</span>
+      </li>
+      <li data-step="3">
+        <span class="stepper-circle">3</span>
+        <span class="stepper-label">Daten</span>
+      </li>
+      <li data-step="4">
+        <span class="stepper-circle">4</span>
+        <span class="stepper-label">Bestätigung</span>
+      </li>
+    </ol>
+
+    <!-- STEP 1 — SERVICE -->
+    <section class="step-panel" data-panel="1">
+      <h4 class="step-title">Welche Leistung möchten Sie buchen?</h4>
+      <p class="step-sub">Wählen Sie Ihre Wunsch-Leistung und einen Mitarbeiter.</p>
+      <div class="svc-grid">
+        <label class="svc-card selected" data-accent="purple"><input type="radio" name="svc" checked>
+          <div class="svc-top"><span class="svc-name">Gel Manikür</span><span class="svc-dur">60 Min</span></div>
+          <div class="svc-price">€ 45,00</div>
+          <span class="svc-check">✓</span>
+        </label>
+        <label class="svc-card" data-accent="purple"><input type="radio" name="svc">
+          <div class="svc-top"><span class="svc-name">Gel Pediküre</span><span class="svc-dur">75 Min</span></div>
+          <div class="svc-price">€ 55,00</div>
+        </label>
+        <label class="svc-card" data-accent="purple"><input type="radio" name="svc">
+          <div class="svc-top"><span class="svc-name">Nail Art Design</span><span class="svc-dur">90 Min</span></div>
+          <div class="svc-price">€ 65,00</div>
+        </label>
+        <label class="svc-card" data-accent="amber"><input type="radio" name="svc">
+          <div class="svc-top"><span class="svc-name">Haarschnitt Damen</span><span class="svc-dur">60 Min</span></div>
+          <div class="svc-price">€ 55,00</div>
+        </label>
+        <label class="svc-card" data-accent="emerald"><input type="radio" name="svc">
+          <div class="svc-top"><span class="svc-name">HydraFacial Classic</span><span class="svc-dur">45 Min</span></div>
+          <div class="svc-price">€ 89,00</div>
+        </label>
+        <label class="svc-card" data-accent="rose"><input type="radio" name="svc">
+          <div class="svc-top"><span class="svc-name">Wimpernlifting</span><span class="svc-dur">60 Min</span></div>
+          <div class="svc-price">€ 75,00</div>
+        </label>
+        <label class="svc-card" data-accent="rose"><input type="radio" name="svc">
+          <div class="svc-top"><span class="svc-name">Brow Lamination</span><span class="svc-dur">45 Min</span></div>
+          <div class="svc-price">€ 55,00</div>
+        </label>
+        <label class="svc-card" data-accent="cyan"><input type="radio" name="svc">
+          <div class="svc-top"><span class="svc-name">Herrenhaarschnitt</span><span class="svc-dur">30 Min</span></div>
+          <div class="svc-price">€ 25,00</div>
+        </label>
+      </div>
+      <div class="form-row">
+        <label class="form-label">Mitarbeiter</label>
+        <select class="form-input">
+          <option>Egal — nächster verfügbarer</option>
+          <option>Anna M. (Nageldesign)</option>
+          <option>Sofia B. (Hair)</option>
+          <option>Lena K. (Beauty)</option>
+        </select>
+      </div>
+      <button class="btn btn-primary btn-lg btn-full" data-next="2">Weiter →</button>
+    </section>
+
+    <!-- STEP 2 — DATE & SLOT -->
+    <section class="step-panel" data-panel="2" hidden>
+      <h4 class="step-title">Datum &amp; Uhrzeit wählen</h4>
+      <p class="step-sub">Verfügbare Termine für <strong>Gel Manikür</strong> · 60 Min</p>
+      <div class="datepicker">
+        <div class="dp-head">
+          <button class="cal-ico-btn" aria-label="prev">‹</button>
+          <div>April 2026</div>
+          <button class="cal-ico-btn" aria-label="next">›</button>
+        </div>
+        <div class="dp-dow">
+          <span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span>
+        </div>
+        <div class="dp-grid">
+          <!-- April 2026 starts on Wednesday -->
+          <span class="dp-d out">30</span><span class="dp-d out">31</span>
+          <span class="dp-d">1</span><span class="dp-d">2</span><span class="dp-d">3</span><span class="dp-d">4</span><span class="dp-d">5</span>
+          <span class="dp-d">6</span><span class="dp-d">7</span><span class="dp-d">8</span><span class="dp-d today">9</span><span class="dp-d">10</span><span class="dp-d">11</span><span class="dp-d disabled">12</span>
+          <span class="dp-d">13</span><span class="dp-d">14</span><span class="dp-d">15</span><span class="dp-d selected">16</span><span class="dp-d">17</span><span class="dp-d">18</span><span class="dp-d disabled">19</span>
+          <span class="dp-d">20</span><span class="dp-d">21</span><span class="dp-d">22</span><span class="dp-d">23</span><span class="dp-d">24</span><span class="dp-d">25</span><span class="dp-d disabled">26</span>
+          <span class="dp-d">27</span><span class="dp-d">28</span><span class="dp-d">29</span><span class="dp-d">30</span>
+          <span class="dp-d out">1</span><span class="dp-d out">2</span><span class="dp-d out">3</span>
+        </div>
+      </div>
+      <div class="slots">
+        <div class="slots-label">Verfügbare Zeiten · Do, 16. Apr</div>
+        <div class="slot-grid">
+          <button class="slot">09:00</button>
+          <button class="slot">09:30</button>
+          <button class="slot disabled">10:00</button>
+          <button class="slot">10:30</button>
+          <button class="slot selected">11:00</button>
+          <button class="slot">11:30</button>
+          <button class="slot disabled">12:00</button>
+          <button class="slot">13:30</button>
+          <button class="slot">14:00</button>
+          <button class="slot">15:00</button>
+          <button class="slot">16:30</button>
+          <button class="slot">17:00</button>
+        </div>
+      </div>
+      <div class="countdown">🔒 Slot reserviert — noch <strong>09:47</strong></div>
+      <div class="step-nav">
+        <button class="btn btn-ghost" data-prev="1">← Zurück</button>
+        <button class="btn btn-primary" data-next="3">Weiter →</button>
+      </div>
+    </section>
+
+    <!-- STEP 3 — CONTACT -->
+    <section class="step-panel" data-panel="3" hidden>
+      <h4 class="step-title">Ihre Daten</h4>
+      <p class="step-sub">Wir brauchen diese Informationen für die Bestätigung und Erinnerung.</p>
+      <div class="form-grid">
+        <div class="form-row">
+          <label class="form-label">Vorname</label>
+          <input class="form-input" placeholder="Katrin">
+        </div>
+        <div class="form-row">
+          <label class="form-label">Nachname</label>
+          <input class="form-input" placeholder="Huber">
+        </div>
+        <div class="form-row">
+          <label class="form-label">E-Mail</label>
+          <input class="form-input" type="email" placeholder="katrin@example.at">
+        </div>
+        <div class="form-row">
+          <label class="form-label">Telefon</label>
+          <input class="form-input" type="tel" placeholder="+43 664 ...">
+        </div>
+        <div class="form-row form-row-full">
+          <label class="form-label">Anmerkungen <span class="form-opt">(optional)</span></label>
+          <textarea class="form-input" rows="3" placeholder="Allergien, Wünsche, Farbwunsch..."></textarea>
+        </div>
+      </div>
+      <div class="step-nav">
+        <button class="btn btn-ghost" data-prev="2">← Zurück</button>
+        <button class="btn btn-primary" data-next="4">Weiter →</button>
+      </div>
+    </section>
+
+    <!-- STEP 4 — CONFIRM -->
+    <section class="step-panel" data-panel="4" hidden>
+      <h4 class="step-title">Termin bestätigen</h4>
+      <p class="step-sub">Bitte überprüfen Sie Ihre Buchung.</p>
+      <div class="summary">
+        <div class="summary-row"><span>Leistung</span><strong>Gel Manikür</strong></div>
+        <div class="summary-row"><span>Dauer</span><strong>60 Min</strong></div>
+        <div class="summary-row"><span>Mitarbeiter</span><strong>Anna M.</strong></div>
+        <div class="summary-row"><span>Datum</span><strong>Donnerstag, 16. April 2026</strong></div>
+        <div class="summary-row"><span>Uhrzeit</span><strong>11:00</strong></div>
+        <div class="summary-row"><span>Kunde</span><strong>Katrin Huber</strong></div>
+        <div class="summary-divider"></div>
+        <div class="summary-row total"><span>Gesamt</span><strong>€ 45,00</strong></div>
+        <div class="summary-note">Zahlung vor Ort — bar oder Karte.</div>
+      </div>
+
+      <div class="gdpr">
+        <label class="gdpr-check"><input type="checkbox" checked>
+          <span>Ich akzeptiere die <a href="#">AGB</a> und <a href="#">Datenschutzbestimmungen</a>.</span>
+        </label>
+        <label class="gdpr-check"><input type="checkbox">
+          <span>Ich möchte Erinnerungen per SMS und E-Mail erhalten.</span>
+        </label>
+        <label class="gdpr-check"><input type="checkbox">
+          <span>Newsletter abonnieren (abbestellbar jederzeit).</span>
+        </label>
+      </div>
+
+      <div class="step-nav">
+        <button class="btn btn-ghost" data-prev="3">← Zurück</button>
+        <button class="btn btn-primary btn-lg" id="submit-booking">Termin verbindlich buchen</button>
+      </div>
+    </section>
+
+    <!-- STEP 5 — THANK YOU -->
+    <section class="step-panel thank-you" data-panel="5" hidden>
+      <div class="thank-ok">✓</div>
+      <h3>Termin bestätigt!</h3>
+      <p>Vielen Dank, Katrin. Sie erhalten eine Bestätigung per E-Mail an <strong>katrin@example.at</strong>.</p>
+      <div class="thank-meta">Donnerstag, 16. April 2026 · 11:00 · Anna M.</div>
+      <a href="index.html" class="btn btn-primary btn-lg" style="margin-top:24px">Zurück zur Startseite</a>
+    </section>
+  </div>
+</main>
+
+<script src="assets/shell.js"></script>
+<script src="assets/shell-init.js"></script>
+<script>
+// Step navigation
+function showStep(n) {
+  document.querySelectorAll('.step-panel').forEach(p => {
+    p.hidden = parseInt(p.dataset.panel, 10) !== n;
+  });
+  document.querySelectorAll('#stepper li').forEach(li => {
+    const s = parseInt(li.dataset.step, 10);
+    li.classList.toggle('active', s === n);
+    li.classList.toggle('complete', s < n);
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+document.addEventListener('click', (e) => {
+  const next = e.target.closest('[data-next]');
+  if (next) { showStep(parseInt(next.dataset.next, 10)); return; }
+  const prev = e.target.closest('[data-prev]');
+  if (prev) { showStep(parseInt(prev.dataset.prev, 10)); return; }
+});
+document.getElementById('submit-booking')?.addEventListener('click', () => showStep(5));
+
+// Service selection
+document.querySelectorAll('.svc-card').forEach(card => {
+  card.addEventListener('click', () => {
+    document.querySelectorAll('.svc-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    if (!card.querySelector('.svc-check')) {
+      const s = document.createElement('span');
+      s.className = 'svc-check';
+      s.textContent = '✓';
+      card.appendChild(s);
+    }
+    document.querySelectorAll('.svc-card').forEach(c => {
+      if (c !== card) c.querySelector('.svc-check')?.remove();
+    });
+  });
+});
+
+// Slot selection
+document.querySelectorAll('.slot:not(.disabled)').forEach(slot => {
+  slot.addEventListener('click', () => {
+    document.querySelectorAll('.slot').forEach(s => s.classList.remove('selected'));
+    slot.classList.add('selected');
+  });
+});
+
+// Date selection
+document.querySelectorAll('.dp-d:not(.out):not(.disabled)').forEach(d => {
+  d.addEventListener('click', () => {
+    document.querySelectorAll('.dp-d').forEach(x => x.classList.remove('selected'));
+    d.classList.add('selected');
+  });
+});
+
+// Countdown (visual only)
+let cd = document.querySelector('.countdown strong');
+if (cd) {
+  let total = 9 * 60 + 47;
+  setInterval(() => {
+    total = Math.max(0, total - 1);
+    const m = String(Math.floor(total / 60)).padStart(2, '0');
+    const s = String(total % 60).padStart(2, '0');
+    cd.textContent = `${m}:${s}`;
+  }, 1000);
+}
+</script>
+</body>
+</html>

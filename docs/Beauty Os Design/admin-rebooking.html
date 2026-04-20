@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rebooking — Vienna Glow Studio Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/tokens.css?v=3">
+<link rel="stylesheet" href="assets/admin.css?v=3">
+<link rel="stylesheet" href="assets/admin-v2.css?v=1">
+</head>
+<body data-route="rebooking" data-adm="rebooking">
+<div id="shell-mount"></div>
+<div class="admin-layout">
+  <aside class="admin-sidebar" id="admin-sidebar-mount"></aside>
+  <main class="admin-main">
+    <header class="adm-header">
+      <div class="adm-header-title">
+        <span class="breadcrumb">Automatisches Rebooking</span>
+        <h2>Rebooking-Erinnerungen</h2>
+      </div>
+      <div class="adm-header-actions">
+        <button class="btn btn-ghost btn-sm">Einstellungen</button>
+        <button class="rb-run-btn">▶ Jetzt ausführen</button>
+      </div>
+    </header>
+
+    <div class="adm-body">
+      <div class="rb-stats">
+        <div class="rb-stat">
+          <div class="rb-stat-num">47</div>
+          <div class="rb-stat-lbl">Aktive Erinnerungen</div>
+          <div style="font-size:12px;color:var(--color-emerald);margin-top:6px">↑ 12 diese Woche</div>
+        </div>
+        <div class="rb-stat">
+          <div class="rb-stat-num">31%</div>
+          <div class="rb-stat-lbl">Conversion Rate</div>
+          <div style="font-size:12px;color:var(--color-text-muted);margin-top:6px">14 von 45 gebucht</div>
+        </div>
+        <div class="rb-stat">
+          <div class="rb-stat-num">€ 2.340</div>
+          <div class="rb-stat-lbl">Umsatz wiederholt (30T)</div>
+          <div style="font-size:12px;color:var(--color-emerald);margin-top:6px">↑ € 680 vs. Vormonat</div>
+        </div>
+      </div>
+
+      <div class="adm-toolbar" style="padding:12px 0;border:none">
+        <div class="adm-search" style="flex:1"><input type="search" placeholder="Kunde, Leistung..."></div>
+        <button class="adm-filter-chip active">Alle (47)</button>
+        <button class="adm-filter-chip">⏳ Geplant (32)</button>
+        <button class="adm-filter-chip">✓ Versendet (11)</button>
+        <button class="adm-filter-chip">✗ Übersprungen (3)</button>
+        <button class="adm-filter-chip">⊘ Abgemeldet (1)</button>
+      </div>
+
+      <table class="clients-table rb-table">
+        <thead>
+          <tr>
+            <th>Kunde</th>
+            <th>Letzter Besuch</th>
+            <th>Leistung</th>
+            <th>Intervall</th>
+            <th>Geplant für</th>
+            <th>Status</th>
+            <th>Kanal</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="client-name-cell"><div class="client-avatar">MR</div><div class="client-name-wrap"><span class="client-name">Maria Reiter</span><span class="client-email">vip · 18 Termine</span></div></div></td>
+            <td>22. Mär 2026</td>
+            <td><strong>Gel Manikür</strong></td>
+            <td>21 Tage</td>
+            <td><strong>12. Apr 09:00</strong><div style="font-size:11px;color:var(--color-text-muted)">in 2 Tagen</div></td>
+            <td><span class="rb-job-status scheduled">⏳ Geplant</span></td>
+            <td>E-Mail</td>
+            <td><button class="btn btn-ghost btn-sm">Vorschau</button></td>
+          </tr>
+          <tr>
+            <td><div class="client-name-cell"><div class="client-avatar v2">TB</div><div class="client-name-wrap"><span class="client-name">Tom Bauer</span><span class="client-email">9 Termine</span></div></div></td>
+            <td>15. Mär 2026</td>
+            <td><strong>Herrenhaarschnitt + Bart</strong></td>
+            <td>28 Tage</td>
+            <td><strong>10. Apr 10:00</strong><div style="font-size:11px;color:var(--color-emerald)">Gebucht ✓</div></td>
+            <td><span class="rb-job-status sent">✓ Versendet</span></td>
+            <td>SMS + Mail</td>
+            <td><button class="btn btn-ghost btn-sm">Verlauf</button></td>
+          </tr>
+          <tr>
+            <td><div class="client-name-cell"><div class="client-avatar v3">SL</div><div class="client-name-wrap"><span class="client-name">Sarah Lang</span><span class="client-email">6 Termine</span></div></div></td>
+            <td>28. Mär 2026</td>
+            <td><strong>Balayage + Toning</strong></td>
+            <td>56 Tage</td>
+            <td><strong>18. Mai 14:00</strong><div style="font-size:11px;color:var(--color-text-muted)">in 37 Tagen</div></td>
+            <td><span class="rb-job-status scheduled">⏳ Geplant</span></td>
+            <td>E-Mail</td>
+            <td><button class="btn btn-ghost btn-sm">Vorschau</button></td>
+          </tr>
+          <tr>
+            <td><div class="client-name-cell"><div class="client-avatar v4">EN</div><div class="client-name-wrap"><span class="client-name">Elena Novak</span><span class="client-email">14 Termine</span></div></div></td>
+            <td>05. Apr 2026</td>
+            <td><strong>HydraFacial Deluxe</strong></td>
+            <td>35 Tage</td>
+            <td><strong>05. Mai 11:00</strong><div style="font-size:11px;color:var(--color-text-muted)">in 24 Tagen</div></td>
+            <td><span class="rb-job-status scheduled">⏳ Geplant</span></td>
+            <td>E-Mail</td>
+            <td><button class="btn btn-ghost btn-sm">Vorschau</button></td>
+          </tr>
+          <tr>
+            <td><div class="client-name-cell"><div class="client-avatar">DK</div><div class="client-name-wrap"><span class="client-name">David Klein</span><span class="client-email">3 Termine</span></div></div></td>
+            <td>12. Jan 2026</td>
+            <td><strong>Herrenhaarschnitt</strong></td>
+            <td>30 Tage</td>
+            <td>—</td>
+            <td><span class="rb-job-status opted-out">⊘ Abgemeldet</span></td>
+            <td>—</td>
+            <td style="color:var(--color-text-faint);font-size:12px">Opt-out</td>
+          </tr>
+          <tr>
+            <td><div class="client-name-cell"><div class="client-avatar v2">PK</div><div class="client-name-wrap"><span class="client-name">Pınar Koç</span><span class="client-email">5 Termine</span></div></div></td>
+            <td>18. Mär 2026</td>
+            <td><strong>Brow Lamination</strong></td>
+            <td>42 Tage</td>
+            <td><strong>29. Apr 15:30</strong><div style="font-size:11px;color:var(--color-text-muted)">in 18 Tagen</div></td>
+            <td><span class="rb-job-status scheduled">⏳ Geplant</span></td>
+            <td>SMS + Mail</td>
+            <td><button class="btn btn-ghost btn-sm">Vorschau</button></td>
+          </tr>
+          <tr>
+            <td><div class="client-name-cell"><div class="client-avatar v3">JH</div><div class="client-name-wrap"><span class="client-name">Julia Huber</span><span class="client-email">4 Termine</span></div></div></td>
+            <td>02. Feb 2026</td>
+            <td><strong>Gel Pediküre</strong></td>
+            <td>45 Tage</td>
+            <td>—</td>
+            <td><span class="rb-job-status skipped">✗ Übersprungen</span></td>
+            <td>—</td>
+            <td style="color:var(--color-text-faint);font-size:12px">Inaktiv > 120T</td>
+          </tr>
+          <tr>
+            <td><div class="client-name-cell"><div class="client-avatar v4">LD</div><div class="client-name-wrap"><span class="client-name">Leila Demir</span><span class="client-email">7 Termine</span></div></div></td>
+            <td>01. Apr 2026</td>
+            <td><strong>Epilasyon</strong></td>
+            <td>42 Tage</td>
+            <td><strong>13. Mai 12:00</strong><div style="font-size:11px;color:var(--color-text-muted)">in 32 Tagen</div></td>
+            <td><span class="rb-job-status scheduled">⏳ Geplant</span></td>
+            <td>E-Mail</td>
+            <td><button class="btn btn-ghost btn-sm">Vorschau</button></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="background:var(--color-bg-card);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:20px;margin-top:28px">
+        <h4 style="margin:0 0 14px;font-size:15px">Letzte Job-Läufe (CRON /api/cron/rebooking)</h4>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-family:ui-monospace,Menlo,monospace">
+          <div style="display:flex;gap:16px;padding:8px 12px;background:var(--color-bg-surface);border-radius:var(--radius-sm)">
+            <span style="color:var(--color-text-muted);min-width:140px">10. Apr 06:00:02</span>
+            <span class="rb-job-status sent" style="min-width:90px;justify-content:center">✓ 11 sent</span>
+            <span style="color:var(--color-text-muted)">47 checked · 0 errors · 2.340s</span>
+          </div>
+          <div style="display:flex;gap:16px;padding:8px 12px;background:var(--color-bg-surface);border-radius:var(--radius-sm)">
+            <span style="color:var(--color-text-muted);min-width:140px">09. Apr 06:00:01</span>
+            <span class="rb-job-status sent" style="min-width:90px;justify-content:center">✓ 8 sent</span>
+            <span style="color:var(--color-text-muted)">42 checked · 0 errors · 1.980s</span>
+          </div>
+          <div style="display:flex;gap:16px;padding:8px 12px;background:var(--color-bg-surface);border-radius:var(--radius-sm)">
+            <span style="color:var(--color-text-muted);min-width:140px">08. Apr 06:00:03</span>
+            <span class="rb-job-status sent" style="min-width:90px;justify-content:center">✓ 14 sent</span>
+            <span style="color:var(--color-text-muted)">51 checked · 0 errors · 2.720s</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="assets/shell.js"></script>
+<script src="assets/shell-init.js"></script>
+</body>
+</html>

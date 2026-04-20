@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Front Desk — Vienna Glow Studio Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/tokens.css?v=3">
+<link rel="stylesheet" href="assets/admin.css?v=3">
+<link rel="stylesheet" href="assets/admin-v2.css?v=1">
+</head>
+<body data-route="front-desk" data-adm="front-desk">
+<div id="shell-mount"></div>
+
+<div class="admin-layout">
+  <aside class="admin-sidebar" id="admin-sidebar-mount"></aside>
+
+  <main class="admin-main">
+    <header class="adm-header">
+      <div class="adm-header-title">
+        <span class="breadcrumb">Lead Management</span>
+        <h2>Front Desk</h2>
+      </div>
+      <div class="adm-header-actions">
+        <button class="btn btn-ghost btn-sm">Exportieren</button>
+        <button class="btn btn-primary btn-sm">+ Neuer Lead</button>
+      </div>
+    </header>
+
+    <div class="adm-toolbar">
+      <div class="adm-search">
+        <input type="search" placeholder="Suche nach Name, Telefon oder Nachricht...">
+      </div>
+      <button class="adm-filter-chip active">Alle Quellen</button>
+      <button class="adm-filter-chip">🌐 Web</button>
+      <button class="adm-filter-chip">📱 Google</button>
+      <button class="adm-filter-chip">☎ Telefon</button>
+      <button class="adm-filter-chip">📸 Instagram</button>
+      <span style="flex:1"></span>
+      <button class="adm-filter-chip">Heute</button>
+      <button class="adm-filter-chip active">Diese Woche</button>
+      <button class="adm-filter-chip">Alle</button>
+    </div>
+
+    <div class="adm-body">
+      <div class="kanban" id="kanban">
+        <!-- NEW -->
+        <section class="kanban-col" data-lane="new">
+          <header class="kanban-col-head">
+            <span class="kanban-col-head-left"><span class="kanban-col-dot"></span> Neu</span>
+            <span class="kanban-count">4</span>
+          </header>
+          <div class="kanban-list">
+            <article class="kanban-card needs-review">
+              <div class="kanban-card-top">
+                <div class="kanban-name">Sophia Leitner</div>
+                <div class="kanban-when">vor 3 Min</div>
+              </div>
+              <div class="kanban-msg">"Hallo, ich hätte gerne einen Termin für eine Maniküre nächste Woche, am liebsten Donnerstag Nachmittag."</div>
+              <div class="kanban-meta">
+                <span class="kanban-pill src-google">📱 Google</span>
+                <span class="kanban-pill">Gel Manikür?</span>
+              </div>
+              <div class="kanban-card-foot">
+                <div class="kanban-conf">AI: 0.42
+                  <span class="kanban-conf-bar"><span class="kanban-conf-fill" style="width:42%;background:var(--color-amber)"></span></span>
+                </div>
+                <div class="kanban-act-btns">
+                  <button class="kanban-ico-btn" title="Anrufen">☎</button>
+                  <button class="kanban-ico-btn" title="Antworten">✉</button>
+                </div>
+              </div>
+            </article>
+
+            <article class="kanban-card">
+              <div class="kanban-card-top">
+                <div class="kanban-name">Marco Hofer</div>
+                <div class="kanban-when">vor 18 Min</div>
+              </div>
+              <div class="kanban-msg">"Preise für Herrenhaarschnitt mit Bart? Und gibt es am Samstag noch was?"</div>
+              <div class="kanban-meta">
+                <span class="kanban-pill src-web">🌐 Web</span>
+                <span class="kanban-pill">Herrenhaarschnitt</span>
+                <span class="kanban-pill intent-high">High Intent</span>
+              </div>
+              <div class="kanban-card-foot">
+                <div class="kanban-conf">AI: 0.88
+                  <span class="kanban-conf-bar"><span class="kanban-conf-fill" style="width:88%"></span></span>
+                </div>
+                <div class="kanban-act-btns">
+                  <button class="kanban-ico-btn" title="Anrufen">☎</button>
+                  <button class="kanban-ico-btn" title="Antworten">✉</button>
+                </div>
+              </div>
+            </article>
+
+            <article class="kanban-card">
+              <div class="kanban-card-top">
+                <div class="kanban-name">Leila Demir</div>
+                <div class="kanban-when">vor 42 Min</div>
+              </div>
+              <div class="kanban-msg">"Epilasyon için randevu almak istiyorum. Cumartesi öğleden sonra olabilir mi?"</div>
+              <div class="kanban-meta">
+                <span class="kanban-pill src-instagram">📸 Instagram</span>
+                <span class="kanban-pill">Epilasyon · TR</span>
+              </div>
+              <div class="kanban-card-foot">
+                <div class="kanban-conf">AI: 0.79
+                  <span class="kanban-conf-bar"><span class="kanban-conf-fill" style="width:79%"></span></span>
+                </div>
+                <div class="kanban-act-btns">
+                  <button class="kanban-ico-btn" title="Antworten">✉</button>
+                </div>
+              </div>
+            </article>
+
+            <article class="kanban-card">
+              <div class="kanban-card-top">
+                <div class="kanban-name">Unbekannt (+43 664 ...)</div>
+                <div class="kanban-when">vor 1 Std</div>
+              </div>
+              <div class="kanban-msg">Voicemail · 00:14 — "Ich hätte gerne einen Termin am..."</div>
+              <div class="kanban-meta">
+                <span class="kanban-pill src-phone">☎ Telefon</span>
+                <span class="kanban-pill">Transkription läuft</span>
+              </div>
+              <div class="kanban-card-foot">
+                <div class="kanban-conf">AI: —</div>
+                <div class="kanban-act-btns">
+                  <button class="kanban-ico-btn" title="Zurückrufen">☎</button>
+                </div>
+              </div>
+            </article>
+          </div>
+          <button class="kanban-col-new-btn">+ Lead hinzufügen</button>
+        </section>
+
+        <!-- CONTACTED -->
+        <section class="kanban-col" data-lane="contacted">
+          <header class="kanban-col-head">
+            <span class="kanban-col-head-left"><span class="kanban-col-dot"></span> Kontaktiert</span>
+            <span class="kanban-count">3</span>
+          </header>
+          <div class="kanban-list">
+            <article class="kanban-card">
+              <div class="kanban-card-top">
+                <div class="kanban-name">Anna Müller</div>
+                <div class="kanban-when">Heute 09:20</div>
+              </div>
+              <div class="kanban-msg">AI → WhatsApp-Antwort gesendet mit 3 Terminvorschlägen für Gel Maniküre.</div>
+              <div class="kanban-meta">
+                <span class="kanban-pill src-google">📱 Google</span>
+                <span class="kanban-pill">Wartet auf Antwort</span>
+              </div>
+              <div class="kanban-card-foot">
+                <div class="kanban-conf">AI: 0.91
+                  <span class="kanban-conf-bar"><span class="kanban-conf-fill" style="width:91%"></span></span>
+                </div>
+                <div class="kanban-act-btns">
+                  <button class="kanban-ico-btn" title="Folge">🔔</button>
+                </div>
+              </div>
+            </article>
+
+            <article class="kanban-card">
+              <div class="kanban-card-top">
+                <div class="kanban-name">Julia Baumgartner</div>
+                <div class="kanban-when">Heute 08:05</div>
+              </div>
+              <div class="kanban-msg">Admin: "Hab angerufen, spricht mit Partner. Ruft bis Mittag zurück."</div>
+              <div class="kanban-meta">
+                <span class="kanban-pill src-web">🌐 Web</span>
+                <span class="kanban-pill">Manuelle Notiz</span>
+              </div>
+              <div class="kanban-card-foot">
+                <div class="kanban-conf">—</div>
+                <div class="kanban-act-btns">
+                  <button class="kanban-ico-btn" title="Erinnerung">⏰</button>
+                </div>
+              </div>
+            </article>
+
+            <article class="kanban-card">
+              <div class="kanban-card-top">
+                <div class="kanban-name">Fatma Yıldız</div>
+                <div class="kanban-when">Gestern 16:40</div>
+              </div>
+              <div class="kanban-msg">AI → SMS mit Bestätigungslink gesendet. Link noch nicht geöffnet.</div>
+              <div class="kanban-meta">
+                <span class="kanban-pill src-phone">☎ Telefon</span>
+                <span class="kanban-pill">Link offen</span>
+              </div>
+              <div class="kanban-card-foot">
+                <div class="kanban-conf">AI: 0.74
+                  <span class="kanban-conf-bar"><span class="kanban-conf-fill" style="width:74%"></span></span>
+                </div>
+                <div class="kanban-act-btns">
+                  <button class="kanban-ico-btn" title="Folge">🔔</button>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- QUALIFIED -->
+        <section class="kanban-col" data-lane="qualified">
+          <header class="kanban-col-head">
+            <span class="kanban-col-head-left"><span class="kanban-col-dot"></span> Qualifiziert</span>
+            <span class="kanban-count">2</span>
+          </header>
+          <div class="kanban-list">
+            <article class="kanban-card">
+              <div class="kanban-card-top">
+                <div class="kanban-name">Elena Novak</div>
+                <div class="kanban-when">Heute 10:15</div>
+              </div>
+              <div class="kanban-msg">Gel Pediküre + Nail Art · Do, 16. Apr · 14:00 bestätigt. Kunde bucht noch Slot.</div>
+              <div class="kanban-meta">
+                <span class="kanban-pill src-web">🌐 Web</span>
+                <span class="kanban-pill intent-high">Hot Lead</span>
+              </div>
+              <div class="kanban-card-foot">
+                <div class="kanban-conf">AI: 0.95
+                  <span class="kanban-conf-bar"><span class="kanban-conf-fill" style="width:95%"></span></span>
+                </div>
+                <div class="kanban-act-btns">
+                  <button class="kanban-ico-btn" title="Buchen">📅</button>
+                </div>
+              </div>
+            </article>
+
+            <article class="kanban-card">
+              <div class="kanban-card-top">
+                <div class="kanban-name">Daniel Weber</div>
+                <div class="kanban-when">Heute 07:50</div>
+              </div>
+              <div class="kanban-msg">Herrenhaarschnitt + Bart · wünscht Samstag 11:00 mit Ali B.</div>
+              <div class="kanban-meta">
+                <span class="kanban-pill src-google">📱 Google</span>
+                <span class="kanban-pill">Slot reserviert</span>
+              </div>
+              <div class="kanban-card-foot">
+                <div class="kanban-conf">AI: 0.87
+                  <span class="kanban-conf-bar"><span class="kanban-conf-fill" style="width:87%"></span></span>
+                </div>
+                <div class="kanban-act-btns">
+                  <button class="kanban-ico-btn" title="Buchen">📅</button>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- BOOKED -->
+        <section class="kanban-col" data-lane="booked">
+          <header class="kanban-col-head">
+            <span class="kanban-col-head-left"><span class="kanban-col-dot"></span> Gebucht</span>
+            <span class="kanban-count">5</span>
+          </header>
+          <div class="kanban-list">
+            <article class="kanban-card">
+              <div class="kanban-card-top">
+                <div class="kanban-name">Katrin Huber</div>
+                <div class="kanban-when">Heute 06:30</div>
+              </div>
+              <div class="kanban-msg">Gel Manikür · Do, 16. Apr 11:00 · Anna M. · € 45,00</div>
+              <div class="kanban-meta">
+                <span class="kanban-pill src-web">🌐 Web</span>
+                <span class="kanban-pill" style="color:var(--color-emerald)">✓ bestätigt</span>
+              </div>
+              <div class="kanban-card-foot">
+                <div class="kanban-conf">Auto-flow</div>
+                <div class="kanban-act-btns">
+                  <button class="kanban-ico-btn" title="Details">→</button>
+                </div>
+              </div>
+            </article>
+
+            <article class="kanban-card">
+              <div class="kanban-card-top">
+                <div class="kanban-name">Isabella Richter</div>
+                <div class="kanban-when">Gestern 18:20</div>
+              </div>
+              <div class="kanban-msg">HydraFacial Classic · Fr, 17. Apr 15:30 · Lena K. · € 89,00</div>
+              <div class="kanban-meta">
+                <span class="kanban-pill src-google">📱 Google</span>
+                <span class="kanban-pill" style="color:var(--color-emerald)">✓ bestätigt</span>
+              </div>
+              <div class="kanban-card-foot">
+                <div class="kanban-conf">Auto-flow</div>
+                <div class="kanban-act-btns">
+                  <button class="kanban-ico-btn" title="Details">→</button>
+                </div>
+              </div>
+            </article>
+
+            <article class="kanban-card">
+              <div class="kanban-card-top">
+                <div class="kanban-name">Pınar Koç</div>
+                <div class="kanban-when">Gestern 14:10</div>
+              </div>
+              <div class="kanban-msg">Brow Lamination + Wimpernlifting · Sa, 18. Apr 10:00 · Lena K. · € 130,00</div>
+              <div class="kanban-meta">
+                <span class="kanban-pill src-instagram">📸 Instagram</span>
+                <span class="kanban-pill" style="color:var(--color-emerald)">✓ bestätigt</span>
+              </div>
+              <div class="kanban-card-foot">
+                <div class="kanban-conf">AI: 0.93
+                  <span class="kanban-conf-bar"><span class="kanban-conf-fill" style="width:93%"></span></span>
+                </div>
+                <div class="kanban-act-btns">
+                  <button class="kanban-ico-btn" title="Details">→</button>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- LOST / SPAM -->
+        <section class="kanban-col" data-lane="lost">
+          <header class="kanban-col-head">
+            <span class="kanban-col-head-left"><span class="kanban-col-dot"></span> Verloren / Spam</span>
+            <span class="kanban-count">1</span>
+          </header>
+          <div class="kanban-list">
+            <article class="kanban-card">
+              <div class="kanban-card-top">
+                <div class="kanban-name">⚠ Spam</div>
+                <div class="kanban-when">vor 2 Std</div>
+              </div>
+              <div class="kanban-msg">"Seo services for your business — best rates guaranteed." (AI klassifiziert: spam, Confidence 0.97)</div>
+              <div class="kanban-meta">
+                <span class="kanban-pill src-web">🌐 Web</span>
+                <span class="kanban-pill">Auto-archiviert</span>
+              </div>
+              <div class="kanban-card-foot">
+                <div class="kanban-conf">AI: 0.97
+                  <span class="kanban-conf-bar"><span class="kanban-conf-fill" style="width:97%;background:var(--color-rose)"></span></span>
+                </div>
+                <div class="kanban-act-btns">
+                  <button class="kanban-ico-btn" title="Wiederherstellen">↺</button>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="assets/shell.js"></script>
+<script src="assets/shell-init.js"></script>
+</body>
+</html>

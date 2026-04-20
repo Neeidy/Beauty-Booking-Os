@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Danke — Vienna Glow Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/tokens.css?v=3">
+<link rel="stylesheet" href="assets/booking.css?v=3">
+<style>
+  body { background: var(--color-bg-surface); }
+  .thanks-wrap { padding: 120px 16px 96px; max-width: 620px; margin: 0 auto; }
+  .thanks-card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-elevated);
+    padding: 48px 40px 40px;
+    text-align: center;
+  }
+  .thanks-hero {
+    width: 96px; height: 96px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-purple) 100%);
+    color: #fff;
+    font-size: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 22px;
+    box-shadow: var(--shadow-accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.04); }
+  }
+  .thanks-card h1 {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0 0 8px;
+    letter-spacing: -0.02em;
+  }
+  .thanks-card .sub {
+    color: var(--color-text-muted);
+    font-size: 15px;
+    margin-bottom: 28px;
+    line-height: 1.55;
+  }
+  .visit-summary {
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    text-align: left;
+    margin-bottom: 32px;
+  }
+  .visit-avatar {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-rose), var(--color-amber));
+    color: #fff;
+    font-weight: 700;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .visit-details { flex: 1; min-width: 0; }
+  .visit-svc { font-weight: 600; font-size: 14px; margin-bottom: 2px; }
+  .visit-meta { font-size: 12px; color: var(--color-text-muted); }
+
+  .stars-wrap {
+    padding: 28px 0;
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 24px;
+  }
+  .stars-prompt { font-size: 14px; color: var(--color-text-secondary); margin-bottom: 12px; }
+  .stars {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+  }
+  .star-btn {
+    width: 44px; height: 44px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 32px;
+    color: var(--color-text-faint);
+    transition: transform 120ms ease, color 120ms ease;
+    line-height: 1;
+  }
+  .star-btn:hover, .star-btn.active {
+    color: #F59E0B;
+    transform: scale(1.15);
+  }
+
+  .google-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 22px;
+    background: #fff;
+    border: 1px solid #DADCE0;
+    border-radius: var(--radius-md);
+    color: #3C4043;
+    font-weight: 500;
+    font-size: 15px;
+    text-decoration: none;
+    box-shadow: 0 1px 2px rgba(60,64,67,0.1);
+    transition: box-shadow 140ms ease, transform 140ms ease;
+  }
+  .google-cta:hover {
+    box-shadow: 0 4px 10px rgba(60,64,67,0.15);
+    transform: translateY(-1px);
+    text-decoration: none;
+  }
+  .g-logo { display: inline-flex; flex-shrink: 0; }
+
+  .alt-row {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 18px;
+    flex-wrap: wrap;
+  }
+  .alt-btn {
+    padding: 8px 14px;
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: 12px;
+    color: var(--color-text-muted);
+    cursor: pointer;
+  }
+  .alt-btn:hover { border-color: var(--color-accent); color: var(--color-accent); }
+
+  .rebook-cta {
+    margin-top: 28px;
+    padding: 20px;
+    background: color-mix(in srgb, var(--color-accent) 6%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 25%, transparent);
+    border-radius: var(--radius-md);
+    text-align: left;
+  }
+  .rebook-cta strong { display: block; font-size: 14px; margin-bottom: 4px; }
+  .rebook-cta p { font-size: 12px; color: var(--color-text-muted); margin: 0 0 10px; line-height: 1.55; }
+</style>
+</head>
+<body data-route="review-thanks">
+<div id="shell-mount"></div>
+
+<div class="booking-topbar">
+  <div class="container-wide booking-topbar-inner">
+    <span style="width:80px"></span>
+    <a href="index.html" class="site-brand"><span class="site-brand-diamond"></span> Vienna Glow Studio</a>
+    <span style="width:80px"></span>
+  </div>
+</div>
+
+<main class="thanks-wrap">
+  <div class="thanks-card">
+    <div class="thanks-hero">✓</div>
+    <h1>Danke, Sophie!</h1>
+    <p class="sub">Wir hoffen, Ihr Besuch heute war wunderschön.<br>Würden Sie sich 30 Sekunden Zeit nehmen, um uns zu bewerten?</p>
+
+    <div class="visit-summary">
+      <div class="visit-avatar">LK</div>
+      <div class="visit-details">
+        <div class="visit-svc">HydraFacial Deluxe · 75 Min</div>
+        <div class="visit-meta">bei Lena K. · Heute um 14:30 · Vienna Glow Studio</div>
+      </div>
+    </div>
+
+    <div class="stars-wrap">
+      <div class="stars-prompt">Wie war Ihr Erlebnis?</div>
+      <div class="stars">
+        <button class="star-btn">★</button>
+        <button class="star-btn">★</button>
+        <button class="star-btn">★</button>
+        <button class="star-btn">★</button>
+        <button class="star-btn active">★</button>
+      </div>
+    </div>
+
+    <a href="#" class="google-cta">
+      <svg class="g-logo" width="20" height="20" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.79 2.71v2.26h2.9c1.7-1.56 2.69-3.87 2.69-6.61z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.8.54-1.83.86-3.06.86-2.34 0-4.33-1.58-5.04-3.71h-3v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.96 10.71A5.4 5.4 0 0 1 3.68 9c0-.59.1-1.17.28-1.71V4.96h-3A9 9 0 0 0 0 9c0 1.45.35 2.82.96 4.04l3-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58A9 9 0 0 0 9 0 9 9 0 0 0 .96 4.96l3 2.33C4.67 5.16 6.66 3.58 9 3.58z"/></svg>
+      <span>Auf Google bewerten →</span>
+    </a>
+
+    <div class="alt-row">
+      <button class="alt-btn">Auf Facebook bewerten</button>
+      <button class="alt-btn">Privat Feedback senden</button>
+    </div>
+
+    <div class="rebook-cta">
+      <strong>Nächste Session planen?</strong>
+      <p>Für optimale Ergebnisse empfehlen wir Ihre nächste HydraFacial Deluxe in ca. 4 Wochen. Wir schicken Ihnen eine Erinnerung — oder Sie buchen gleich:</p>
+      <a href="booking.html" class="btn btn-primary btn-sm">Direkt neuen Termin buchen</a>
+    </div>
+
+    <p style="margin-top:28px;font-size:11px;color:var(--color-text-faint)">
+      Dieser Link wurde 24 Stunden nach Ihrem Termin gesendet · Einmalig · <a href="gdpr-consent.html" style="color:inherit;text-decoration:underline">Datenschutz</a>
+    </p>
+  </div>
+</main>
+
+<script src="assets/shell.js"></script>
+<script src="assets/shell-init.js"></script>
+<script>
+  document.querySelectorAll('.star-btn').forEach((s, i, all) => {
+    s.addEventListener('mouseenter', () => all.forEach((b, j) => b.classList.toggle('active', j <= i)));
+    s.addEventListener('click', () => all.forEach((b, j) => b.classList.toggle('active', j <= i)));
+  });
+</script>
+</body>
+</html>

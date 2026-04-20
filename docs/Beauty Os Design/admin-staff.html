@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Team — Vienna Glow Studio Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/tokens.css?v=3">
+<link rel="stylesheet" href="assets/admin.css?v=3">
+<link rel="stylesheet" href="assets/admin-v2.css?v=1">
+</head>
+<body data-route="staff" data-adm="staff">
+<div id="shell-mount"></div>
+<div class="admin-layout">
+  <aside class="admin-sidebar" id="admin-sidebar-mount"></aside>
+  <main class="admin-main">
+    <header class="adm-header">
+      <div class="adm-header-title">
+        <span class="breadcrumb">Mitarbeiter:innen</span>
+        <h2>Team <span style="color:var(--color-text-muted);font-weight:400;font-size:14px;margin-left:8px">· 6 aktiv · 1 inaktiv</span></h2>
+      </div>
+      <div class="adm-header-actions">
+        <button class="btn btn-ghost btn-sm">Verfügbarkeit exportieren</button>
+        <button class="btn btn-primary btn-sm">+ Mitarbeiter:in hinzufügen</button>
+      </div>
+    </header>
+    <div class="adm-toolbar">
+      <div class="adm-search"><input type="search" placeholder="Name, Leistung..."></div>
+      <button class="adm-filter-chip active">Alle</button>
+      <button class="adm-filter-chip">Haare</button>
+      <button class="adm-filter-chip">Nägel</button>
+      <button class="adm-filter-chip">Gesichtsbehandlung</button>
+      <button class="adm-filter-chip">Brows & Lashes</button>
+    </div>
+    <div class="adm-body">
+      <div class="staff-grid">
+
+        <div class="staff-card">
+          <div class="staff-card-top">
+            <div class="staff-avatar">AB</div>
+            <div>
+              <div class="staff-name">Ali Badem</div>
+              <div class="staff-title">Senior Barber · seit 2019</div>
+            </div>
+          </div>
+          <div class="staff-services">
+            <span class="staff-svc-chip">Herrenhaarschnitt</span>
+            <span class="staff-svc-chip">Bartpflege</span>
+            <span class="staff-svc-chip">Rasur</span>
+            <span class="staff-svc-chip">Kopfmassage</span>
+          </div>
+          <div style="display:flex;gap:16px;font-size:12px;color:var(--color-text-muted);padding:6px 0">
+            <span><strong style="color:var(--color-text)">142</strong> Termine (30T)</span>
+            <span><strong style="color:var(--color-text)">4.9</strong> ⭐</span>
+          </div>
+          <div class="staff-card-bot">
+            <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-ghost btn-sm">Zeiten</button>
+              <button class="btn btn-ghost btn-sm">Bearbeiten</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="staff-card">
+          <div class="staff-card-top">
+            <div class="staff-avatar" style="background:linear-gradient(135deg,var(--color-rose),var(--color-amber))">SB</div>
+            <div>
+              <div class="staff-name">Sofia Braun</div>
+              <div class="staff-title">Color Specialist · seit 2020</div>
+            </div>
+          </div>
+          <div class="staff-services">
+            <span class="staff-svc-chip">Balayage</span>
+            <span class="staff-svc-chip">Färbung</span>
+            <span class="staff-svc-chip">Haarschnitt Damen</span>
+            <span class="staff-svc-chip">Toning</span>
+            <span class="staff-svc-chip">Keratin</span>
+          </div>
+          <div style="display:flex;gap:16px;font-size:12px;color:var(--color-text-muted);padding:6px 0">
+            <span><strong style="color:var(--color-text)">98</strong> Termine (30T)</span>
+            <span><strong style="color:var(--color-text)">4.8</strong> ⭐</span>
+          </div>
+          <div class="staff-card-bot">
+            <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-ghost btn-sm">Zeiten</button>
+              <button class="btn btn-ghost btn-sm">Bearbeiten</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="staff-card">
+          <div class="staff-card-top">
+            <div class="staff-avatar" style="background:linear-gradient(135deg,var(--color-emerald),var(--color-cyan))">LK</div>
+            <div>
+              <div class="staff-name">Lena Koch</div>
+              <div class="staff-title">Skin Therapist · seit 2022</div>
+            </div>
+          </div>
+          <div class="staff-services">
+            <span class="staff-svc-chip">HydraFacial Classic</span>
+            <span class="staff-svc-chip">HydraFacial Deluxe</span>
+            <span class="staff-svc-chip">Microneedling</span>
+            <span class="staff-svc-chip">Peeling</span>
+          </div>
+          <div style="display:flex;gap:16px;font-size:12px;color:var(--color-text-muted);padding:6px 0">
+            <span><strong style="color:var(--color-text)">76</strong> Termine (30T)</span>
+            <span><strong style="color:var(--color-text)">4.9</strong> ⭐</span>
+          </div>
+          <div class="staff-card-bot">
+            <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-ghost btn-sm">Zeiten</button>
+              <button class="btn btn-ghost btn-sm">Bearbeiten</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="staff-card">
+          <div class="staff-card-top">
+            <div class="staff-avatar" style="background:linear-gradient(135deg,var(--color-purple),var(--color-rose))">AY</div>
+            <div>
+              <div class="staff-name">Anna Yılmaz</div>
+              <div class="staff-title">Nail Artist · seit 2021</div>
+            </div>
+          </div>
+          <div class="staff-services">
+            <span class="staff-svc-chip">Gel Manikür</span>
+            <span class="staff-svc-chip">Gel Pediküre</span>
+            <span class="staff-svc-chip">Nail Art Design</span>
+            <span class="staff-svc-chip">Japanische Maniküre</span>
+          </div>
+          <div style="display:flex;gap:16px;font-size:12px;color:var(--color-text-muted);padding:6px 0">
+            <span><strong style="color:var(--color-text)">112</strong> Termine (30T)</span>
+            <span><strong style="color:var(--color-text)">5.0</strong> ⭐</span>
+          </div>
+          <div class="staff-card-bot">
+            <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-ghost btn-sm">Zeiten</button>
+              <button class="btn btn-ghost btn-sm">Bearbeiten</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="staff-card">
+          <div class="staff-card-top">
+            <div class="staff-avatar">MR</div>
+            <div>
+              <div class="staff-name">Mira Reiter</div>
+              <div class="staff-title">Brow & Lash · seit 2023</div>
+            </div>
+          </div>
+          <div class="staff-services">
+            <span class="staff-svc-chip">Wimpernlifting</span>
+            <span class="staff-svc-chip">Wimpernverlängerung</span>
+            <span class="staff-svc-chip">Brow Lamination</span>
+            <span class="staff-svc-chip">Augenbrauen-Färbung</span>
+          </div>
+          <div style="display:flex;gap:16px;font-size:12px;color:var(--color-text-muted);padding:6px 0">
+            <span><strong style="color:var(--color-text)">64</strong> Termine (30T)</span>
+            <span><strong style="color:var(--color-text)">4.7</strong> ⭐</span>
+          </div>
+          <div class="staff-card-bot">
+            <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-ghost btn-sm">Zeiten</button>
+              <button class="btn btn-ghost btn-sm">Bearbeiten</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="staff-card">
+          <div class="staff-card-top">
+            <div class="staff-avatar" style="background:linear-gradient(135deg,var(--color-rose),var(--color-amber))">EP</div>
+            <div>
+              <div class="staff-name">Eva Pichler</div>
+              <div class="staff-title">Junior Stylist · seit 2024</div>
+            </div>
+          </div>
+          <div class="staff-services">
+            <span class="staff-svc-chip">Haarschnitt Damen</span>
+            <span class="staff-svc-chip">Föhnen & Styling</span>
+            <span class="staff-svc-chip">Hochsteckfrisur</span>
+          </div>
+          <div style="display:flex;gap:16px;font-size:12px;color:var(--color-text-muted);padding:6px 0">
+            <span><strong style="color:var(--color-text)">41</strong> Termine (30T)</span>
+            <span><strong style="color:var(--color-text)">4.6</strong> ⭐</span>
+          </div>
+          <div class="staff-card-bot">
+            <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-ghost btn-sm">Zeiten</button>
+              <button class="btn btn-ghost btn-sm">Bearbeiten</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="staff-card inactive">
+          <div class="staff-card-top">
+            <div class="staff-avatar" style="background:linear-gradient(135deg,var(--color-emerald),var(--color-cyan))">TK</div>
+            <div>
+              <div class="staff-name">Tolga Karaca</div>
+              <div class="staff-title">Barber · Karenz bis 09/2026</div>
+            </div>
+          </div>
+          <div class="staff-services">
+            <span class="staff-svc-chip">Herrenhaarschnitt</span>
+            <span class="staff-svc-chip">Bartpflege</span>
+          </div>
+          <div style="display:flex;gap:16px;font-size:12px;color:var(--color-text-muted);padding:6px 0">
+            <span>Inaktiv · keine Buchungen</span>
+          </div>
+          <div class="staff-card-bot">
+            <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-ghost btn-sm">Reaktivieren</button>
+            </div>
+          </div>
+        </div>
+
+        <button class="staff-card" style="background:transparent;border:1.5px dashed var(--color-border);cursor:pointer;align-items:center;justify-content:center;min-height:260px;color:var(--color-text-muted);font-size:14px;font-weight:500">
+          + Neue:n Mitarbeiter:in hinzufügen
+        </button>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="assets/shell.js"></script>
+<script src="assets/shell-init.js"></script>
+</body>
+</html>

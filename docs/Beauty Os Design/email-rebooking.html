@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Email Preview — Rebooking Reminder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/tokens.css?v=3">
+<style>
+  body {
+    background: #f1f2f5;
+    font-family: var(--font-body);
+    color: var(--color-text);
+    margin: 0;
+    padding: 40px 16px;
+  }
+  .email-frame {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  .email-meta {
+    background: #fff;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    font-size: 12px;
+    color: var(--color-text-muted);
+    margin-bottom: 16px;
+    display: grid;
+    grid-template-columns: 70px 1fr;
+    gap: 6px 14px;
+  }
+  .email-meta strong { color: var(--color-text); font-weight: 600; }
+  .email {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+    font-family: 'Inter', Arial, sans-serif;
+    color: #1f2937;
+  }
+  .email-header {
+    background: linear-gradient(135deg, #E11D74 0%, #8B5CF6 100%);
+    padding: 32px 32px 28px;
+    color: #fff;
+    text-align: center;
+  }
+  .email-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+  }
+  .email-brand-diamond {
+    width: 10px; height: 10px;
+    transform: rotate(45deg);
+    background: #fff;
+    border-radius: 2px;
+  }
+  .email-header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 20px 0 6px;
+    letter-spacing: -0.01em;
+  }
+  .email-header p {
+    margin: 0;
+    opacity: 0.88;
+    font-size: 14px;
+  }
+  .email-body {
+    padding: 32px;
+  }
+  .email-body p {
+    margin: 0 0 16px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: #374151;
+  }
+  .email-card {
+    background: #fef7fa;
+    border: 1px solid #fbdaea;
+    border-radius: 10px;
+    padding: 20px 22px;
+    margin: 20px 0;
+  }
+  .email-card-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 14px;
+    border-bottom: 1px dashed #fbdaea;
+  }
+  .email-card-row:last-child { border: none; }
+  .email-card-label { color: #6b7280; }
+  .email-card-val { font-weight: 600; color: #1f2937; }
+  .email-btn {
+    display: inline-block;
+    background: #E11D74;
+    color: #ffffff !important;
+    padding: 14px 32px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    margin: 8px 0;
+  }
+  .email-btn-secondary {
+    display: inline-block;
+    padding: 12px 22px;
+    color: #6b7280 !important;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .email-btns {
+    text-align: center;
+    padding: 16px 0 8px;
+  }
+  .email-tip {
+    background: #f3f4f6;
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: #4b5563;
+    line-height: 1.55;
+    margin: 16px 0 0;
+  }
+  .email-tip strong { color: #E11D74; }
+  .email-footer {
+    padding: 24px 32px;
+    background: #f9fafb;
+    text-align: center;
+    font-size: 11px;
+    color: #9ca3af;
+    line-height: 1.6;
+  }
+  .email-footer a {
+    color: #6b7280;
+    text-decoration: underline;
+  }
+  .email-sig {
+    padding: 20px 0 0;
+    border-top: 1px solid #f3f4f6;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #374151;
+  }
+  .sig-name { font-weight: 600; margin-top: 12px; }
+
+  .preview-nav {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .preview-chip {
+    padding: 6px 14px;
+    background: #fff;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    font-size: 12px;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font-weight: 500;
+  }
+  .preview-chip.active { background: var(--color-accent); color: #fff; border-color: var(--color-accent); }
+</style>
+</head>
+<body data-route="email-preview">
+
+<div class="email-frame">
+  <div style="text-align:center;margin-bottom:20px">
+    <a href="index.html" style="font-size:13px;color:#6b7280;text-decoration:none">← Zurück zur Übersicht</a>
+    <div style="font-size:20px;font-weight:700;color:#1f2937;margin-top:8px">E-Mail-Vorlage: Rebooking-Erinnerung</div>
+    <div style="font-size:12px;color:#9ca3af;margin-top:4px">Template-ID: <code>rebooking_reminder_v2</code> · Versendet via Resend</div>
+  </div>
+
+  <div class="preview-nav">
+    <span class="preview-chip active">Rebooking Reminder</span>
+    <a href="review-thanks.html" class="preview-chip" style="text-decoration:none">Review Einladung →</a>
+  </div>
+
+  <div class="email-meta">
+    <div><strong>Von</strong></div><div>Vienna Glow Studio &lt;hello@viennaglowstudio.at&gt;</div>
+    <div><strong>An</strong></div><div>{{customer.email}}</div>
+    <div><strong>Betreff</strong></div><div>Zeit für Ihre nächste {{service.name}}? ✨</div>
+    <div><strong>Sende-ID</strong></div><div><code>rbk_{{booking.id}}_{{timestamp}}</code></div>
+  </div>
+
+  <article class="email">
+    <header class="email-header">
+      <div class="email-brand"><span class="email-brand-diamond"></span> Vienna Glow Studio</div>
+      <h1>Hallo Maria 👋</h1>
+      <p>Es ist wieder so weit — Ihre nächste Session steht an.</p>
+    </header>
+
+    <div class="email-body">
+      <p>seit Ihrem letzten Besuch bei uns sind <strong>3 Wochen</strong> vergangen — und erfahrungsgemäß ist genau jetzt der perfekte Zeitpunkt für die Auffrischung Ihrer Gel Maniküre.</p>
+
+      <div class="email-card">
+        <div class="email-card-row">
+          <span class="email-card-label">Letzter Termin</span>
+          <span class="email-card-val">22. März 2026</span>
+        </div>
+        <div class="email-card-row">
+          <span class="email-card-label">Ihre Stylist:in</span>
+          <span class="email-card-val">Anna Yılmaz</span>
+        </div>
+        <div class="email-card-row">
+          <span class="email-card-label">Empfohlener Zeitpunkt</span>
+          <span class="email-card-val">ab 12. April</span>
+        </div>
+      </div>
+
+      <p>Wir haben uns erlaubt, Anna's Kalender schon einmal vorzubereiten — drei passende Slots in den kommenden 10 Tagen:</p>
+
+      <div style="display:flex;flex-direction:column;gap:8px;margin:16px 0">
+        <a href="#" style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:#fff;border:1.5px solid #fbdaea;border-radius:8px;text-decoration:none">
+          <span style="color:#1f2937;font-weight:600;font-size:14px">Fr, 12. Apr · 09:00</span>
+          <span style="color:#E11D74;font-size:12px;font-weight:500">Buchen →</span>
+        </a>
+        <a href="#" style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:#fff;border:1.5px solid #fbdaea;border-radius:8px;text-decoration:none">
+          <span style="color:#1f2937;font-weight:600;font-size:14px">Sa, 13. Apr · 11:00</span>
+          <span style="color:#E11D74;font-size:12px;font-weight:500">Buchen →</span>
+        </a>
+        <a href="#" style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:#fff;border:1.5px solid #fbdaea;border-radius:8px;text-decoration:none">
+          <span style="color:#1f2937;font-weight:600;font-size:14px">Mo, 15. Apr · 16:30</span>
+          <span style="color:#E11D74;font-size:12px;font-weight:500">Buchen →</span>
+        </a>
+      </div>
+
+      <div class="email-btns">
+        <a href="#" class="email-btn">Alle verfügbaren Termine ansehen</a>
+        <br>
+        <a href="#" class="email-btn-secondary">Später erinnern (14 Tage)</a>
+      </div>
+
+      <div class="email-tip">
+        💡 <strong>VIP-Vorteil:</strong> Als Stammkundin erhalten Sie dieses Mal <strong>10% Rabatt</strong> auf Nail-Art-Zusatz. Gültig automatisch beim Buchen über diesen Link.
+      </div>
+
+      <div class="email-sig">
+        Wir freuen uns auf Sie.
+        <div class="sig-name">Das Vienna Glow Team</div>
+      </div>
+    </div>
+
+    <div class="email-footer">
+      Vienna Glow Studio GmbH · Mariahilfer Straße 88 · 1070 Wien · +43 1 234 5678<br>
+      Sie erhalten diese E-Mail, weil Sie bei Ihrer letzten Buchung Rebooking-Erinnerungen aktiviert haben.<br>
+      <a href="#">Abbestellen</a> · <a href="gdpr-consent.html">Datenschutz</a> · <a href="#">Einstellungen</a>
+    </div>
+  </article>
+</div>
+
+</body>
+</html>

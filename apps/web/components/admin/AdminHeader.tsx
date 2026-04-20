@@ -1,19 +1,18 @@
 interface AdminHeaderProps {
   title: string;
+  subtitle?: string;
 }
 
-export default function AdminHeader({ title }: AdminHeaderProps) {
+export default function AdminHeader({ title, subtitle }: AdminHeaderProps) {
   return (
-    <header
-      className="border-b px-6 py-4 flex items-center justify-between"
-      style={{ borderColor: "var(--color-accent)", backgroundColor: "#fff" }}
-    >
-      <h1 className="text-lg font-semibold" style={{ color: "var(--color-primary)" }}>
-        {title}
-      </h1>
-      <span className="text-xs" style={{ color: "var(--color-text-muted)" }}>
-        Vienna Glow Studio
-      </span>
+    <header className="dash-header">
+      <div>
+        <h3>{title}</h3>
+        {subtitle && <div className="dash-date">{subtitle}</div>}
+      </div>
+      <div className="dash-header-right">
+        <div className="dash-avatar">A</div>
+      </div>
     </header>
   );
 }

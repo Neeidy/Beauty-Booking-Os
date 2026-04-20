@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Warteliste — Vienna Glow Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/tokens.css?v=3">
+<link rel="stylesheet" href="assets/booking.css?v=3">
+<style>
+  body { background: var(--color-bg-surface); }
+  .wl-wrap { padding: 120px 16px 96px; max-width: 620px; margin: 0 auto; }
+  .wl-card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-elevated);
+    padding: 40px;
+  }
+  .wl-header {
+    text-align: center;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 28px;
+  }
+  .wl-icon {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
+    font-size: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+  }
+  .wl-header h3 { font-size: 24px; font-weight: 700; margin: 0 0 6px; }
+  .wl-header p { color: var(--color-text-muted); font-size: 14px; }
+  .wl-perk-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px 0;
+    margin: 0 0 22px;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .wl-perk {
+    display: flex;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--color-text-secondary);
+  }
+  .wl-perk-ico {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+</style>
+</head>
+<body data-route="waiting-list-public" style="--color-accent: #E11D74; --color-accent-hover: #C41660; --color-accent-soft: rgba(225, 29, 116, 0.08);">
+<div id="shell-mount"></div>
+
+<div class="booking-topbar">
+  <div class="container-wide booking-topbar-inner">
+    <a href="index.html" class="booking-back">← Zurück</a>
+    <a href="index.html" class="site-brand">
+      <span class="site-brand-diamond"></span> Vienna Glow Studio
+    </a>
+    <span style="width:80px"></span>
+  </div>
+</div>
+
+<main class="wl-wrap">
+  <div class="wl-card">
+    <div class="wl-header">
+      <div class="wl-icon">📋</div>
+      <h3>Warteliste — Ihr Wunschtermin ist ausgebucht?</h3>
+      <p>Kein Problem. Wir benachrichtigen Sie sofort, wenn ein passender Slot frei wird.</p>
+    </div>
+
+    <div class="wl-perk-list">
+      <div class="wl-perk"><div class="wl-perk-ico">✓</div><span>Kein Risiko — keine Buchung bis Sie bestätigen</span></div>
+      <div class="wl-perk"><div class="wl-perk-ico">✓</div><span>Erster Zugriff auf frei werdende Slots (Stornierungen, etc.)</span></div>
+      <div class="wl-perk"><div class="wl-perk-ico">✓</div><span>Benachrichtigung per SMS oder E-Mail — Sie wählen</span></div>
+    </div>
+
+    <form>
+      <div class="form-grid">
+        <div class="form-row">
+          <label class="form-label">Vorname</label>
+          <input class="form-input" placeholder="Katrin">
+        </div>
+        <div class="form-row">
+          <label class="form-label">Nachname</label>
+          <input class="form-input" placeholder="Huber">
+        </div>
+        <div class="form-row">
+          <label class="form-label">E-Mail</label>
+          <input class="form-input" type="email" placeholder="katrin@example.at">
+        </div>
+        <div class="form-row">
+          <label class="form-label">Telefon</label>
+          <input class="form-input" type="tel" placeholder="+43 664 ...">
+        </div>
+        <div class="form-row form-row-full">
+          <label class="form-label">Gewünschte Leistung</label>
+          <select class="form-input">
+            <option>— bitte wählen —</option>
+            <option>Gel Manikür · 60 Min · € 45,00</option>
+            <option>Gel Pediküre · 75 Min · € 55,00</option>
+            <option>Nail Art Design · 90 Min · € 65,00</option>
+            <option>Herrenhaarschnitt · 30 Min · € 25,00</option>
+            <option>Haarschnitt Damen · 60 Min · € 55,00</option>
+            <option>HydraFacial Classic · 45 Min · € 89,00</option>
+            <option>Wimpernlifting · 60 Min · € 75,00</option>
+            <option>Brow Lamination · 45 Min · € 55,00</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Wunschdatum (ab)</label>
+          <input class="form-input" type="date" value="2026-04-20">
+        </div>
+        <div class="form-row">
+          <label class="form-label">Tageszeit</label>
+          <select class="form-input">
+            <option>Egal</option>
+            <option>Vormittag (09–12)</option>
+            <option>Mittag (12–15)</option>
+            <option>Nachmittag (15–18)</option>
+            <option>Abend (ab 18)</option>
+          </select>
+        </div>
+        <div class="form-row form-row-full">
+          <label class="form-label">Flexibilität</label>
+          <select class="form-input">
+            <option>± 3 Tage</option>
+            <option>± 7 Tage</option>
+            <option>± 14 Tage</option>
+            <option>Genau dieser Tag</option>
+          </select>
+        </div>
+        <div class="form-row form-row-full">
+          <label class="form-label">Anmerkungen <span class="form-opt">(optional)</span></label>
+          <textarea class="form-input" rows="2" placeholder="Lieber morgens, bevorzuge Anna..."></textarea>
+        </div>
+      </div>
+
+      <div class="gdpr" style="margin-top:20px">
+        <label class="gdpr-check"><input type="checkbox" checked>
+          <span>Ich akzeptiere die <a href="gdpr-consent.html">Datenschutzbestimmungen</a> und die Speicherung meiner Daten für 90 Tage.</span>
+        </label>
+        <label class="gdpr-check"><input type="checkbox" checked>
+          <span>Ich möchte per SMS und E-Mail benachrichtigt werden, wenn ein Slot frei wird.</span>
+        </label>
+      </div>
+
+      <button type="button" class="btn btn-primary btn-lg btn-full" style="margin-top:20px">Auf die Warteliste setzen</button>
+      <p style="text-align:center;margin-top:14px;font-size:12px;color:var(--color-text-muted)">
+        Durchschnittliche Wartezeit: 4–6 Tage · Jederzeit abbestellen.
+      </p>
+    </form>
+  </div>
+</main>
+
+<script src="assets/shell.js"></script>
+<script src="assets/shell-init.js"></script>
+</body>
+</html>
