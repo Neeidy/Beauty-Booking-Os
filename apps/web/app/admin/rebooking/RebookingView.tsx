@@ -100,21 +100,13 @@ export default function RebookingView() {
         </div>
 
         {runResult && (
-          <div style={{
-            margin: "12px 0",
-            padding: "8px 12px",
-            border: "1px solid var(--color-border)",
-            borderRadius: "var(--radius-md)",
-            fontSize: "13px",
-            color: "var(--color-text-muted)",
-            background: "var(--color-bg-card)",
-          }}>
+          <div className="rb-result">
             {runResult}
           </div>
         )}
       </div>
 
-      <div className="adm-toolbar" style={{ borderTop: "1px solid var(--color-border)" }}>
+      <div className="adm-toolbar adm-toolbar-bordered">
         <div className="adm-search">
           <input type="search" placeholder="Kunde, Leistung..." readOnly />
         </div>
@@ -124,9 +116,9 @@ export default function RebookingView() {
         <button className="adm-filter-chip">✗ Übersprungen ({skippedCount})</button>
       </div>
 
-      <div className="adm-body" style={{ paddingTop: "0" }}>
+      <div className="adm-body adm-body-flush">
         {isLoading ? (
-          <div style={{ color: "var(--color-text-muted)", fontSize: "13px" }}>Wird geladen…</div>
+          <div className="loading-text">Wird geladen…</div>
         ) : error ? (
           <div className="empty">
             <div className="empty-ico">⚠</div>
@@ -169,14 +161,14 @@ export default function RebookingView() {
                       }).format(new Date(job.scheduledAt))}
                     </strong>
                     {job.executedAt && (
-                      <div style={{ fontSize: "11px", color: "var(--color-text-muted)" }}>
+                      <div className="rb-executed">
                         Ausgeführt: {new Intl.DateTimeFormat("de-AT", {
                           day: "2-digit", month: "2-digit", timeZone: "Europe/Vienna",
                         }).format(new Date(job.executedAt))}
                       </div>
                     )}
                   </td>
-                  <td style={{ fontSize: "12px", color: "var(--color-text-muted)", fontFamily: "monospace" }}>
+                  <td className="rb-booking-id">
                     …{job.bookingId.slice(-6)}
                   </td>
                   <td>
