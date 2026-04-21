@@ -154,7 +154,7 @@ export default function StaffManagementView() {
 
   if (isLoading) return (
     <div className="adm-body">
-      <div className="loading-text">Lädt...</div>
+      <div style={{ color: "var(--color-text-muted)", fontSize: "14px" }}>Lädt...</div>
     </div>
   );
 
@@ -171,7 +171,14 @@ export default function StaffManagementView() {
   return (
     <div className="adm-body">
       {saveMessage && (
-        <div className="save-banner">{saveMessage}</div>
+        <div style={{
+          marginBottom: "16px", padding: "8px 12px",
+          border: "1px solid var(--color-accent)", borderRadius: "var(--radius-md)",
+          fontSize: "13px", color: "var(--color-text)",
+          background: "var(--color-bg-card)",
+        }}>
+          {saveMessage}
+        </div>
       )}
 
       <div className="staff-grid">
@@ -189,16 +196,38 @@ export default function StaffManagementView() {
         ))}
 
         {/* Add new card */}
-        <button className="staff-card staff-card-add" onClick={() => setShowAddForm(true)}>
+        <button
+          className="staff-card"
+          onClick={() => setShowAddForm(true)}
+          style={{
+            background: "transparent",
+            border: "1.5px dashed var(--color-border)",
+            cursor: "pointer",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: "260px",
+            color: "var(--color-text-muted)",
+            fontSize: "14px",
+            fontWeight: 500,
+          }}
+        >
           + Neue:n Mitarbeiter:in hinzufügen
         </button>
       </div>
 
       {/* Add form modal-style */}
       {showAddForm && (
-        <div className="staff-form-panel">
-          <h3 className="staff-form-title">Neues Teammitglied</h3>
-          <div className="staff-form-grid">
+        <div style={{
+          marginTop: "24px",
+          border: "1px solid var(--color-border)",
+          borderRadius: "var(--radius-lg)",
+          padding: "20px",
+          background: "var(--color-bg-card)",
+        }}>
+          <h3 style={{ fontSize: "14px", fontWeight: 600, marginBottom: "16px", color: "var(--color-text)" }}>
+            Neues Teammitglied
+          </h3>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
             <div>
               <label className="form-label">Name *</label>
               <input
@@ -220,11 +249,11 @@ export default function StaffManagementView() {
           </div>
 
           {services.length > 0 && (
-            <div className="staff-svc-list">
+            <div style={{ marginBottom: "12px" }}>
               <label className="form-label">Leistungen</label>
-              <div className="staff-svc-chips">
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
                 {services.map((svc) => (
-                  <label key={svc.id} className="staff-svc-checkbox">
+                  <label key={svc.id} style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "13px", color: "var(--color-text)", cursor: "pointer" }}>
                     <input
                       type="checkbox"
                       checked={newServiceIds.includes(svc.id)}
@@ -241,12 +270,13 @@ export default function StaffManagementView() {
             </div>
           )}
 
-          <div className="staff-form-actions">
+          <div style={{ display: "flex", gap: "8px" }}>
             <button
               type="button"
               onClick={handleAdd}
               disabled={isAdding}
-              className={`btn btn-primary btn-sm${isAdding ? " btn-loading" : ""}`}
+              className="btn btn-primary btn-sm"
+              style={{ opacity: isAdding ? 0.6 : 1 }}
             >
               {isAdding ? "Wird hinzugefügt..." : "Hinzufügen"}
             </button>
@@ -313,13 +343,13 @@ function StaffCard({
             </label>
             <div style={{ display: "flex", gap: "6px" }}>
               <button className="btn btn-ghost btn-sm" onClick={() => setIsEditing(true)}>Bearbeiten</button>
-              <button className="btn btn-ghost btn-sm btn-danger" onClick={onDelete}>Löschen</button>
+              <button className="btn btn-ghost btn-sm" onClick={onDelete} style={{ color: "var(--color-rose)" }}>Löschen</button>
             </div>
           </div>
         </>
       ) : (
         <div>
-          <div className="staff-form-grid">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
             <div>
               <label className="form-label">Name</label>
               <input className="form-input" value={editName} onChange={(e) => setEditName(e.target.value)} />
@@ -331,11 +361,11 @@ function StaffCard({
           </div>
 
           {services.length > 0 && (
-            <div className="staff-svc-list">
+            <div style={{ marginBottom: "12px" }}>
               <label className="form-label">Leistungen</label>
-              <div className="staff-svc-chips">
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
                 {services.map((svc) => (
-                  <label key={svc.id} className="staff-svc-checkbox">
+                  <label key={svc.id} style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "13px", color: "var(--color-text)", cursor: "pointer" }}>
                     <input
                       type="checkbox"
                       checked={editServiceIds.includes(svc.id)}
@@ -352,7 +382,7 @@ function StaffCard({
             </div>
           )}
 
-          <div className="staff-form-actions">
+          <div style={{ display: "flex", gap: "8px" }}>
             <button
               type="button"
               className="btn btn-primary btn-sm"

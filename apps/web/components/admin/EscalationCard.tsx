@@ -21,19 +21,10 @@ interface EscalationCardProps {
 }
 
 const SOURCE_LABELS: Record<string, string> = {
-  web_form:     "🌐 Web",
+  web_form:     "Web",
   instagram_dm: "Instagram",
   whatsapp:     "WhatsApp",
-  phone:        "📞 Telefon",
-  google:       "Google",
   email:        "E-Mail",
-};
-
-const SOURCE_VARIANT: Record<string, string> = {
-  web_form:     "src-web",
-  google:       "src-google",
-  phone:        "src-phone",
-  instagram_dm: "src-instagram",
 };
 
 export default function EscalationCard({ lead, onAction }: EscalationCardProps) {
@@ -75,7 +66,7 @@ export default function EscalationCard({ lead, onAction }: EscalationCardProps) 
       )}
 
       <div className="kanban-meta">
-        <span className={`kanban-pill ${SOURCE_VARIANT[lead.source] ?? ""}`}>{SOURCE_LABELS[lead.source] ?? lead.source}</span>
+        <span className="kanban-pill">{SOURCE_LABELS[lead.source] ?? lead.source}</span>
         {lead.intent && <span className="kanban-pill">{lead.intent}</span>}
         {lead.language && <span className="kanban-pill">{lead.language.toUpperCase()}</span>}
       </div>

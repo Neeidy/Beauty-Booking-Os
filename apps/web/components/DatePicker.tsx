@@ -10,12 +10,7 @@ interface DatePickerProps {
 
 const WEEKDAY_LABELS = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
 
-const MONTH_LABELS_DE = [
-  "Januar", "Februar", "März", "April", "Mai", "Juni",
-  "Juli", "August", "September", "Oktober", "November", "Dezember",
-];
-
-function toDateStr(year: number, month: number, day: number): string {
+function toDateString(year: number, month: number, day: number): string {
   const mm = String(month + 1).padStart(2, "0");
   const dd = String(day).padStart(2, "0");
   return `${year}-${mm}-${dd}`;
@@ -34,115 +29,177 @@ function addDaysStr(dateStr: string, days: number): string {
 }
 
 export default function DatePicker({ selectedDate, onDateChange, disabled = false }: DatePickerProps) {
+  const [viewYear, setViewYear] = useState(() => new Date().getFullYear());
+  const [viewMonth, setViewMonth] = useState(() => new Date().getMonth()); // 0-indexed
+
   const todayStr = getTodayVienna();
+  const maxDateStr = addDaysStr(todayStr, 60);
+
+  // Current month bounds for nav buttons
   const todayParts = todayStr.split("-").map(Number);
   const todayYear = todayParts[0]!;
-  const todayMonth = todayParts[1]! - 1;
+  const todayMonth = todayParts[1]! - 1; // 0-indexed
 
-  const [viewYear, setViewYear] = useState(todayYear);
-  const [viewMonth, setViewMonth] = useState(todayMonth);
-
-  const maxDateStr = addDaysStr(todayStr, 60);
   const maxParts = maxDateStr.split("-").map(Number);
   const maxYear = maxParts[0]!;
-  const maxMonth = maxParts[1]! - 1;
+  const maxMonth = maxParts[1]! - 1; // 0-indexed
 
   const isCurrentMonth = viewYear === todayYear && viewMonth === todayMonth;
   const canGoForward = viewYear < maxYear || (viewYear === maxYear && viewMonth < maxMonth);
 
-  const monthLabel = `${MONTH_LABELS_DE[viewMonth]} ${viewYear}`;
+  // Month header label (German)
+  const monthLabel = new Intl.DateTimeFormat("de-AT", {
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(Date.UTC(viewYear, viewMonth, 15)));
 
-  const firstDayOfMonth = new Date(viewYear, viewMonth, 1).getDay();
-  const startOffset = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
+  // Grid math
+  const firstDayOfMonth = new Date(viewYear, viewMonth, 1).getDay(); // 0=Sunday
+  const startOffset = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1; // ISO: Mon=0 offset
   const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
 
   function goToPrevMonth() {
     if (isCurrentMonth) return;
-    if (viewMonth === 0) { setViewYear((y) => y - 1); setViewMonth(11); }
-    else setViewMonth((m) => m - 1);
+    if (viewMonth === 0) {
+      setViewYear((y) => y - 1);
+      setViewMonth(11);
+    } else {
+      setViewMonth((m) => m - 1);
+    }
   }
 
   function goToNextMonth() {
     if (!canGoForward) return;
-    if (viewMonth === 11) { setViewYear((y) => y + 1); setViewMonth(0); }
-    else setViewMonth((m) => m + 1);
+    if (viewMonth === 11) {
+      setViewYear((y) => y + 1);
+      setViewMonth(0);
+    } else {
+      setViewMonth((m) => m + 1);
+    }
   }
 
   function handleDayClick(day: number) {
     if (disabled) return;
-    const dayStr = toDateStr(viewYear, viewMonth, day);
+    const dayStr = toDateString(viewYear, viewMonth, day);
     if (dayStr < todayStr || dayStr > maxDateStr) return;
     onDateChange(dayStr);
   }
 
+  // Build grid cells: empty offsets + day numbers
   const cells: (number | null)[] = [
     ...Array(startOffset).fill(null),
     ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
   ];
+  // Pad to complete last row
   const remainder = cells.length % 7;
   if (remainder !== 0) {
     for (let i = 0; i < 7 - remainder; i++) cells.push(null);
   }
 
   return (
-    <div style={{ opacity: disabled ? 0.5 : 1, pointerEvents: disabled ? "none" : "auto" }}>
-      <div className="dp-head">
+    <div
+      style={{
+        opacity: disabled ? 0.5 : 1,
+        pointerEvents: disabled ? "none" : "auto",
+      }}
+    >
+      {/* Month navigation header */}
+      <div className="flex items-center justify-between mb-2">
         <button
           type="button"
-          className="cal-ico-btn"
           onClick={goToPrevMonth}
           disabled={isCurrentMonth}
+          className="px-2 py-1 text-sm rounded-sm"
+          style={{
+            color: isCurrentMonth ? "var(--color-text-muted)" : "var(--color-primary)",
+            cursor: isCurrentMonth ? "default" : "pointer",
+          }}
           aria-label="Vorheriger Monat"
         >
-          ‹
+          ←
         </button>
-        <div>{monthLabel}</div>
+        <span
+          className="text-sm font-medium capitalize"
+          style={{ color: "var(--color-primary)" }}
+        >
+          {monthLabel}
+        </span>
         <button
           type="button"
-          className="cal-ico-btn"
           onClick={goToNextMonth}
           disabled={!canGoForward}
+          className="px-2 py-1 text-sm rounded-sm"
+          style={{
+            color: !canGoForward ? "var(--color-text-muted)" : "var(--color-primary)",
+            cursor: !canGoForward ? "default" : "pointer",
+          }}
           aria-label="Nächster Monat"
         >
-          ›
+          →
         </button>
       </div>
 
-      <div className="dp-dow">
+      {/* Weekday header row */}
+      <div
+        className="grid grid-cols-7 mb-1"
+        role="row"
+      >
         {WEEKDAY_LABELS.map((label) => (
-          <span key={label}>{label}</span>
+          <div
+            key={label}
+            className="text-center text-xs py-1"
+            style={{ color: "var(--color-text-muted)" }}
+          >
+            {label}
+          </div>
         ))}
       </div>
 
-      <div className="dp-grid">
+      {/* Day grid */}
+      <div className="grid grid-cols-7 gap-0.5">
         {cells.map((day, idx) => {
           if (day === null) {
-            return <span key={`empty-${idx}`} className="dp-d out" />;
+            return <div key={`empty-${idx}`} />;
           }
-          const dayStr = toDateStr(viewYear, viewMonth, day);
+
+          const dayStr = toDateString(viewYear, viewMonth, day);
           const isPast = dayStr < todayStr;
           const isBeyondMax = dayStr > maxDateStr;
           const isDisabled = isPast || isBeyondMax;
           const isToday = dayStr === todayStr;
           const isSelected = dayStr === selectedDate;
 
-          let cls = "dp-d";
-          if (isDisabled) cls += " disabled";
-          else if (isSelected) cls += " selected";
-          else if (isToday) cls += " today";
-
           return (
-            <span
+            <button
               key={dayStr}
-              className={cls}
-              onClick={() => !isDisabled && handleDayClick(day)}
+              type="button"
+              onClick={() => handleDayClick(day)}
+              disabled={isDisabled}
+              className="flex items-center justify-center text-sm font-medium rounded-sm transition-colors"
+              style={{
+                minHeight: "44px",
+                minWidth: "44px",
+                opacity: isDisabled ? 0.4 : 1,
+                pointerEvents: isDisabled ? "none" : "auto",
+                backgroundColor: isSelected
+                  ? "var(--color-primary)"
+                  : "transparent",
+                color: isSelected
+                  ? "#fff"
+                  : "var(--color-primary)",
+                border: isToday && !isSelected
+                  ? "1px solid var(--color-primary)"
+                  : isSelected
+                  ? "1px solid var(--color-primary)"
+                  : "1px solid transparent",
+                cursor: isDisabled ? "default" : "pointer",
+              }}
               aria-label={dayStr}
-              role="button"
-              tabIndex={isDisabled ? -1 : 0}
-              onKeyDown={(e) => e.key === "Enter" && !isDisabled && handleDayClick(day)}
+              aria-pressed={isSelected}
             >
               {day}
-            </span>
+            </button>
           );
         })}
       </div>

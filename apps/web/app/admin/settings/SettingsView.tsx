@@ -332,22 +332,28 @@ export default function SettingsView() {
                 </div>
               </div>
 
-              <div className="closed-dates">
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "16px" }}>
                 {editedConfig.closedDates.map((date) => (
-                  <div key={date} className="closed-date-row">
-                    <span>{date}</span>
+                  <span key={date} style={{
+                    display: "flex", alignItems: "center", gap: "4px",
+                    padding: "4px 10px", borderRadius: "999px",
+                    border: "1px solid var(--color-border)",
+                    fontSize: "13px", color: "var(--color-text)",
+                    background: "var(--color-bg-card)",
+                  }}>
+                    {date}
                     <button
                       type="button"
-                      className="btn btn-ghost btn-sm"
-                      style={{ padding: "2px 8px" }}
                       onClick={() => setEditedConfig({
                         ...editedConfig,
                         closedDates: editedConfig.closedDates.filter((d) => d !== date),
                       })}
+                      style={{ background: "none", border: "none", cursor: "pointer",
+                        color: "var(--color-text-muted)", fontSize: "14px", lineHeight: "1", padding: "0 2px" }}
                     >
-                      ✕
+                      ×
                     </button>
-                  </div>
+                  </span>
                 ))}
               </div>
 
@@ -393,14 +399,14 @@ export default function SettingsView() {
                 </div>
               </div>
 
-              <div className="form-grid" style={{ marginBottom: "16px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
                 {(Object.entries({
                   minAdvanceBookingHours: "Mindestvorlaufzeit (Std.)",
                   cancellationPolicyHours: "Stornierungsfrist (Std.)",
                   maxFollowUpAttempts: "Max. Nachfassversuche",
                   recoveryWaitHours: "Wartezeit Rückgewinnung (Std.)",
                 }) as [keyof BookingRules, string][]).map(([key, label]) => (
-                  <div key={key} className="form-row">
+                  <div key={key}>
                     <label className="form-label">{label}</label>
                     <input
                       type="number"

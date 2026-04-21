@@ -188,7 +188,7 @@ export default async function ClientsPage() {
                 const sourceBadge = SOURCE_BADGE[c.source ?? ""] ?? null;
 
                 return (
-                  <tr key={c.id} onClick={() => {}} style={{ cursor: "pointer" }}>
+                  <tr key={c.id}>
                     <td>
                       <div className="client-name-cell">
                         <div className={`client-avatar${avatarVariant}`}>{initials}</div>
@@ -211,7 +211,6 @@ export default async function ClientsPage() {
                       <Link
                         href={`/admin/clients/${identifier}`}
                         className="btn btn-ghost btn-sm"
-                        onClick={(e) => e.stopPropagation()}
                       >
                         →
                       </Link>

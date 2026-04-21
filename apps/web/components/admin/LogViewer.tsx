@@ -22,16 +22,6 @@ interface LogViewerProps {
   totalTokens: number;
 }
 
-function getAgentVariant(name: string): string {
-  const n = name.toLowerCase();
-  if (n.includes("triage") || n.includes("intake")) return "triage";
-  if (n.includes("review") || n.includes("escalat")) return "review";
-  if (n.includes("notify") || n.includes("follow")) return "notify";
-  if (n.includes("rebook")) return "rebook";
-  if (n.includes("slot") || n.includes("booking")) return "slot";
-  return "";
-}
-
 const STATUS_LEVEL: Record<string, string> = {
   success:   "success",
   failure:   "error",
@@ -105,7 +95,7 @@ export default function LogViewer({ logs, totalTokens }: LogViewerProps) {
                   </td>
                   <td>
                     {log.agentName && (
-                      <span className={`log-agent-badge ${getAgentVariant(log.agentName)}`}>{icon} {log.agentName}</span>
+                      <span className="log-agent">{icon} {log.agentName}</span>
                     )}
                   </td>
                   <td>
