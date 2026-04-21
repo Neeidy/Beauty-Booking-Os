@@ -37,6 +37,16 @@ const EVENT_ICONS: Record<string, string> = {
   config_change:    "⚙",
 };
 
+function agentBadgeClass(agentName: string | null): string {
+  if (!agentName) return "";
+  if (agentName.includes("triage") || agentName.includes("intake") || agentName.includes("orchestrator")) return "triage";
+  if (agentName.includes("rebook") || agentName.includes("rebooking")) return "rebook";
+  if (agentName.includes("notify") || agentName.includes("followup")) return "notify";
+  if (agentName.includes("review") || agentName.includes("content")) return "review";
+  if (agentName.includes("slot") || agentName.includes("booking")) return "slot";
+  return "";
+}
+
 export default function LogViewer({ logs, totalTokens }: LogViewerProps) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
@@ -95,7 +105,9 @@ export default function LogViewer({ logs, totalTokens }: LogViewerProps) {
                   </td>
                   <td>
                     {log.agentName && (
-                      <span className="log-agent">{icon} {log.agentName}</span>
+                      <span className={`log-agent-badge ${agentBadgeClass(log.agentName)}`}>
+                        {icon} {log.agentName}
+                      </span>
                     )}
                   </td>
                   <td>

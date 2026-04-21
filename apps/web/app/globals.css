@@ -2527,10 +2527,24 @@ section[id] { scroll-margin-top: 88px; }
 .log-level.success { background: color-mix(in srgb, var(--color-emerald) 15%, transparent); color: var(--color-emerald); }
 .log-level.warn { background: color-mix(in srgb, var(--color-amber) 15%, transparent); color: var(--color-amber); }
 .log-level.error { background: color-mix(in srgb, var(--color-rose) 15%, transparent); color: var(--color-rose); }
-.log-agent {
+.log-agent-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
   font-weight: 600;
-  color: var(--color-text);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
 }
+.log-agent-badge.triage { background: color-mix(in srgb, var(--color-accent) 12%, transparent); color: var(--color-accent); border-color: color-mix(in srgb, var(--color-accent) 30%, transparent); }
+.log-agent-badge.rebook { background: color-mix(in srgb, var(--color-purple) 12%, transparent); color: var(--color-purple); border-color: color-mix(in srgb, var(--color-purple) 30%, transparent); }
+.log-agent-badge.notify { background: color-mix(in srgb, var(--color-cyan) 12%, transparent); color: var(--color-cyan); border-color: color-mix(in srgb, var(--color-cyan) 30%, transparent); }
+.log-agent-badge.review { background: color-mix(in srgb, var(--color-amber) 12%, transparent); color: var(--color-amber); border-color: color-mix(in srgb, var(--color-amber) 30%, transparent); }
+.log-agent-badge.slot { background: color-mix(in srgb, var(--color-emerald) 12%, transparent); color: var(--color-emerald); border-color: color-mix(in srgb, var(--color-emerald) 30%, transparent); }
 .log-tokens {
   color: var(--color-text-muted);
   font-variant-numeric: tabular-nums;

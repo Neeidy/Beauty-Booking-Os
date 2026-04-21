@@ -1,63 +1,58 @@
+export const dynamic = "force-dynamic";
+
 import FrontDeskBoard from "./FrontDeskBoard";
+import type { FrontDeskLead } from "./LeadCard";
 
-interface FrontDeskBooking {
-  id: string;
-  customerName: string;
-  customerContact: string;
-  appointmentAt: string;
-  appointmentTime: string;
-  durationMinutes: number;
-  status: string;
-  serviceName: string | null;
-  notes: string | null;
-  createdAt: string;
+type Lane = "new" | "contacted" | "qualified" | "booked" | "lost";
+
+interface FrontDeskColumns {
+  new: FrontDeskLead[];
+  contacted: FrontDeskLead[];
+  qualified: FrontDeskLead[];
+  booked: FrontDeskLead[];
+  lost: FrontDeskLead[];
 }
 
-interface FrontDeskResponse {
-  date: string;
-  totalBookings: number;
-  columns: {
-    unconfirmed: FrontDeskBooking[];
-    confirmed: FrontDeskBooking[];
-    completed: FrontDeskBooking[];
-  };
+interface LeadsApiResponse {
+  leads: FrontDeskLead[];
+  total: number;
 }
 
-function getViennaToday(): string {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Europe/Vienna",
-  }).format(new Date());
-}
-
-function getViennaFormattedDate(): string {
-  return new Intl.DateTimeFormat("de-AT", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    timeZone: "Europe/Vienna",
-  }).format(new Date());
+function statusToLane(status: string): Lane {
+  if (status === "contacted") return "contacted";
+  if (status === "qualified" || status === "booking_started") return "qualified";
+  if (status === "booked") return "booked";
+  if (status === "lost" || status === "spam") return "lost";
+  return "new";
 }
 
 export default async function FrontDeskPage() {
-  const today = getViennaToday();
-  const formattedDate = getViennaFormattedDate();
-
   const baseUrl = process.env["NEXT_PUBLIC_APP_URL"] ?? "http://localhost:3030";
   const adminSecret = process.env["ADMIN_SECRET"] ?? "change-me-in-production";
 
-  let data: FrontDeskResponse | null = null;
+  const empty: FrontDeskColumns = {
+    new: [], contacted: [], qualified: [], booked: [], lost: [],
+  };
+
+  const columns: FrontDeskColumns = { ...empty };
 
   try {
-    const res = await fetch(`${baseUrl}/api/admin/front-desk?date=${today}`, {
-      headers: { "x-admin-secret": adminSecret },
-      cache: "no-store",
-    });
+    const res = await fetch(
+      `${baseUrl}/api/admin/leads?limit=100`,
+      {
+        headers: { "x-admin-secret": adminSecret },
+        cache: "no-store",
+      }
+    );
     if (res.ok) {
-      data = (await res.json()) as FrontDeskResponse;
+      const data = (await res.json()) as LeadsApiResponse;
+      for (const lead of data.leads) {
+        const lane = statusToLane(lead.status);
+        columns[lane].push(lead);
+      }
     }
   } catch {
-    // data stays null — rendered as error below
+    // renders with empty columns
   }
 
   return (
@@ -68,26 +63,12 @@ export default async function FrontDeskPage() {
           <h2>Front Desk</h2>
         </div>
         <div className="adm-header-actions">
-          <span style={{ fontSize: "13px", color: "var(--color-text-muted)" }}>{formattedDate}</span>
+          <button className="btn btn-ghost btn-sm">Exportieren</button>
+          <button className="btn btn-primary btn-sm">+ Neuer Lead</button>
         </div>
       </header>
 
-      <div className="adm-body">
-        {data === null ? (
-          <div style={{
-            background: "var(--color-error-soft)",
-            color: "var(--color-error)",
-            border: "1px solid var(--color-error)",
-            borderRadius: "8px",
-            padding: "12px 16px",
-            fontSize: "14px",
-          }}>
-            Daten konnten nicht geladen werden
-          </div>
-        ) : (
-          <FrontDeskBoard initialData={data} />
-        )}
-      </div>
+      <FrontDeskBoard initialColumns={columns} />
     </>
   );
 }

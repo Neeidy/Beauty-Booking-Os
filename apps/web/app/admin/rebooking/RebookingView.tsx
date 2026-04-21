@@ -84,19 +84,28 @@ export default function RebookingView() {
   return (
     <>
       <div className="adm-body">
-        <div className="rb-stats">
-          <div className="rb-stat">
-            <div className="rb-stat-num">{jobs.length}</div>
-            <div className="rb-stat-lbl">Aktive Erinnerungen</div>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
+          <div className="rb-stats">
+            <div className="rb-stat">
+              <div className="rb-stat-num">{jobs.length}</div>
+              <div className="rb-stat-lbl">Aktive Erinnerungen</div>
+            </div>
+            <div className="rb-stat">
+              <div className="rb-stat-num">{sentCount}</div>
+              <div className="rb-stat-lbl">Versendet</div>
+            </div>
+            <div className="rb-stat">
+              <div className="rb-stat-num">{skippedCount}</div>
+              <div className="rb-stat-lbl">Übersprungen</div>
+            </div>
           </div>
-          <div className="rb-stat">
-            <div className="rb-stat-num">{sentCount}</div>
-            <div className="rb-stat-lbl">Versendet</div>
-          </div>
-          <div className="rb-stat">
-            <div className="rb-stat-num">{skippedCount}</div>
-            <div className="rb-stat-lbl">Übersprungen</div>
-          </div>
+          <button
+            className="rb-run-btn"
+            onClick={handleRunNow}
+            disabled={isRunning}
+          >
+            {isRunning ? "⏳ Wird ausgeführt..." : "▶ Jetzt ausführen"}
+          </button>
         </div>
 
         {runResult && (

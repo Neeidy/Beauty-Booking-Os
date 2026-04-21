@@ -93,6 +93,8 @@ export default function WaitingListView({ initialData }: WaitingListViewProps) {
         >
           📣 Benachrichtigt ({notifiedCount})
         </button>
+        <button className="adm-filter-chip">✓ Gebucht</button>
+        <button className="adm-filter-chip">Abgelaufen (0)</button>
       </div>
 
       <div className="adm-body">

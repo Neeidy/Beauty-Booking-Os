@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
-import { getDb, leads, bookings } from "@beauty-booking/db";
+import { getDb, leads, bookings, services } from "@beauty-booking/db";
 import { eq, desc } from "drizzle-orm";
 
 const CLIENT_ID = process.env.DEMO_CLIENT_ID ?? "00000000-0000-0000-0000-000000000000";
@@ -23,6 +23,7 @@ interface CustomerRow {
   email: string | null;
   source: string | null;
   totalBookings: number;
+  totalRevenueCents: number;
   lastVisit: string | null;
   nextAppointment: string | null;
   isVip: boolean;
@@ -54,15 +55,17 @@ async function getCustomers(): Promise<CustomerRow[]> {
     unique.push(row);
   }
 
-  // Fetch booking counts and last/next visits
+  // Fetch booking counts, revenue and last/next visits
   const bookingRows = await db
     .select({
       customerName: bookings.customerName,
       customerContact: bookings.customerContact,
       appointmentAt: bookings.appointmentAt,
       status: bookings.status,
+      priceEur: services.priceEur,
     })
     .from(bookings)
+    .leftJoin(services, eq(bookings.serviceId, services.id))
     .where(eq(bookings.clientId, CLIENT_ID));
 
   const now = new Date().toISOString();
@@ -93,6 +96,11 @@ async function getCustomers(): Promise<CustomerRow[]> {
           .sort()[0] ?? null
       : null;
 
+    const totalRevenueCents = related.reduce(
+      (sum, b) => sum + (b.priceEur ?? 0),
+      0
+    );
+
     return {
       id: row.id,
       name: row.customerName ?? null,
@@ -100,6 +108,7 @@ async function getCustomers(): Promise<CustomerRow[]> {
       email: row.customerEmail ?? null,
       source: row.source ?? null,
       totalBookings: related.length,
+      totalRevenueCents,
       lastVisit: lastVisitDate,
       nextAppointment: nextAppt,
       isVip: related.length >= 10,
@@ -167,6 +176,7 @@ export default async function ClientsPage() {
               <tr>
                 <th>Kunde</th>
                 <th>Termine</th>
+                <th>Umsatz</th>
                 <th>Letzter Besuch</th>
                 <th>Nächster Termin</th>
                 <th>Quelle</th>
@@ -202,6 +212,9 @@ export default async function ClientsPage() {
                       </div>
                     </td>
                     <td className="client-stat">{c.totalBookings}</td>
+                    <td className="client-stat">
+                      € {(c.totalRevenueCents / 100).toLocaleString("de-AT", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </td>
                     <td>{formatDate(c.lastVisit)}</td>
                     <td>{formatDate(c.nextAppointment)}</td>
                     <td>
