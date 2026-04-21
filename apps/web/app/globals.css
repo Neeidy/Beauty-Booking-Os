@@ -3021,6 +3021,64 @@ section[id] { scroll-margin-top: 88px; }
   color: var(--color-text-secondary);
   font-weight: 500;
 }
+/* ── Thank You Page (full-page layout) ── */
+.thanks-wrap {
+  padding: 120px 16px 96px;
+  max-width: 620px;
+  margin: 0 auto;
+}
+.thanks-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-elevated);
+  padding: 48px 40px 40px;
+  text-align: center;
+}
+.thanks-hero {
+  width: 96px; height: 96px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-purple) 100%);
+  color: #fff;
+  font-size: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 22px;
+  box-shadow: var(--shadow-accent);
+}
+.thanks-card h1 { font-size: 28px; font-weight: 700; margin: 0 0 8px; letter-spacing: -0.02em; }
+.thanks-card .sub { color: var(--color-text-muted); font-size: 15px; margin-bottom: 28px; line-height: 1.55; }
+.google-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 22px;
+  background: #fff;
+  border: 1px solid #DADCE0;
+  border-radius: var(--radius-md);
+  color: #3C4043;
+  font-weight: 500;
+  font-size: 15px;
+  text-decoration: none;
+  box-shadow: 0 1px 2px rgba(60,64,67,0.1);
+  transition: box-shadow 140ms ease, transform 140ms ease;
+  margin-bottom: 24px;
+}
+.google-cta:hover { box-shadow: 0 4px 10px rgba(60,64,67,0.15); transform: translateY(-1px); text-decoration: none; }
+.g-logo { display: inline-flex; flex-shrink: 0; }
+.rebook-cta {
+  margin-top: 28px;
+  padding: 20px;
+  background: color-mix(in srgb, var(--color-accent) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-accent) 25%, transparent);
+  border-radius: var(--radius-md);
+  text-align: left;
+}
+.rebook-cta strong { display: block; font-size: 14px; margin-bottom: 4px; }
+.rebook-cta p { font-size: 12px; color: var(--color-text-muted); margin: 0 0 10px; line-height: 1.55; }
+.btn-sm { padding: 10px 20px; font-size: 14px; }
 
 /* ── Admin utility classes ── */
 .save-banner {
