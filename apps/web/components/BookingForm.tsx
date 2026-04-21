@@ -70,8 +70,9 @@ export default function BookingForm() {
     register,
     handleSubmit,
     trigger,
+    setValue,           // ← EKLE
     formState: { errors },
-    getValues,
+    getValues
   } = useForm<BookingFormData>({
     resolver: zodResolver(bookingFormSchema),
     defaultValues: {
@@ -95,7 +96,10 @@ export default function BookingForm() {
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get("source") === "google_business") setBookingSource("google_business");
     }
-  }, []);
+
+  useEffect(() => {
+    setValue("serviceId", selectedServiceId);
+  }, [selectedServiceId, setValue]);
 
   const onSubmit = async (data: BookingFormData) => {
     setIsSubmitting(true);
