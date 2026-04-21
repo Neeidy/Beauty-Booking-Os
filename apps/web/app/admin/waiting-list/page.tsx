@@ -22,7 +22,7 @@ interface WaitingListResponse {
 }
 
 export default async function WaitingListPage() {
-  const baseUrl = process.env["NEXT_PUBLIC_APP_URL"] ?? "http://localhost:3030";
+  const baseUrl = process.env["APP_URL"] ?? "http://localhost:3030";
   const adminSecret = process.env["ADMIN_SECRET"] ?? "change-me-in-production";
 
   let data: WaitingListResponse | null = null;

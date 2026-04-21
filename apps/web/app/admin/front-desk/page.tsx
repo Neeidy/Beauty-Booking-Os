@@ -27,7 +27,7 @@ function statusToLane(status: string): Lane {
 }
 
 export default async function FrontDeskPage() {
-  const baseUrl = process.env["NEXT_PUBLIC_APP_URL"] ?? "http://localhost:3030";
+  const baseUrl = process.env["APP_URL"] ?? "http://localhost:3030";
   const adminSecret = process.env["ADMIN_SECRET"] ?? "change-me-in-production";
 
   const empty: FrontDeskColumns = {

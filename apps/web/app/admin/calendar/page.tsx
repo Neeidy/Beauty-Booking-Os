@@ -37,7 +37,7 @@ export default async function CalendarPage({
 }) {
   const { weekStart } = await searchParams;
 
-  const baseUrl = process.env["NEXT_PUBLIC_APP_URL"] ?? "http://localhost:3030";
+  const baseUrl = process.env["APP_URL"] ?? "http://localhost:3030";
   const adminSecret = process.env["ADMIN_SECRET"] ?? "change-me-in-production";
 
   let data: CalendarResponse | null = null;
