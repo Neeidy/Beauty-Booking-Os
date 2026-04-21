@@ -10,9 +10,10 @@ import { logRequest, logError } from "@/lib/logger";
 const CLIENT_ID =
   process.env.DEMO_CLIENT_ID ?? "00000000-0000-0000-0000-000000000000";
 
-// durationMinutes and category are intentionally excluded — they affect slot calculations
 const ServicePatchSchema = z.object({
   serviceName: z.string().min(2).max(100).optional(),
+  category: z.string().max(100).optional(),
+  durationMinutes: z.number().int().min(1).max(480).optional(),
   priceEur: z.number().int().min(0).max(99999).nullable().optional(),
   active: z.boolean().optional(),
   description: z.string().max(500).nullable().optional(),
