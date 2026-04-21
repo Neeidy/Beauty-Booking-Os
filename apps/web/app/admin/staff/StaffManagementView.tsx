@@ -315,11 +315,6 @@ function StaffCard({
     <div className={`staff-card${member.active ? "" : " inactive"}`}>
       {!isEditing ? (
         <>
-          <label className="toggle staff-card-toggle">
-            <input type="checkbox" checked={member.active} onChange={onToggleActive} />
-            <span className="toggle-slider" />
-          </label>
-
           <div className="staff-card-top">
             <div className="staff-avatar" style={avatarGradient ? { background: avatarGradient } : undefined}>
               {initials}
@@ -347,6 +342,10 @@ function StaffCard({
           <div className="staff-card-spacer" />
 
           <div className="staff-card-bot">
+            <label className="toggle">
+              <input type="checkbox" checked={member.active} onChange={onToggleActive} />
+              <span className="toggle-slider" />
+            </label>
             <div className="staff-card-bot-actions">
               <button className="btn btn-ghost btn-sm" onClick={() => setIsEditing(true)}>Bearbeiten</button>
               <button className="btn btn-ghost btn-sm btn-danger" onClick={onDelete}>Löschen</button>

@@ -2246,11 +2246,6 @@ section[id] { scroll-margin-top: 88px; }
   color: var(--color-text-secondary);
   border: 1px solid var(--color-border);
 }
-.staff-card-toggle {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-}
 .staff-tenure {
   font-size: 11px;
   color: var(--color-text-muted);
@@ -2263,7 +2258,7 @@ section[id] { scroll-margin-top: 88px; }
 }
 .staff-card-bot {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   padding-top: 10px;
   border-top: 1px solid var(--color-border);
