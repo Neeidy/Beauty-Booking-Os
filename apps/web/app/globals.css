@@ -2628,7 +2628,7 @@ section[id] { scroll-margin-top: 88px; }
 .booking-back:hover { color: var(--color-accent); text-decoration: none; }
 
 .booking-wrap {
-  padding: 120px 16px 96px; /* top padding offsets fixed .booking-topbar */
+  padding: 88px 16px 120px; /* top padding offsets fixed .booking-topbar */
   background: var(--color-bg-surface);
   min-height: 100vh;
 }
