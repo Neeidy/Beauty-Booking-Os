@@ -16,7 +16,6 @@ interface PublicStaffMember {
 import DatePicker from "./DatePicker";
 import SlotPicker from "./SlotPicker";
 
-// Flatten services into a single list for the dropdown
 const allServices = servicesData.categories.flatMap((cat) =>
   cat.services.map((svc) => ({
     id: svc.id,
@@ -69,9 +68,7 @@ export default function BookingForm() {
       .catch(() => {
         if (!cancelled) setStaffLoadError(true);
       });
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
@@ -87,14 +84,12 @@ export default function BookingForm() {
     setIsSubmitting(true);
     setSubmitError(null);
 
-    // Slot selection is required
     if (!selectedSlotDatetime) {
       setSubmitError("Lütfen randevu saati seçin");
       setIsSubmitting(false);
       return;
     }
 
-    // Valid reservation token required when a slot is selected
     if (selectedSlotDatetime && !reservationToken) {
       setSubmitError("Lütfen geçerli bir slot seçin.");
       setIsSubmitting(false);
@@ -102,52 +97,24 @@ export default function BookingForm() {
     }
 
     try {
-      // Build the lead payload
-      const gdprConsents = [
-        {
-          consentType: "data_processing",
-          granted: true,
-          method: "web_form",
-        },
-      ];
-      if (data.gdprReminders) {
-        gdprConsents.push({
-          consentType: "reminder_messages",
-          granted: true,
-          method: "web_form",
-        });
-      }
-      if (data.gdprMarketing) {
-        gdprConsents.push({
-          consentType: "marketing",
-          granted: true,
-          method: "web_form",
-        });
-      }
+      const gdprConsents = [{ consentType: "data_processing", granted: true, method: "web_form" }];
+      if (data.gdprReminders) gdprConsents.push({ consentType: "reminder_messages", granted: true, method: "web_form" });
+      if (data.gdprMarketing) gdprConsents.push({ consentType: "marketing", granted: true, method: "web_form" });
 
-      // Build staff preference note
-      const selectedStaff = selectedStaffId
-        ? staffList.find((s) => s.id === selectedStaffId)
-        : null;
+      const selectedStaff = selectedStaffId ? staffList.find((s) => s.id === selectedStaffId) : null;
       const baseNotes = data.notes ?? "";
       const notesValue = selectedStaff
         ? `Mitarbeiter-Wunsch: ${selectedStaff.name}${baseNotes ? `\n${baseNotes}` : ""}`
         : baseNotes;
 
-      // Build raw message from form data
       const messageParts = [`Name: ${data.customerName}`];
       if (selectedService) messageParts.push(`Leistung: ${selectedService.label}`);
-      if (selectedDate && selectedSlotTime) {
-        messageParts.push(`Termin: ${selectedDate} um ${selectedSlotTime}`);
-      }
+      if (selectedDate && selectedSlotTime) messageParts.push(`Termin: ${selectedDate} um ${selectedSlotTime}`);
       if (data.notes) messageParts.push(`Notiz: ${data.notes}`);
 
       const response = await fetch("/api/booking/submit", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-client-id": DEMO_CLIENT_ID,
-        },
+        headers: { "Content-Type": "application/json", "x-client-id": DEMO_CLIENT_ID },
         body: JSON.stringify({
           clientSlug: DEMO_CLIENT_SLUG,
           source: "web_form",
@@ -176,7 +143,6 @@ export default function BookingForm() {
         return;
       }
 
-      // Trigger auto-classify in background (fire and forget)
       if (result.leadId) {
         fetch(`/api/lead/${result.leadId}/classify`, { method: "POST" }).catch(() => {});
       }
@@ -190,127 +156,70 @@ export default function BookingForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6">
-      {/* Personal info */}
-      <fieldset className="space-y-4">
-        <legend
-          className="text-sm font-semibold uppercase tracking-wider"
-          style={{ color: "var(--color-secondary)" }}
-        >
-          Ihre Daten
-        </legend>
+    <form onSubmit={handleSubmit(onSubmit)} noValidate>
 
-        {/* Name */}
-        <div>
-          <label
-            htmlFor="customerName"
-            className="mb-1 block text-sm font-medium"
-            style={{ color: "var(--color-primary)" }}
-          >
-            Name <span aria-hidden="true">*</span>
+      {/* Persönliche Daten */}
+      <div className="step-title">Ihre Daten</div>
+      <div className="form-grid">
+        <div className="form-row">
+          <label className="form-label" htmlFor="customerName">
+            Name <span style={{ color: "var(--color-rose)" }}>*</span>
           </label>
           <input
             id="customerName"
             type="text"
             autoComplete="name"
             placeholder="Ihr vollständiger Name"
-            className="w-full rounded-sm border px-4 py-2.5 text-sm outline-none transition-colors focus:ring-1"
-            style={{
-              borderColor: errors.customerName ? "#dc2626" : "var(--color-accent)",
-              backgroundColor: "#fff",
-              color: "var(--color-primary)",
-            }}
+            className={`form-input${errors.customerName ? " error" : ""}`}
             {...register("customerName")}
           />
           {errors.customerName && (
-            <p className="mt-1 text-xs text-red-600">{errors.customerName.message}</p>
+            <span className="form-error">{errors.customerName.message}</span>
           )}
         </div>
 
-        {/* Email */}
-        <div>
-          <label
-            htmlFor="customerEmail"
-            className="mb-1 block text-sm font-medium"
-            style={{ color: "var(--color-primary)" }}
-          >
-            E-Mail
-          </label>
+        <div className="form-row">
+          <label className="form-label" htmlFor="customerEmail">E-Mail</label>
           <input
             id="customerEmail"
             type="email"
             autoComplete="email"
             placeholder="ihre@email.at"
-            className="w-full rounded-sm border px-4 py-2.5 text-sm outline-none transition-colors focus:ring-1"
-            style={{
-              borderColor: errors.customerEmail ? "#dc2626" : "var(--color-accent)",
-              backgroundColor: "#fff",
-              color: "var(--color-primary)",
-            }}
+            className={`form-input${errors.customerEmail ? " error" : ""}`}
             {...register("customerEmail")}
           />
           {errors.customerEmail && (
-            <p className="mt-1 text-xs text-red-600">{errors.customerEmail.message}</p>
+            <span className="form-error">{errors.customerEmail.message}</span>
           )}
         </div>
 
-        {/* Phone */}
-        <div>
-          <label
-            htmlFor="customerPhone"
-            className="mb-1 block text-sm font-medium"
-            style={{ color: "var(--color-primary)" }}
-          >
-            Telefon
-          </label>
+        <div className="form-row">
+          <label className="form-label" htmlFor="customerPhone">Telefon</label>
           <input
             id="customerPhone"
             type="tel"
             autoComplete="tel"
             placeholder="+43 660 1234567"
-            className="w-full rounded-sm border px-4 py-2.5 text-sm outline-none transition-colors focus:ring-1"
-            style={{
-              borderColor: errors.customerPhone ? "#dc2626" : "var(--color-accent)",
-              backgroundColor: "#fff",
-              color: "var(--color-primary)",
-            }}
+            className={`form-input${errors.customerPhone ? " error" : ""}`}
             {...register("customerPhone")}
           />
           {errors.customerPhone && (
-            <p className="mt-1 text-xs text-red-600">{errors.customerPhone.message}</p>
+            <span className="form-error">{errors.customerPhone.message}</span>
           )}
-          <p className="mt-1 text-xs" style={{ color: "var(--color-text-muted)" }}>
-            E-Mail oder Telefon — mind. eine Angabe erforderlich.
-          </p>
+          <span className="form-hint">E-Mail oder Telefon — mind. eine Angabe erforderlich.</span>
         </div>
-      </fieldset>
+      </div>
 
-      {/* Service selection */}
-      <fieldset className="space-y-4">
-        <legend
-          className="text-sm font-semibold uppercase tracking-wider"
-          style={{ color: "var(--color-secondary)" }}
-        >
-          Leistung & Termin
-        </legend>
-
-        {/* Service */}
-        <div>
-          <label
-            htmlFor="serviceId"
-            className="mb-1 block text-sm font-medium"
-            style={{ color: "var(--color-primary)" }}
-          >
-            Gewünschte Leistung <span aria-hidden="true">*</span>
+      {/* Leistung & Termin */}
+      <div className="step-title" style={{ marginTop: "24px" }}>Leistung & Termin</div>
+      <div className="form-grid">
+        <div className="form-row form-row-full">
+          <label className="form-label" htmlFor="serviceId">
+            Gewünschte Leistung <span style={{ color: "var(--color-rose)" }}>*</span>
           </label>
           <select
             id="serviceId"
-            className="w-full rounded-sm border px-4 py-2.5 text-sm outline-none transition-colors focus:ring-1"
-            style={{
-              borderColor: errors.serviceId ? "#dc2626" : "var(--color-accent)",
-              backgroundColor: "#fff",
-              color: "var(--color-primary)",
-            }}
+            className={`form-input${errors.serviceId ? " error" : ""}`}
             {...register("serviceId")}
           >
             <option value="">Bitte wählen…</option>
@@ -325,22 +234,13 @@ export default function BookingForm() {
             ))}
           </select>
           {errors.serviceId && (
-            <p className="mt-1 text-xs text-red-600">{errors.serviceId.message}</p>
+            <span className="form-error">{errors.serviceId.message}</span>
           )}
         </div>
 
-        {/* Date picker */}
-        <div>
-          <label
-            className="mb-2 block text-sm font-medium"
-            style={{ color: "var(--color-primary)" }}
-          >
-            Datum wählen
-          </label>
-          <div
-            className="rounded-sm border p-3"
-            style={{ borderColor: "var(--color-accent)" }}
-          >
+        <div className="form-row form-row-full">
+          <label className="form-label">Datum wählen</label>
+          <div className="datepicker">
             <DatePicker
               selectedDate={selectedDate}
               onDateChange={(d) => {
@@ -353,21 +253,13 @@ export default function BookingForm() {
             />
           </div>
           {!selectedServiceId && (
-            <p className="mt-1 text-xs" style={{ color: "var(--color-text-muted)" }}>
-              Zuerst eine Leistung auswählen
-            </p>
+            <span className="form-hint">Zuerst eine Leistung auswählen</span>
           )}
         </div>
 
-        {/* Slot picker */}
         {selectedDate && selectedServiceId && (
-          <div>
-            <label
-              className="mb-2 block text-sm font-medium"
-              style={{ color: "var(--color-primary)" }}
-            >
-              Uhrzeit wählen
-            </label>
+          <div className="form-row form-row-full">
+            <label className="form-label">Uhrzeit wählen</label>
             <SlotPicker
               date={selectedDate}
               serviceId={selectedServiceId ?? null}
@@ -382,9 +274,7 @@ export default function BookingForm() {
           </div>
         )}
 
-        {/* Staff preference dropdown — only shown if staff loaded successfully */}
         {!staffLoadError && staffList.length > 0 && (() => {
-          // Filter staff by selected service — show all if no match (fallback)
           const filtered = staffList.filter(s => {
             if (!s.serviceIds || s.serviceIds.length === 0) return true;
             if (!selectedServiceId) return true;
@@ -392,160 +282,95 @@ export default function BookingForm() {
           });
           const filteredStaff = filtered.length > 0 ? filtered : staffList;
           return (
-            <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-              <label
-                style={{
-                  fontSize: "13px",
-                  color: "var(--color-text-muted)",
-                  fontWeight: 500,
-                }}
-              >
-                Wunsch-Mitarbeiter{" "}
-                <span style={{ fontWeight: 400, color: "var(--color-text-muted)" }}>
-                  (optional)
-                </span>
+            <div className="form-row form-row-full">
+              <label className="form-label">
+                Wunsch-Mitarbeiter <span style={{ color: "var(--color-text-muted)", fontWeight: 400 }}>(optional)</span>
               </label>
               <select
+                className="form-input"
                 value={selectedStaffId}
                 onChange={(e) => setSelectedStaffId(e.target.value)}
-                style={{
-                  border: "1px solid var(--color-accent)",
-                  borderRadius: "6px",
-                  padding: "10px 12px",
-                  fontSize: "14px",
-                  color: "var(--color-text)",
-                  background: "var(--color-background)",
-                  width: "100%",
-                  minHeight: "44px",
-                  cursor: "pointer",
-                }}
               >
                 <option value="">Keine Vorauswahl</option>
                 {filteredStaff.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name} — {s.title}
-                  </option>
+                  <option key={s.id} value={s.id}>{s.name} — {s.title}</option>
                 ))}
               </select>
             </div>
           );
         })()}
 
-        {/* Notes */}
-        <div>
-          <label
-            htmlFor="notes"
-            className="mb-1 block text-sm font-medium"
-            style={{ color: "var(--color-primary)" }}
-          >
-            Anmerkungen
-          </label>
+        <div className="form-row form-row-full">
+          <label className="form-label" htmlFor="notes">Anmerkungen</label>
           <textarea
             id="notes"
             rows={3}
             placeholder="Gibt es etwas Besonderes, das wir wissen sollten? (optional)"
-            className="w-full rounded-sm border px-4 py-2.5 text-sm outline-none resize-none"
-            style={{
-              borderColor: errors.notes ? "#dc2626" : "var(--color-accent)",
-              backgroundColor: "#fff",
-              color: "var(--color-primary)",
-            }}
+            className="form-input"
+            style={{ resize: "none" }}
             {...register("notes")}
           />
-          {errors.notes && (
-            <p className="mt-1 text-xs text-red-600">{errors.notes.message}</p>
-          )}
         </div>
-      </fieldset>
+      </div>
 
-      {/* GDPR Consents */}
-      <fieldset className="space-y-3 rounded-sm border p-5" style={{ borderColor: "var(--color-accent)" }}>
-        <legend
-          className="px-1 text-sm font-semibold uppercase tracking-wider"
-          style={{ color: "var(--color-secondary)" }}
-        >
-          Datenschutz
-        </legend>
+      {/* GDPR */}
+      <div className="gdpr" style={{ marginTop: "24px" }}>
+        <div className="step-title" style={{ marginBottom: "12px" }}>Datenschutz</div>
 
-        {/* Mandatory: data processing */}
-        <label className="flex cursor-pointer items-start gap-3">
-          <input
-            type="checkbox"
-            className="mt-0.5 h-4 w-4 shrink-0 rounded-sm border"
-            style={{ accentColor: "var(--color-secondary)" }}
-            {...register("gdprDataProcessing")}
-          />
-          <span className="text-sm leading-relaxed" style={{ color: "var(--color-text)" }}>
+        <label className="gdpr-check">
+          <input type="checkbox" {...register("gdprDataProcessing")} />
+          <span>
             Ich stimme der Verarbeitung meiner Daten für die Terminvereinbarung zu.{" "}
-            <a
-              href="/datenschutz"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline hover:opacity-70"
-              style={{ color: "var(--color-secondary)" }}
-            >
+            <a href="/datenschutz" target="_blank" rel="noopener noreferrer">
               Datenschutzerklärung lesen
             </a>{" "}
-            <span className="text-red-600" aria-hidden="true">*</span>
+            <span style={{ color: "var(--color-rose)" }}>*</span>
           </span>
         </label>
         {errors.gdprDataProcessing && (
-          <p className="text-xs text-red-600">{errors.gdprDataProcessing.message}</p>
+          <span className="form-error">{errors.gdprDataProcessing.message}</span>
         )}
 
-        {/* Mandatory: reminders */}
-        <label className="flex cursor-pointer items-start gap-3">
-          <input
-            type="checkbox"
-            className="mt-0.5 h-4 w-4 shrink-0 rounded-sm border"
-            style={{ accentColor: "var(--color-secondary)" }}
-            {...register("gdprReminders")}
-          />
-          <span className="text-sm leading-relaxed" style={{ color: "var(--color-text)" }}>
-            Ich möchte Terminerinnerungen per E-Mail oder WhatsApp erhalten.
-          </span>
+        <label className="gdpr-check">
+          <input type="checkbox" {...register("gdprReminders")} />
+          <span>Ich möchte Terminerinnerungen per E-Mail oder WhatsApp erhalten.</span>
         </label>
 
-        {/* Optional: marketing */}
-        <label className="flex cursor-pointer items-start gap-3">
-          <input
-            type="checkbox"
-            className="mt-0.5 h-4 w-4 shrink-0 rounded-sm border"
-            style={{ accentColor: "var(--color-secondary)" }}
-            {...register("gdprMarketing")}
-          />
-          <span className="text-sm leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
+        <label className="gdpr-check">
+          <input type="checkbox" {...register("gdprMarketing")} />
+          <span style={{ color: "var(--color-text-muted)" }}>
             Ich möchte über Angebote und Neuigkeiten informiert werden. (optional)
           </span>
         </label>
 
-        <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>
+        <p className="form-hint" style={{ marginTop: "8px" }}>
           * Pflichtfeld. Ihre Daten werden ausschließlich zur Terminvereinbarung verwendet
           und gemäß DSGVO verarbeitet. Sie können Ihre Einwilligung jederzeit widerrufen.
         </p>
-      </fieldset>
+      </div>
 
-      {/* API error */}
       {submitError && (
-        <div className="rounded-sm border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div style={{
+          marginTop: "16px", padding: "12px 16px",
+          border: "1px solid var(--color-rose)",
+          borderRadius: "var(--radius-md)",
+          fontSize: "13px", color: "var(--color-rose)",
+          background: "var(--color-rose-soft)",
+        }}>
           {submitError}
         </div>
       )}
 
-      {/* Submit */}
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full rounded-sm py-3.5 text-sm font-semibold transition-opacity disabled:opacity-60"
-        style={{
-          backgroundColor: "var(--color-primary)",
-          color: "var(--color-background)",
-        }}
+        className="btn btn-primary btn-lg btn-full"
+        style={{ marginTop: "24px", opacity: isSubmitting ? 0.6 : 1 }}
       >
         {isSubmitting ? "Wird gesendet…" : "Anfrage senden"}
       </button>
 
-      <p className="text-center text-xs" style={{ color: "var(--color-text-muted)" }}>
+      <p className="form-hint" style={{ textAlign: "center", marginTop: "12px" }}>
         Wir melden uns innerhalb von 24 Stunden bei Ihnen zur Terminbestätigung.
       </p>
     </form>
