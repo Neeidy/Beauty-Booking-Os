@@ -52,46 +52,29 @@ export default async function CalendarPage({
       data = (await res.json()) as CalendarResponse;
     }
   } catch {
-    // data stays null — rendered as error below
+    // data stays null
   }
 
-  return (
-    <>
-      <header className="adm-header">
-        <div className="adm-header-title">
-          <span className="breadcrumb">Kalender</span>
-          <h2>Wochenkalender</h2>
+  if (data === null) {
+    return (
+      <div style={{ padding: "32px", textAlign: "center" }}>
+        <div style={{
+          display: "inline-block",
+          background: "var(--color-error-soft)",
+          color: "var(--color-error)",
+          border: "1px solid var(--color-error)",
+          borderRadius: "var(--radius-md)",
+          padding: "12px 24px",
+          fontSize: "14px",
+        }}>
+          Kalender konnte nicht geladen werden.{" "}
+          <Link href="/admin/calendar" style={{ color: "var(--color-accent)", fontWeight: 600 }}>
+            Erneut versuchen
+          </Link>
         </div>
-        <div className="adm-header-actions">
-          {data && (
-            <span className="text-sm" style={{ color: "var(--color-text-muted)" }}>
-              {data.totalBookings} Termine
-            </span>
-          )}
-        </div>
-      </header>
-      <main className="adm-body" style={{ padding: 0 }}>
-        {data === null ? (
-          <div style={{ paddingTop: "32px", textAlign: "center" }}>
-            <div style={{
-              display: "inline-block",
-              background: "var(--color-error-soft, #fef2f2)",
-              color: "var(--color-error)",
-              border: "1px solid var(--color-error)",
-              borderRadius: "8px",
-              padding: "12px 24px",
-              fontSize: "14px",
-            }}>
-              Kalender konnte nicht geladen werden.{" "}
-              <Link href="/admin/calendar" style={{ color: "var(--color-accent)", fontWeight: 600 }}>
-                Erneut versuchen
-              </Link>
-            </div>
-          </div>
-        ) : (
-          <WeeklyCalendar initialData={data} />
-        )}
-      </main>
-    </>
-  );
+      </div>
+    );
+  }
+
+  return <WeeklyCalendar initialData={data} />;
 }

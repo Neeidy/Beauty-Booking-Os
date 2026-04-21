@@ -76,124 +76,83 @@ export default function LogsPage() {
     <>
       <header className="adm-header">
         <div className="adm-header-title">
-          <span className="breadcrumb">System</span>
-          <h2>Event Logs</h2>
+          <span className="breadcrumb">System · event_logs</span>
+          <h2>AI Agent Logs</h2>
         </div>
         <div className="adm-header-actions">
           <button onClick={fetchLogs} className="btn btn-ghost btn-sm">⟳ Aktualisieren</button>
         </div>
       </header>
-      <main className="adm-body">
 
-        {/* Filters */}
-        <div className="flex flex-wrap gap-3 items-end">
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--color-text-muted)" }}>
-              Event-Typ
-            </label>
-            <select
-              value={eventType}
-              onChange={(e) => { setEventType(e.target.value); setPage(1); }}
-              className="rounded-sm border px-3 py-1.5 text-sm"
-              style={{ borderColor: "var(--color-accent)", color: "var(--color-primary)" }}
-            >
-              {EVENT_TYPES.map((t) => <option key={t} value={t}>{t === "" ? "Alle Typen" : t}</option>)}
-            </select>
-          </div>
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--color-text-muted)" }}>
-              Agent
-            </label>
-            <select
-              value={agentName}
-              onChange={(e) => { setAgentName(e.target.value); setPage(1); }}
-              className="rounded-sm border px-3 py-1.5 text-sm"
-              style={{ borderColor: "var(--color-accent)", color: "var(--color-primary)" }}
-            >
-              {AGENT_NAMES.map((a) => <option key={a} value={a}>{a === "" ? "Alle Agents" : a}</option>)}
-            </select>
-          </div>
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--color-text-muted)" }}>
-              Status
-            </label>
-            <select
-              value={status}
-              onChange={(e) => { setStatus(e.target.value); setPage(1); }}
-              className="rounded-sm border px-3 py-1.5 text-sm"
-              style={{ borderColor: "var(--color-accent)", color: "var(--color-primary)" }}
-            >
-              {STATUS_OPTIONS.map((s) => <option key={s} value={s}>{s === "" ? "Alle Status" : s}</option>)}
-            </select>
-          </div>
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--color-text-muted)" }}>
-              Ab Datum
-            </label>
-            <input
-              type="date"
-              value={dateFrom}
-              onChange={(e) => { setDateFrom(e.target.value); setPage(1); }}
-              className="rounded-sm border px-3 py-1.5 text-sm"
-              style={{ borderColor: "var(--color-accent)", color: "var(--color-primary)" }}
-            />
-          </div>
-          <button
-            onClick={fetchLogs}
-            className="rounded-sm px-4 py-1.5 text-sm font-medium"
-            style={{ backgroundColor: "var(--color-secondary)", color: "#fff" }}
-          >
-            Aktualisieren
-          </button>
-        </div>
+      <div className="logs-filter-bar">
+        <select
+          value={eventType}
+          onChange={(e) => { setEventType(e.target.value); setPage(1); }}
+        >
+          {EVENT_TYPES.map((t) => <option key={t} value={t}>{t === "" ? "Alle Typen" : t}</option>)}
+        </select>
+        <select
+          value={agentName}
+          onChange={(e) => { setAgentName(e.target.value); setPage(1); }}
+        >
+          {AGENT_NAMES.map((a) => <option key={a} value={a}>{a === "" ? "Alle Agents" : a}</option>)}
+        </select>
+        <select
+          value={status}
+          onChange={(e) => { setStatus(e.target.value); setPage(1); }}
+        >
+          {STATUS_OPTIONS.map((s) => <option key={s} value={s}>{s === "" ? "Alle Status" : s}</option>)}
+        </select>
+        <input
+          type="date"
+          value={dateFrom}
+          onChange={(e) => { setDateFrom(e.target.value); setPage(1); }}
+          style={{ flex: 1, minWidth: "160px" }}
+        />
+        <button onClick={fetchLogs} className="btn btn-ghost btn-sm">Filtern</button>
+      </div>
 
+      <div className="adm-body">
         {data && (
-          <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>
+          <p style={{ fontSize: "12px", color: "var(--color-text-muted)", marginBottom: "12px" }}>
             {data.total} Einträge — Seite {data.page} von {data.totalPages}
           </p>
         )}
 
-        <div className="rounded-sm border" style={{ borderColor: "var(--color-accent)", backgroundColor: "#fff" }}>
-          {error ? (
-            <div className="p-4 text-sm" style={{ color: "#dc2626" }}>
-              Fehler beim Laden. Bitte Seite neu laden.
-            </div>
-          ) : loading ? (
-            <div className="p-4 text-sm" style={{ color: "var(--color-text-muted)" }}>
-              Wird geladen…
-            </div>
-          ) : (
-            <LogViewer logs={data?.logs ?? []} totalTokens={data?.totalTokens ?? 0} />
-          )}
-        </div>
+        {error ? (
+          <div className="empty">
+            <div className="empty-ico">⚠</div>
+            <h4>Fehler beim Laden</h4>
+            <p>Bitte Seite neu laden.</p>
+          </div>
+        ) : loading ? (
+          <div style={{ color: "var(--color-text-muted)", fontSize: "13px" }}>Wird geladen…</div>
+        ) : (
+          <LogViewer logs={data?.logs ?? []} totalTokens={data?.totalTokens ?? 0} />
+        )}
 
         {data && data.totalPages > 1 && (
-          <div className="flex gap-2 items-center">
+          <div style={{ display: "flex", gap: "8px", alignItems: "center", marginTop: "16px" }}>
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="rounded-sm border px-3 py-1.5 text-sm disabled:opacity-40"
-              style={{ borderColor: "var(--color-accent)", color: "var(--color-primary)" }}
+              className="btn btn-ghost btn-sm"
             >
               ← Zurück
             </button>
-            <span className="text-sm" style={{ color: "var(--color-text-muted)" }}>
+            <span style={{ fontSize: "12px", color: "var(--color-text-muted)" }}>
               {page} / {data.totalPages}
             </span>
             <button
               onClick={() => setPage((p) => Math.min(data.totalPages, p + 1))}
               disabled={page === data.totalPages}
-              className="rounded-sm border px-3 py-1.5 text-sm disabled:opacity-40"
-              style={{ borderColor: "var(--color-accent)", color: "var(--color-primary)" }}
+              className="btn btn-ghost btn-sm"
             >
               Weiter →
             </button>
           </div>
         )}
-
-      </main>
+      </div>
     </>
   );
 }
-
-

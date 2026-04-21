@@ -66,18 +66,17 @@ export default async function ClientsPage() {
           <h2>Kunden</h2>
         </div>
         <div className="adm-header-actions">
-          <span className="text-sm" style={{ color: "var(--color-text-muted)" }}>
+          <span style={{ fontSize: "13px", color: "var(--color-text-muted)" }}>
             {customers.length} gesamt
           </span>
         </div>
       </header>
       <main className="adm-body">
         {customers.length === 0 ? (
-          <div
-            className="rounded-sm border p-6 text-sm text-center"
-            style={{ borderColor: "var(--color-border)", color: "var(--color-text-muted)" }}
-          >
-            Noch keine Kunden vorhanden.
+          <div className="empty">
+            <div className="empty-ico">👤</div>
+            <h4>Noch keine Kunden</h4>
+            <p>Wenn Leads eingehen, erscheinen sie hier.</p>
           </div>
         ) : (
           <table className="clients-table">

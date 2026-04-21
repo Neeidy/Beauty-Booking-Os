@@ -10,6 +10,13 @@ interface DashboardStats {
   escalationQueue: number;
 }
 
+function getTodayLabel(): string {
+  const now = new Date();
+  return now.toLocaleDateString("de-AT", {
+    weekday: "long", year: "numeric", month: "long", day: "numeric",
+  });
+}
+
 export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [error, setError] = useState(false);
@@ -21,25 +28,21 @@ export default function DashboardPage() {
       .catch(() => setError(true));
   }, []);
 
-  const today = new Date().toLocaleDateString("de-AT", {
-    weekday: "long", year: "numeric", month: "long", day: "numeric",
-  });
-
   return (
-    <>
-      <header className="adm-header">
-        <div className="adm-header-title">
-          <h2>Guten Morgen, Admin 👋</h2>
-          <div style={{ fontSize: "13px", color: "var(--color-text-muted)", marginTop: "2px" }}>{today}</div>
+    <div className="dash-main">
+      <header className="dash-header">
+        <div>
+          <h3>Guten Morgen, Admin 👋</h3>
+          <div className="dash-date">{getTodayLabel()}</div>
         </div>
-        <div className="adm-header-actions">
+        <div className="dash-header-right">
           {stats?.escalationQueue != null && stats.escalationQueue > 0 && (
             <Link
               href="/admin/escalations"
               style={{
                 fontSize: "12px",
                 fontWeight: 600,
-                background: "var(--color-error-soft, #fef2f2)",
+                background: "var(--color-error-soft)",
                 color: "var(--color-error)",
                 padding: "4px 12px",
                 borderRadius: "999px",
@@ -49,26 +52,17 @@ export default function DashboardPage() {
               ⚠ {stats.escalationQueue} Eskalation{stats.escalationQueue > 1 ? "en" : ""}
             </Link>
           )}
-          <div
-            style={{
-              width: "36px", height: "36px", borderRadius: "50%",
-              background: "var(--color-accent)", color: "#fff",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontWeight: 700, fontSize: "15px",
-            }}
-          >
-            A
-          </div>
+          <button className="dash-bell" aria-label="Notifications">🔔</button>
+          <div className="dash-avatar">A</div>
         </div>
       </header>
-      <main className="adm-body">
 
       {error && (
         <div style={{
-          background: "var(--color-error-soft, #fef2f2)",
+          background: "var(--color-error-soft)",
           color: "var(--color-error)",
           border: "1px solid var(--color-error)",
-          borderRadius: "8px",
+          borderRadius: "var(--radius-md)",
           padding: "12px 16px",
           fontSize: "14px",
           marginBottom: "24px",
@@ -77,20 +71,21 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Stat Grid */}
       <div className="stat-grid">
         <div className="stat-card">
           <div className="stat-num" style={{ color: "var(--color-accent)" }}>
             {stats?.today.bookingsToday ?? "—"}
           </div>
           <div className="stat-label">Heute Termine</div>
-          <div className="stat-trend neutral">
-            {stats?.today.remindersScheduled ?? 0} Erinnerungen geplant
+          <div className="stat-trend up">
+            {stats?.today.remindersScheduled != null
+              ? `↑ ${stats.today.remindersScheduled} Erinnerungen`
+              : "—"}
           </div>
         </div>
         <div className="stat-card">
           <div className="stat-num" style={{ color: "var(--color-emerald)" }}>
-            {stats ? `€ ${(stats.aiCosts.estimatedCostEur * 100).toFixed(0)}` : "—"}
+            {stats ? `€ ${stats.aiCosts.estimatedCostEur.toFixed(2)}` : "—"}
           </div>
           <div className="stat-label">KI-Kosten Woche</div>
           <div className="stat-trend neutral">
@@ -117,9 +112,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Dash Row */}
       <div className="dash-row">
-        {/* Appointments placeholder */}
         <div className="dash-card">
           <div className="dash-card-head">
             <h4>Termine heute</h4>
@@ -158,11 +151,10 @@ export default function DashboardPage() {
           </table>
         </div>
 
-        {/* AI Costs / Lead stats */}
         <div className="dash-card">
           <div className="dash-card-head">
             <h4>Neue Leads</h4>
-            <Link href="/admin/leads">Alle anzeigen →</Link>
+            <Link href="/admin/escalations">Alle anzeigen →</Link>
           </div>
           <div className="lead-list">
             <div className="lead-item">
@@ -187,7 +179,11 @@ export default function DashboardPage() {
               </div>
               <div className="lead-meta">
                 <span className={`lead-conf ${(stats?.today.pendingActions ?? 0) > 0 ? "mid" : "high"}`}>
-                  <span className="dot" style={{ background: (stats?.today.pendingActions ?? 0) > 0 ? "var(--color-amber)" : "var(--color-emerald)" }} />
+                  <span className="dot" style={{
+                    background: (stats?.today.pendingActions ?? 0) > 0
+                      ? "var(--color-amber)"
+                      : "var(--color-emerald)",
+                  }} />
                   {stats?.today.pendingActions ?? 0}
                 </span>
               </div>
@@ -210,7 +206,6 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
-      </main>
-    </>
+    </div>
   );
 }

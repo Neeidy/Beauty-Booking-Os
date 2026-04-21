@@ -83,96 +83,72 @@ export default function BookingsPage() {
           <button onClick={fetchBookings} className="btn btn-ghost btn-sm">⟳ Aktualisieren</button>
         </div>
       </header>
-      <main className="adm-body">
 
-        {/* Filters */}
-        <div className="flex flex-wrap gap-3 items-end">
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--color-text-muted)" }}>
-              Status
-            </label>
-            <select
-              value={status}
-              onChange={(e) => { setStatus(e.target.value); setPage(1); }}
-              className="rounded-sm border px-3 py-1.5 text-sm"
-              style={{ borderColor: "var(--color-accent)", color: "var(--color-primary)" }}
-            >
-              {STATUS_OPTIONS.map((s) => (
-                <option key={s} value={s}>{s === "" ? "Alle Status" : s}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--color-text-muted)" }}>
-              Termin von
-            </label>
-            <input
-              type="date"
-              value={dateFrom}
-              onChange={(e) => { setDateFrom(e.target.value); setPage(1); }}
-              className="rounded-sm border px-3 py-1.5 text-sm"
-              style={{ borderColor: "var(--color-accent)", color: "var(--color-primary)" }}
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--color-text-muted)" }}>
-              Termin bis
-            </label>
-            <input
-              type="date"
-              value={dateTo}
-              onChange={(e) => { setDateTo(e.target.value); setPage(1); }}
-              className="rounded-sm border px-3 py-1.5 text-sm"
-              style={{ borderColor: "var(--color-accent)", color: "var(--color-primary)" }}
-            />
-          </div>
-        </div>
+      <div className="logs-filter-bar">
+        <select
+          value={status}
+          onChange={(e) => { setStatus(e.target.value); setPage(1); }}
+        >
+          {STATUS_OPTIONS.map((s) => (
+            <option key={s} value={s}>{s === "" ? "Alle Status" : s}</option>
+          ))}
+        </select>
+        <input
+          type="date"
+          value={dateFrom}
+          onChange={(e) => { setDateFrom(e.target.value); setPage(1); }}
+          placeholder="Von"
+        />
+        <input
+          type="date"
+          value={dateTo}
+          onChange={(e) => { setDateTo(e.target.value); setPage(1); }}
+          placeholder="Bis"
+        />
+        <button onClick={fetchBookings} className="btn btn-ghost btn-sm">Filtern</button>
+      </div>
 
+      <div className="adm-body">
         {data && (
-          <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>
-            {data.total} Buchungen gefunden — Seite {data.page} von {data.totalPages}
+          <p style={{ fontSize: "12px", color: "var(--color-text-muted)", marginBottom: "12px" }}>
+            {data.total} Buchungen — Seite {data.page} von {data.totalPages}
           </p>
         )}
 
-        <div className="rounded-sm border" style={{ borderColor: "var(--color-accent)", backgroundColor: "#fff" }}>
-          {error ? (
-            <div className="p-4 text-sm" style={{ color: "#dc2626" }}>
-              Fehler beim Laden. Bitte Seite neu laden.
-            </div>
-          ) : loading ? (
-            <div className="p-4 text-sm" style={{ color: "var(--color-text-muted)" }}>
-              Wird geladen…
-            </div>
-          ) : (
-            <BookingTable bookings={data?.bookings ?? []} onStatusChange={handleStatusChange} />
-          )}
-        </div>
+        {error ? (
+          <div className="empty">
+            <div className="empty-ico">⚠</div>
+            <h4>Fehler beim Laden</h4>
+            <p>Bitte Seite neu laden.</p>
+          </div>
+        ) : loading ? (
+          <div style={{ color: "var(--color-text-muted)", fontSize: "13px" }}>Wird geladen…</div>
+        ) : (
+          <BookingTable bookings={data?.bookings ?? []} onStatusChange={handleStatusChange} />
+        )}
 
         {data && data.totalPages > 1 && (
-          <div className="flex gap-2 items-center">
+          <div style={{ display: "flex", gap: "8px", alignItems: "center", marginTop: "16px" }}>
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="rounded-sm border px-3 py-1.5 text-sm disabled:opacity-40"
-              style={{ borderColor: "var(--color-accent)", color: "var(--color-primary)" }}
+              className="btn btn-ghost btn-sm"
             >
               ← Zurück
             </button>
-            <span className="text-sm" style={{ color: "var(--color-text-muted)" }}>
+            <span style={{ fontSize: "12px", color: "var(--color-text-muted)" }}>
               {page} / {data.totalPages}
             </span>
             <button
               onClick={() => setPage((p) => Math.min(data.totalPages, p + 1))}
               disabled={page === data.totalPages}
-              className="rounded-sm border px-3 py-1.5 text-sm disabled:opacity-40"
-              style={{ borderColor: "var(--color-accent)", color: "var(--color-primary)" }}
+              className="btn btn-ghost btn-sm"
             >
               Weiter →
             </button>
           </div>
         )}
-
-      </main>
+      </div>
     </>
   );
 }

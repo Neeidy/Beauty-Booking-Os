@@ -75,7 +75,7 @@ export default async function FrontDeskPage() {
       <div className="adm-body">
         {data === null ? (
           <div style={{
-            background: "var(--color-error-soft, #fef2f2)",
+            background: "var(--color-error-soft)",
             color: "var(--color-error)",
             border: "1px solid var(--color-error)",
             borderRadius: "8px",
