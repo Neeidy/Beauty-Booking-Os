@@ -2517,6 +2517,21 @@ section[id] { scroll-margin-top: 88px; }
   font-weight: 600;
   color: var(--color-text);
 }
+.log-agent-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  background: var(--color-bg-card);
+}
+.log-agent-badge.triage  { color: var(--color-accent); border-color: color-mix(in srgb, var(--color-accent) 30%, transparent); }
+.log-agent-badge.review  { color: var(--color-purple); border-color: color-mix(in srgb, var(--color-purple) 30%, transparent); }
+.log-agent-badge.notify  { color: var(--color-emerald); border-color: color-mix(in srgb, var(--color-emerald) 30%, transparent); }
+.log-agent-badge.rebook  { color: var(--color-amber); border-color: color-mix(in srgb, var(--color-amber) 30%, transparent); }
+.log-agent-badge.slot    { color: var(--color-cyan); border-color: color-mix(in srgb, var(--color-cyan) 30%, transparent); }
 .log-tokens {
   color: var(--color-text-muted);
   font-variant-numeric: tabular-nums;
