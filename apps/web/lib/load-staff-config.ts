@@ -8,6 +8,7 @@ export interface StaffMember {
   title: string;
   active: boolean;
   serviceIds?: string[];
+  joinedAt?: string; // ISO date string e.g. "2021-03-15"
 }
 
 interface StaffConfig {

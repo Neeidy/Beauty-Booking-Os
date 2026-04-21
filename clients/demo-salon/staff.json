@@ -4,19 +4,22 @@
       "id": "staff_1",
       "name": "Anna",
       "title": "Nageldesignerin",
-      "active": true
+      "active": true,
+      "joinedAt": "2021-03-15"
     },
     {
       "id": "staff_2",
       "name": "Sofia",
       "title": "Kosmetikerin",
-      "active": true
+      "active": true,
+      "joinedAt": "2022-08-01"
     },
     {
       "id": "staff_3",
       "name": "Lena",
       "title": "Wimpernstudio",
-      "active": true
+      "active": true,
+      "joinedAt": "2023-01-10"
     }
   ]
 }

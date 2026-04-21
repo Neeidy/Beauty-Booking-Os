@@ -307,6 +307,15 @@ gstack is installed at `~/.claude/skills/gstack`.
 
 ---
 
+## STAFF PAGE — BACKLOG (not started)
+
+These features were discussed but not yet implemented. Pick up when ready:
+
+- **30-günlük randevu sayısı per staff:** `bookings` tablosunda staff bilgisi şu an `notes` alanında serbest metin. Doğru sayı için bookings'e `staffId` kolonu gerekir (schema değişikliği) veya notes parsing yapılır. Staff card'da göstermek için `/api/admin/staff` GET'i bu sayıyı da döndürmeli.
+- **Yıldız puanı ortalaması per staff:** V2-9 Google Reviews entegrasyonu salon geneli. Per-staff rating için review'lara staff etiketleme gerekir (Google API'den gelmiyor, manuel etiket gerekir). Şimdilik gösterilemez.
+
+---
+
 ## SESSION END CHECKLIST
 
 Every Claude Code session must end with:

@@ -8,6 +8,20 @@ interface StaffMember {
   title: string;
   active: boolean;
   serviceIds: string[];
+  joinedAt?: string;
+}
+
+function getTenureLabel(joinedAt?: string): string | null {
+  if (!joinedAt) return null;
+  const joined = new Date(joinedAt);
+  const now = new Date();
+  const years = now.getFullYear() - joined.getFullYear();
+  const months = now.getMonth() - joined.getMonth();
+  const totalMonths = years * 12 + months;
+  if (totalMonths < 1) return "Neu im Team";
+  if (totalMonths < 12) return `${totalMonths} Mon. im Team`;
+  const y = Math.floor(totalMonths / 12);
+  return `Seit ${y} Jahr${y > 1 ? "en" : ""} dabei`;
 }
 
 interface ServiceOption {
@@ -301,6 +315,11 @@ function StaffCard({
     <div className={`staff-card${member.active ? "" : " inactive"}`}>
       {!isEditing ? (
         <>
+          <label className="toggle staff-card-toggle">
+            <input type="checkbox" checked={member.active} onChange={onToggleActive} />
+            <span className="toggle-slider" />
+          </label>
+
           <div className="staff-card-top">
             <div className="staff-avatar" style={avatarGradient ? { background: avatarGradient } : undefined}>
               {initials}
@@ -310,6 +329,10 @@ function StaffCard({
               <div className="staff-title">{member.title}</div>
             </div>
           </div>
+
+          {getTenureLabel(member.joinedAt) && (
+            <div className="staff-tenure">{getTenureLabel(member.joinedAt)}</div>
+          )}
 
           <div className="staff-services">
             {(member.serviceIds?.length > 0)
@@ -324,10 +347,6 @@ function StaffCard({
           <div className="staff-card-spacer" />
 
           <div className="staff-card-bot">
-            <label className="toggle">
-              <input type="checkbox" checked={member.active} onChange={onToggleActive} />
-              <span className="toggle-slider" />
-            </label>
             <div className="staff-card-bot-actions">
               <button className="btn btn-ghost btn-sm" onClick={() => setIsEditing(true)}>Bearbeiten</button>
               <button className="btn btn-ghost btn-sm btn-danger" onClick={onDelete}>Löschen</button>
