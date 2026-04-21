@@ -229,6 +229,7 @@ button {
   text-decoration: none;
 }
 .btn-lg { padding: calc(18px * var(--density)) calc(32px * var(--density)); font-size: 16px; }
+.btn-sm { padding: 8px 16px; font-size: 13px; }
 
 .pill {
   display: inline-flex;

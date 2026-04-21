@@ -6,6 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { bookingFormSchema, type BookingFormData } from "../lib/booking-form-schema";
 import servicesData from "../../../clients/demo-salon/services.json";
+import DatePicker from "./DatePicker";
+import SlotPicker from "./SlotPicker";
 
 interface PublicStaffMember {
   id: string;
@@ -13,30 +15,64 @@ interface PublicStaffMember {
   title: string;
   serviceIds?: string[];
 }
-import DatePicker from "./DatePicker";
-import SlotPicker from "./SlotPicker";
 
+// Accent colour per category slug (maps to CSS data-accent attribute)
+const CATEGORY_ACCENT: Record<string, string> = {
+  nails: "purple",
+  skin: "emerald",
+  "lashes-brows": "rose",
+  hair: "amber",
+  men: "cyan",
+};
+
+// Flat list of services with accent colour
 const allServices = servicesData.categories.flatMap((cat) =>
   cat.services.map((svc) => ({
     id: svc.id,
-    label: `${svc.name} — ${cat.name} (${Math.floor(svc.duration / 60) > 0 ? Math.floor(svc.duration / 60) + " Std. " : ""}${svc.duration % 60 > 0 ? (svc.duration % 60) + " Min. " : ""}· € ${(svc.priceEur / 100).toFixed(0)})`,
+    name: svc.name,
+    duration: svc.duration,
+    priceEur: svc.priceEur,
+    accent: CATEGORY_ACCENT[cat.slug] ?? "purple",
+    categoryName: cat.name,
   }))
 );
 
 const DEMO_CLIENT_ID = process.env["NEXT_PUBLIC_DEMO_CLIENT_ID"] ?? "00000000-0000-0000-0000-000000000001";
 const DEMO_CLIENT_SLUG = process.env["NEXT_PUBLIC_DEFAULT_CLIENT_SLUG"] ?? "demo-salon";
 
+type Step = 1 | 2 | 3 | 4;
+
+function formatPrice(priceEur: number): string {
+  return `€ ${(priceEur / 100).toFixed(2).replace(".", ",")}`;
+}
+
+function formatDuration(minutes: number): string {
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  if (h > 0 && m > 0) return `${h} Std. ${m} Min`;
+  if (h > 0) return `${h} Std.`;
+  return `${m} Min`;
+}
+
 export default function BookingForm() {
   const router = useRouter();
+  const [step, setStep] = useState<Step>(1);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Step 1 state
+  const [selectedServiceId, setSelectedServiceId] = useState<string>("");
+  const [selectedStaffId, setSelectedStaffId] = useState<string>("");
+  const [staffList, setStaffList] = useState<PublicStaffMember[]>([]);
+  const [staffLoadError, setStaffLoadError] = useState(false);
+
+  // Step 2 state
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedSlotDatetime, setSelectedSlotDatetime] = useState<string | null>(null);
   const [selectedSlotTime, setSelectedSlotTime] = useState<string | null>(null);
   const [reservationToken, setReservationToken] = useState<string | null>(null);
-  const [staffList, setStaffList] = useState<PublicStaffMember[]>([]);
-  const [staffLoadError, setStaffLoadError] = useState(false);
-  const [selectedStaffId, setSelectedStaffId] = useState<string>("");
+
+  // Step 1 — booking source
   const [bookingSource, setBookingSource] = useState<"web_form" | "google_business">("web_form");
 
   const {
@@ -44,54 +80,91 @@ export default function BookingForm() {
     handleSubmit,
     formState: { errors },
     watch,
+    trigger,
   } = useForm<BookingFormData>({
     resolver: zodResolver(bookingFormSchema),
     defaultValues: {
+      serviceId: "",
       gdprReminders: false,
       gdprMarketing: false,
     },
   });
 
-  const selectedServiceId = watch("serviceId");
-  const selectedService = allServices.find((s) => s.id === selectedServiceId);
+  const watchedServiceId = watch("serviceId");
+  const watchedName = watch("customerName");
 
   useEffect(() => {
     let cancelled = false;
     fetch("/api/public/staff")
-      .then((r) => {
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        return r.json();
-      })
-      .then((data: { staff: PublicStaffMember[] }) => {
-        if (!cancelled) setStaffList(data.staff ?? []);
-      })
-      .catch(() => {
-        if (!cancelled) setStaffLoadError(true);
-      });
+      .then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+      .then((data: { staff: PublicStaffMember[] }) => { if (!cancelled) setStaffList(data.staff ?? []); })
+      .catch(() => { if (!cancelled) setStaffLoadError(true); });
     return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get("source") === "google_business") {
-        setBookingSource("google_business");
-      }
+      if (urlParams.get("source") === "google_business") setBookingSource("google_business");
     }
   }, []);
+
+  // Keep form serviceId in sync with UI selection
+  useEffect(() => {
+    if (selectedServiceId) {
+      // We use a hidden input registered via react-hook-form
+    }
+  }, [selectedServiceId]);
+
+  const selectedService = allServices.find((s) => s.id === selectedServiceId);
+
+  const filteredStaff = staffList.filter((s) => {
+    if (!s.serviceIds || s.serviceIds.length === 0) return true;
+    if (!selectedServiceId) return true;
+    return s.serviceIds.includes(selectedServiceId);
+  });
+  const staffOptions = filteredStaff.length > 0 ? filteredStaff : staffList;
+
+  function goToStep(n: Step) {
+    setStep(n);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function handleServiceSelect(id: string) {
+    setSelectedServiceId(id);
+    // Reset step 2 state when service changes
+    setSelectedDate(null);
+    setSelectedSlotDatetime(null);
+    setSelectedSlotTime(null);
+    setReservationToken(null);
+  }
+
+  function handleStep1Next() {
+    if (!selectedServiceId) return;
+    goToStep(2);
+  }
+
+  function handleStep2Next() {
+    if (!selectedSlotDatetime || !reservationToken) return;
+    goToStep(3);
+  }
+
+  async function handleStep3Next() {
+    const valid = await trigger(["customerName", "customerEmail", "customerPhone"]);
+    if (valid) goToStep(4);
+  }
 
   const onSubmit = async (data: BookingFormData) => {
     setIsSubmitting(true);
     setSubmitError(null);
 
     if (!selectedSlotDatetime) {
-      setSubmitError("Lütfen randevu saati seçin");
+      setSubmitError("Bitte wählen Sie eine Uhrzeit aus.");
       setIsSubmitting(false);
       return;
     }
-
-    if (selectedSlotDatetime && !reservationToken) {
-      setSubmitError("Lütfen geçerli bir slot seçin.");
+    if (!reservationToken) {
+      setSubmitError("Bitte wählen Sie einen gültigen Slot aus.");
       setIsSubmitting(false);
       return;
     }
@@ -108,7 +181,7 @@ export default function BookingForm() {
         : baseNotes;
 
       const messageParts = [`Name: ${data.customerName}`];
-      if (selectedService) messageParts.push(`Leistung: ${selectedService.label}`);
+      if (selectedService) messageParts.push(`Leistung: ${selectedService.name}`);
       if (selectedDate && selectedSlotTime) messageParts.push(`Termin: ${selectedDate} um ${selectedSlotTime}`);
       if (data.notes) messageParts.push(`Notiz: ${data.notes}`);
 
@@ -117,7 +190,7 @@ export default function BookingForm() {
         headers: { "Content-Type": "application/json", "x-client-id": DEMO_CLIENT_ID },
         body: JSON.stringify({
           clientSlug: DEMO_CLIENT_SLUG,
-          source: "web_form",
+          source: bookingSource,
           customerName: data.customerName,
           customerEmail: data.customerEmail || undefined,
           customerPhone: data.customerPhone || undefined,
@@ -127,26 +200,23 @@ export default function BookingForm() {
           notes: notesValue || undefined,
           reservationToken: reservationToken ?? undefined,
           metadata: {
-            serviceId: data.serviceId,
+            serviceId: selectedServiceId,
             appointmentAt: selectedSlotDatetime,
             appointmentTime: selectedSlotTime,
             appointmentDate: selectedDate,
-            bookingSource: bookingSource,
+            bookingSource,
           },
         }),
       });
 
       const result = await response.json() as { success: boolean; leadId?: string; error?: string };
-
       if (!response.ok || !result.success) {
         setSubmitError(result.error ?? "Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.");
         return;
       }
-
       if (result.leadId) {
         fetch(`/api/lead/${result.leadId}/classify`, { method: "POST" }).catch(() => {});
       }
-
       router.push("/booking/thank-you");
     } catch {
       setSubmitError("Verbindungsfehler. Bitte prüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.");
@@ -155,91 +225,99 @@ export default function BookingForm() {
     }
   };
 
+  // ── STEPPER ──────────────────────────────────────────────────────────────────
+  const stepLabels = ["Leistung", "Termin", "Daten", "Bestätigung"];
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
+      {/* Hidden field so react-hook-form sees serviceId */}
+      <input type="hidden" {...register("serviceId")} value={selectedServiceId} />
 
-      {/* Persönliche Daten */}
-      <div className="step-title">Ihre Daten</div>
-      <div className="form-grid">
-        <div className="form-row">
-          <label className="form-label" htmlFor="customerName">
-            Name <span style={{ color: "var(--color-rose)" }}>*</span>
-          </label>
-          <input
-            id="customerName"
-            type="text"
-            autoComplete="name"
-            placeholder="Ihr vollständiger Name"
-            className={`form-input${errors.customerName ? " error" : ""}`}
-            {...register("customerName")}
-          />
-          {errors.customerName && (
-            <span className="form-error">{errors.customerName.message}</span>
+      {/* Stepper */}
+      <ol className="stepper">
+        {stepLabels.map((label, i) => {
+          const n = (i + 1) as Step;
+          let liClass = "";
+          if (n < step) liClass = "complete";
+          else if (n === step) liClass = "active";
+          return (
+            <li key={label} className={liClass}>
+              <span className="stepper-circle">{n}</span>
+              <span className="stepper-label">{label}</span>
+            </li>
+          );
+        })}
+      </ol>
+
+      {/* ── STEP 1 — SERVICE SELECTION ─────────────────────────────────────── */}
+      {step === 1 && (
+        <section>
+          <h4 className="step-title">Welche Leistung möchten Sie buchen?</h4>
+          <p className="step-sub">Wählen Sie Ihre Wunsch-Leistung und einen Mitarbeiter.</p>
+
+          <div className="svc-grid">
+            {allServices.map((svc) => {
+              const isSelected = svc.id === selectedServiceId;
+              return (
+                <label
+                  key={svc.id}
+                  className={`svc-card${isSelected ? " selected" : ""}`}
+                  data-accent={svc.accent}
+                  onClick={() => handleServiceSelect(svc.id)}
+                >
+                  <input type="radio" name="svc-radio" readOnly checked={isSelected} />
+                  <div className="svc-top">
+                    <span className="svc-name">{svc.name}</span>
+                    <span className="svc-dur">{formatDuration(svc.duration)}</span>
+                  </div>
+                  <div className="svc-price">{formatPrice(svc.priceEur)}</div>
+                  {isSelected && <span className="svc-check">✓</span>}
+                </label>
+              );
+            })}
+          </div>
+
+          {errors.serviceId && !selectedServiceId && (
+            <p className="form-error">{errors.serviceId.message}</p>
           )}
-        </div>
 
-        <div className="form-row">
-          <label className="form-label" htmlFor="customerEmail">E-Mail</label>
-          <input
-            id="customerEmail"
-            type="email"
-            autoComplete="email"
-            placeholder="ihre@email.at"
-            className={`form-input${errors.customerEmail ? " error" : ""}`}
-            {...register("customerEmail")}
-          />
-          {errors.customerEmail && (
-            <span className="form-error">{errors.customerEmail.message}</span>
-          )}
-        </div>
-
-        <div className="form-row">
-          <label className="form-label" htmlFor="customerPhone">Telefon</label>
-          <input
-            id="customerPhone"
-            type="tel"
-            autoComplete="tel"
-            placeholder="+43 660 1234567"
-            className={`form-input${errors.customerPhone ? " error" : ""}`}
-            {...register("customerPhone")}
-          />
-          {errors.customerPhone && (
-            <span className="form-error">{errors.customerPhone.message}</span>
-          )}
-          <span className="form-hint">E-Mail oder Telefon — mind. eine Angabe erforderlich.</span>
-        </div>
-      </div>
-
-      {/* Leistung & Termin */}
-      <div className="step-title" style={{ marginTop: "24px" }}>Leistung & Termin</div>
-      <div className="form-grid">
-        <div className="form-row form-row-full">
-          <label className="form-label" htmlFor="serviceId">
-            Gewünschte Leistung <span style={{ color: "var(--color-rose)" }}>*</span>
-          </label>
-          <select
-            id="serviceId"
-            className={`form-input${errors.serviceId ? " error" : ""}`}
-            {...register("serviceId")}
-          >
-            <option value="">Bitte wählen…</option>
-            {servicesData.categories.map((cat) => (
-              <optgroup key={cat.slug} label={cat.name}>
-                {cat.services.map((svc) => (
-                  <option key={svc.id} value={svc.id}>
-                    {svc.name} · {svc.duration} Min. · € {(svc.priceEur / 100).toFixed(0)}
-                  </option>
+          {!staffLoadError && staffOptions.length > 0 && (
+            <div className="form-row">
+              <label className="form-label">Mitarbeiter</label>
+              <select
+                className="form-input"
+                value={selectedStaffId}
+                onChange={(e) => setSelectedStaffId(e.target.value)}
+              >
+                <option value="">Egal — nächster verfügbarer</option>
+                {staffOptions.map((s) => (
+                  <option key={s.id} value={s.id}>{s.name} — {s.title}</option>
                 ))}
-              </optgroup>
-            ))}
-          </select>
-          {errors.serviceId && (
-            <span className="form-error">{errors.serviceId.message}</span>
+              </select>
+            </div>
           )}
-        </div>
 
-        <div className="form-row form-row-full">
-          <label className="form-label">Datum wählen</label>
+          <button
+            type="button"
+            className="btn btn-primary btn-lg btn-full"
+            onClick={handleStep1Next}
+            disabled={!selectedServiceId}
+            style={{ marginTop: "8px", opacity: selectedServiceId ? 1 : 0.5 }}
+          >
+            Weiter →
+          </button>
+        </section>
+      )}
+
+      {/* ── STEP 2 — DATE & TIME ───────────────────────────────────────────── */}
+      {step === 2 && (
+        <section>
+          <h4 className="step-title">Datum &amp; Uhrzeit wählen</h4>
+          <p className="step-sub">
+            Verfügbare Termine für <strong>{selectedService?.name}</strong>
+            {selectedService && ` · ${formatDuration(selectedService.duration)}`}
+          </p>
+
           <div className="datepicker">
             <DatePicker
               selectedDate={selectedDate}
@@ -249,130 +327,216 @@ export default function BookingForm() {
                 setSelectedSlotTime(null);
                 setReservationToken(null);
               }}
-              disabled={!selectedServiceId}
+              disabled={false}
             />
           </div>
-          {!selectedServiceId && (
-            <span className="form-hint">Zuerst eine Leistung auswählen</span>
-          )}
-        </div>
 
-        {selectedDate && selectedServiceId && (
-          <div className="form-row form-row-full">
-            <label className="form-label">Uhrzeit wählen</label>
-            <SlotPicker
-              date={selectedDate}
-              serviceId={selectedServiceId ?? null}
-              clientId={DEMO_CLIENT_ID}
-              selectedSlot={selectedSlotDatetime}
-              onSlotSelect={(dt, t, tok) => {
-                setSelectedSlotDatetime(dt);
-                setSelectedSlotTime(t);
-                setReservationToken(tok);
-              }}
-            />
-          </div>
-        )}
-
-        {!staffLoadError && staffList.length > 0 && (() => {
-          const filtered = staffList.filter(s => {
-            if (!s.serviceIds || s.serviceIds.length === 0) return true;
-            if (!selectedServiceId) return true;
-            return s.serviceIds.includes(selectedServiceId);
-          });
-          const filteredStaff = filtered.length > 0 ? filtered : staffList;
-          return (
-            <div className="form-row form-row-full">
-              <label className="form-label">
-                Wunsch-Mitarbeiter <span style={{ color: "var(--color-text-muted)", fontWeight: 400 }}>(optional)</span>
-              </label>
-              <select
-                className="form-input"
-                value={selectedStaffId}
-                onChange={(e) => setSelectedStaffId(e.target.value)}
-              >
-                <option value="">Keine Vorauswahl</option>
-                {filteredStaff.map((s) => (
-                  <option key={s.id} value={s.id}>{s.name} — {s.title}</option>
-                ))}
-              </select>
+          {selectedDate && (
+            <div className="slots">
+              <div className="slots-label">Verfügbare Zeiten</div>
+              <SlotPicker
+                date={selectedDate}
+                serviceId={selectedServiceId}
+                clientId={DEMO_CLIENT_ID}
+                selectedSlot={selectedSlotDatetime}
+                onSlotSelect={(dt, t, tok) => {
+                  setSelectedSlotDatetime(dt);
+                  setSelectedSlotTime(t);
+                  setReservationToken(tok);
+                }}
+              />
             </div>
-          );
-        })()}
+          )}
 
-        <div className="form-row form-row-full">
-          <label className="form-label" htmlFor="notes">Anmerkungen</label>
-          <textarea
-            id="notes"
-            rows={3}
-            placeholder="Gibt es etwas Besonderes, das wir wissen sollten? (optional)"
-            className="form-input"
-            style={{ resize: "none" }}
-            {...register("notes")}
-          />
-        </div>
-      </div>
-
-      {/* GDPR */}
-      <div className="gdpr" style={{ marginTop: "24px" }}>
-        <div className="step-title" style={{ marginBottom: "12px" }}>Datenschutz</div>
-
-        <label className="gdpr-check">
-          <input type="checkbox" {...register("gdprDataProcessing")} />
-          <span>
-            Ich stimme der Verarbeitung meiner Daten für die Terminvereinbarung zu.{" "}
-            <a href="/datenschutz" target="_blank" rel="noopener noreferrer">
-              Datenschutzerklärung lesen
-            </a>{" "}
-            <span style={{ color: "var(--color-rose)" }}>*</span>
-          </span>
-        </label>
-        {errors.gdprDataProcessing && (
-          <span className="form-error">{errors.gdprDataProcessing.message}</span>
-        )}
-
-        <label className="gdpr-check">
-          <input type="checkbox" {...register("gdprReminders")} />
-          <span>Ich möchte Terminerinnerungen per E-Mail oder WhatsApp erhalten.</span>
-        </label>
-
-        <label className="gdpr-check">
-          <input type="checkbox" {...register("gdprMarketing")} />
-          <span style={{ color: "var(--color-text-muted)" }}>
-            Ich möchte über Angebote und Neuigkeiten informiert werden. (optional)
-          </span>
-        </label>
-
-        <p className="form-hint" style={{ marginTop: "8px" }}>
-          * Pflichtfeld. Ihre Daten werden ausschließlich zur Terminvereinbarung verwendet
-          und gemäß DSGVO verarbeitet. Sie können Ihre Einwilligung jederzeit widerrufen.
-        </p>
-      </div>
-
-      {submitError && (
-        <div style={{
-          marginTop: "16px", padding: "12px 16px",
-          border: "1px solid var(--color-rose)",
-          borderRadius: "var(--radius-md)",
-          fontSize: "13px", color: "var(--color-rose)",
-          background: "var(--color-rose-soft)",
-        }}>
-          {submitError}
-        </div>
+          <div className="step-nav">
+            <button type="button" className="btn btn-ghost" onClick={() => goToStep(1)}>← Zurück</button>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleStep2Next}
+              disabled={!selectedSlotDatetime || !reservationToken}
+              style={{ opacity: selectedSlotDatetime && reservationToken ? 1 : 0.5 }}
+            >
+              Weiter →
+            </button>
+          </div>
+        </section>
       )}
 
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="btn btn-primary btn-lg btn-full"
-        style={{ marginTop: "24px", opacity: isSubmitting ? 0.6 : 1 }}
-      >
-        {isSubmitting ? "Wird gesendet…" : "Anfrage senden"}
-      </button>
+      {/* ── STEP 3 — CONTACT DATA ──────────────────────────────────────────── */}
+      {step === 3 && (
+        <section>
+          <h4 className="step-title">Ihre Daten</h4>
+          <p className="step-sub">Wir brauchen diese Informationen für die Bestätigung und Erinnerung.</p>
 
-      <p className="form-hint" style={{ textAlign: "center", marginTop: "12px" }}>
-        Wir melden uns innerhalb von 24 Stunden bei Ihnen zur Terminbestätigung.
-      </p>
+          <div className="form-grid">
+            <div className="form-row">
+              <label className="form-label" htmlFor="customerName">
+                Name <span style={{ color: "var(--color-rose)" }}>*</span>
+              </label>
+              <input
+                id="customerName"
+                type="text"
+                autoComplete="name"
+                placeholder="Ihr vollständiger Name"
+                className={`form-input${errors.customerName ? " error" : ""}`}
+                {...register("customerName")}
+              />
+              {errors.customerName && <span className="form-error">{errors.customerName.message}</span>}
+            </div>
+
+            <div className="form-row">
+              <label className="form-label" htmlFor="customerEmail">E-Mail</label>
+              <input
+                id="customerEmail"
+                type="email"
+                autoComplete="email"
+                placeholder="ihre@email.at"
+                className={`form-input${errors.customerEmail ? " error" : ""}`}
+                {...register("customerEmail")}
+              />
+              {errors.customerEmail && <span className="form-error">{errors.customerEmail.message}</span>}
+            </div>
+
+            <div className="form-row">
+              <label className="form-label" htmlFor="customerPhone">Telefon</label>
+              <input
+                id="customerPhone"
+                type="tel"
+                autoComplete="tel"
+                placeholder="+43 660 1234567"
+                className={`form-input${errors.customerPhone ? " error" : ""}`}
+                {...register("customerPhone")}
+              />
+              {errors.customerPhone && <span className="form-error">{errors.customerPhone.message}</span>}
+              <span className="form-hint">E-Mail oder Telefon — mind. eine Angabe erforderlich.</span>
+            </div>
+
+            <div className="form-row form-row-full">
+              <label className="form-label" htmlFor="notes">
+                Anmerkungen <span className="form-opt">(optional)</span>
+              </label>
+              <textarea
+                id="notes"
+                rows={3}
+                placeholder="Allergien, Wünsche, Farbwunsch…"
+                className="form-input"
+                style={{ resize: "none" }}
+                {...register("notes")}
+              />
+            </div>
+          </div>
+
+          <div className="step-nav">
+            <button type="button" className="btn btn-ghost" onClick={() => goToStep(2)}>← Zurück</button>
+            <button type="button" className="btn btn-primary" onClick={handleStep3Next}>Weiter →</button>
+          </div>
+        </section>
+      )}
+
+      {/* ── STEP 4 — CONFIRM ───────────────────────────────────────────────── */}
+      {step === 4 && (
+        <section>
+          <h4 className="step-title">Termin bestätigen</h4>
+          <p className="step-sub">Bitte überprüfen Sie Ihre Buchung.</p>
+
+          <div className="summary">
+            {selectedService && (
+              <>
+                <div className="summary-row"><span>Leistung</span><strong>{selectedService.name}</strong></div>
+                <div className="summary-row"><span>Dauer</span><strong>{formatDuration(selectedService.duration)}</strong></div>
+              </>
+            )}
+            {selectedStaffId && staffList.find((s) => s.id === selectedStaffId) && (
+              <div className="summary-row">
+                <span>Mitarbeiter</span>
+                <strong>{staffList.find((s) => s.id === selectedStaffId)?.name}</strong>
+              </div>
+            )}
+            {selectedDate && (
+              <div className="summary-row">
+                <span>Datum</span>
+                <strong>
+                  {new Intl.DateTimeFormat("de-AT", {
+                    weekday: "long", day: "numeric", month: "long", year: "numeric",
+                    timeZone: "Europe/Vienna",
+                  }).format(new Date(`${selectedDate}T12:00:00Z`))}
+                </strong>
+              </div>
+            )}
+            {selectedSlotTime && (
+              <div className="summary-row"><span>Uhrzeit</span><strong>{selectedSlotTime}</strong></div>
+            )}
+            {watchedName && (
+              <div className="summary-row"><span>Kunde</span><strong>{watchedName}</strong></div>
+            )}
+            {selectedService && (
+              <>
+                <div className="summary-divider" />
+                <div className="summary-row total">
+                  <span>Gesamt</span>
+                  <strong>{formatPrice(selectedService.priceEur)}</strong>
+                </div>
+              </>
+            )}
+            <div className="summary-note">Zahlung vor Ort — bar oder Karte.</div>
+          </div>
+
+          <div className="gdpr">
+            <label className="gdpr-check">
+              <input type="checkbox" {...register("gdprDataProcessing")} />
+              <span>
+                Ich stimme der Verarbeitung meiner Daten für die Terminvereinbarung zu.{" "}
+                <a href="/datenschutz" target="_blank" rel="noopener noreferrer">Datenschutzerklärung lesen</a>{" "}
+                <span style={{ color: "var(--color-rose)" }}>*</span>
+              </span>
+            </label>
+            {errors.gdprDataProcessing && (
+              <span className="form-error">{errors.gdprDataProcessing.message}</span>
+            )}
+
+            <label className="gdpr-check">
+              <input type="checkbox" {...register("gdprReminders")} />
+              <span>Ich möchte Terminerinnerungen per E-Mail oder WhatsApp erhalten.</span>
+            </label>
+
+            <label className="gdpr-check">
+              <input type="checkbox" {...register("gdprMarketing")} />
+              <span style={{ color: "var(--color-text-muted)" }}>
+                Ich möchte über Angebote und Neuigkeiten informiert werden. <span className="form-opt">(optional)</span>
+              </span>
+            </label>
+          </div>
+
+          {submitError && (
+            <div style={{
+              marginTop: "16px", padding: "12px 16px",
+              border: "1px solid var(--color-rose)",
+              borderRadius: "var(--radius-md)",
+              fontSize: "13px", color: "var(--color-rose)",
+              background: "var(--color-rose-soft)",
+            }}>
+              {submitError}
+            </div>
+          )}
+
+          <div className="step-nav">
+            <button type="button" className="btn btn-ghost" onClick={() => goToStep(3)}>← Zurück</button>
+            <button
+              type="submit"
+              className="btn btn-primary btn-lg"
+              disabled={isSubmitting}
+              style={{ opacity: isSubmitting ? 0.6 : 1 }}
+            >
+              {isSubmitting ? "Wird gesendet…" : "Termin verbindlich buchen"}
+            </button>
+          </div>
+
+          <p className="form-hint" style={{ textAlign: "center", marginTop: "12px" }}>
+            Wir melden uns innerhalb von 24 Stunden bei Ihnen zur Terminbestätigung.
+          </p>
+        </section>
+      )}
     </form>
   );
 }
