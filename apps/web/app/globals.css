@@ -1,14 +1,12 @@
 @import "tailwindcss";
 @config "../tailwind.config.ts";
 
-/* Branding tokens (--brand-*) are injected at runtime by
-   apps/web/app/layout.tsx via brandingToCss(). Design tokens (--color-*) are
-   defined below and must not be overridden by branding injection. */
+/* Branding tokens (--brand-*) injected at runtime via brandingToCss().
+   Design tokens (--color-*) defined below — never overridden by branding. */
 
 /* ═══════════════════════════════════════════════════════════════════════════
    DESIGN SYSTEM — Beauty Booking OS
-   Source: docs/Beauty Os Design/assets/tokens.css + landing.css +
-           admin.css + admin-v2.css + booking.css
+   Source: tokens.css → landing.css → admin-merged.css → booking.css
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* Vienna Glow Studio — Design Tokens */
@@ -313,7 +311,7 @@ button {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   LANDING PAGE STYLES (landing.css)
+   LANDING (landing.css)
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* Vienna Glow Studio — landing page styles */
@@ -1046,7 +1044,7 @@ section[id] { scroll-margin-top: 88px; }
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   ADMIN SHELL STYLES (admin.css)
+   ADMIN (admin.css + admin-v2.css — merged, zero duplicates)
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* Admin screens — calendar + dashboard */
@@ -1060,6 +1058,8 @@ section[id] { scroll-margin-top: 88px; }
 }
 
 .admin-sidebar {
+  display: flex;
+  flex-direction: column;
   background: var(--color-bg-surface);
   border-right: 1px solid var(--color-border);
   padding: 20px 12px;
@@ -1165,7 +1165,8 @@ section[id] { scroll-margin-top: 88px; }
   color: var(--color-text-secondary);
   font-size: 18px;
   line-height: 1;
-  background: var(--color-bg-card);
+  background: var(--color-bg);
+  cursor: pointer;
 }
 .cal-ico-btn:hover { border-color: var(--color-accent); color: var(--color-accent); }
 .cal-today-btn {
@@ -1667,10 +1668,7 @@ section[id] { scroll-margin-top: 88px; }
   .dash-row { grid-template-columns: 1fr; }
 }
 
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   ADMIN PAGE STYLES (admin-v2.css)
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* ── Admin Pages V2 ── */
 
 /* Admin pages V2 — Front Desk Kanban, Clients, Waiting List, Staff, Rebooking, Settings, Logs */
 
@@ -1769,11 +1767,6 @@ section[id] { scroll-margin-top: 88px; }
   padding-top: 16px;
   border-top: 1px solid var(--color-border);
 }
-.admin-sidebar {
-  display: flex;
-  flex-direction: column;
-}
-
 /* ── Front Desk Kanban (V2-1) ── */
 .kanban {
   display: grid;
@@ -1841,6 +1834,7 @@ section[id] { scroll-margin-top: 88px; }
   gap: 8px;
   box-shadow: var(--shadow-card);
   transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+  position: relative;
 }
 .kanban-card:hover {
   transform: translateY(-2px);
@@ -1951,7 +1945,6 @@ section[id] { scroll-margin-top: 88px; }
   border-radius: 0 var(--radius-md) 0 var(--radius-md);
   font-weight: 600;
 }
-.kanban-card { position: relative; }
 .kanban-col-new-btn {
   margin: 12px;
   padding: 8px;
@@ -2549,7 +2542,7 @@ section[id] { scroll-margin-top: 88px; }
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   BOOKING STYLES (booking.css)
+   BOOKING (booking.css)
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* Booking page */
@@ -2576,21 +2569,6 @@ section[id] { scroll-margin-top: 88px; }
   font-weight: 500;
 }
 .booking-back:hover { color: var(--color-accent); text-decoration: none; }
-.site-brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 700;
-  color: var(--color-text);
-  font-size: 15px;
-}
-.site-brand:hover { text-decoration: none; }
-.site-brand-diamond {
-  width: 12px; height: 12px;
-  transform: rotate(45deg);
-  background: var(--color-accent);
-  border-radius: 2px;
-}
 
 .booking-wrap {
   padding: 120px 16px 96px; /* top padding offsets fixed .booking-topbar */
@@ -2818,17 +2796,6 @@ section[id] { scroll-margin-top: 88px; }
   color: var(--color-text);
   font-size: 14px;
 }
-.cal-ico-btn {
-  width: 32px; height: 32px;
-  border-radius: 6px;
-  border: 1px solid var(--color-border);
-  color: var(--color-text-secondary);
-  font-size: 18px;
-  line-height: 1;
-  background: var(--color-bg);
-  cursor: pointer;
-}
-.cal-ico-btn:hover { border-color: var(--color-accent); color: var(--color-accent); }
 .dp-dow, .dp-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
