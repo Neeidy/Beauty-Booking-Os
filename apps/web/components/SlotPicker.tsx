@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface SlotItem {
   time: string;
@@ -109,14 +109,21 @@ export default function SlotPicker({
     return () => clearInterval(interval); // prevent memory leak
   }, [reservationExpiresAt]);
 
-  // Best-effort release on unmount
+  // Release reservation only when the component unmounts due to a date/service change
+  // (user abandoned this slot picker), NOT when advancing to the next step.
+  // We track whether the slot was confirmed so we can skip release on step advance.
+  const slotConfirmedRef = useRef(false);
+  useEffect(() => {
+    slotConfirmedRef.current = false;
+  }, [date, serviceId]);
+
   useEffect(() => {
     return () => {
-      if (reservationToken) {
+      if (reservationToken && !slotConfirmedRef.current) {
         fetch(`/api/booking/reservations/${reservationToken}`, {
           method: "DELETE",
-          keepalive: true, // survives page unload
-        }).catch(() => {}); // intentionally silent
+          keepalive: true,
+        }).catch(() => {});
       }
     };
   }, [reservationToken]);
@@ -151,6 +158,7 @@ export default function SlotPicker({
       const data = await res.json() as { reservationToken: string; expiresAt: string };
       setReservationToken(data.reservationToken);
       setReservationExpiresAt(new Date(data.expiresAt));
+      slotConfirmedRef.current = true;
       onSlotSelect(slot.datetime, slot.time, data.reservationToken);
     } catch {
       setLockError("Bağlantı hatası. Lütfen tekrar dene.");
