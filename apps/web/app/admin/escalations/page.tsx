@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import AdminHeader from "../../../components/admin/AdminHeader";
 import EscalationCard from "../../../components/admin/EscalationCard";
 
 interface Lead {
@@ -56,49 +55,59 @@ export default function EscalationsPage() {
 
   return (
     <>
-      <AdminHeader title="Eskalations-Queue" />
-      <main className="p-6 space-y-4">
-
-        {/* Info banner */}
-        <div className="rounded-sm border px-4 py-3 text-sm" style={{ borderColor: "#fca5a5", backgroundColor: "#fef2f2", color: "#991b1b" }}>
-          Diese Anfragen wurden vom AI mit niedriger Konfidenz (&lt;70%) klassifiziert und benötigen manuelle Bearbeitung.
+      <header className="adm-header">
+        <div className="adm-header-title">
+          <h2>Eskalations-Queue</h2>
+          <div className="breadcrumb">Admin / Eskalationen</div>
         </div>
-
-        <div className="flex items-center justify-between">
-          {data && (
-            <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>
-              {data.total} offene Anfrage{data.total !== 1 ? "n" : ""}
-            </p>
-          )}
-          <button
-            onClick={fetchEscalations}
-            className="rounded-sm px-3 py-1.5 text-xs font-medium"
-            style={{ backgroundColor: "var(--color-secondary)", color: "#fff" }}
-          >
+        <div className="adm-header-actions">
+          <button onClick={fetchEscalations} className="btn btn-ghost" style={{ fontSize: "13px" }}>
             Aktualisieren
           </button>
         </div>
+      </header>
+
+      <div className="adm-body">
+        <div style={{
+          background: "var(--color-rose-soft)",
+          color: "var(--color-rose-soft-text)",
+          border: "1px solid var(--color-rose)",
+          borderRadius: "var(--radius-md)",
+          padding: "12px 16px",
+          fontSize: "13px",
+          marginBottom: "20px",
+        }}>
+          Diese Anfragen wurden vom AI mit niedriger Konfidenz (&lt;70%) klassifiziert und benötigen manuelle Bearbeitung.
+        </div>
+
+        {data && (
+          <p style={{ fontSize: "12px", color: "var(--color-text-muted)", marginBottom: "16px" }}>
+            {data.total} offene Anfrage{data.total !== 1 ? "n" : ""}
+          </p>
+        )}
 
         {error ? (
-          <div className="rounded-sm border p-4 text-sm" style={{ borderColor: "var(--color-accent)", color: "#dc2626" }}>
-            Fehler beim Laden. Bitte Seite neu laden.
+          <div className="empty">
+            <div className="empty-ico">⚠</div>
+            <h4>Fehler beim Laden</h4>
+            <p>Bitte Seite neu laden.</p>
           </div>
         ) : loading ? (
-          <div className="text-sm" style={{ color: "var(--color-text-muted)" }}>Wird geladen…</div>
+          <div style={{ color: "var(--color-text-muted)", fontSize: "13px" }}>Wird geladen…</div>
         ) : data && data.leads.length === 0 ? (
-          <div className="rounded-sm border p-8 text-center" style={{ borderColor: "var(--color-accent)", backgroundColor: "#fff" }}>
-            <p className="text-sm font-medium" style={{ color: "var(--color-primary)" }}>Keine offenen Anfragen</p>
-            <p className="text-xs mt-1" style={{ color: "var(--color-text-muted)" }}>Alle Leads wurden bearbeitet.</p>
+          <div className="empty">
+            <div className="empty-ico">✓</div>
+            <h4>Keine offenen Anfragen</h4>
+            <p>Alle Leads wurden bearbeitet.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(480px, 1fr))", gap: "16px" }}>
             {data?.leads.map((lead) => (
               <EscalationCard key={lead.id} lead={lead} onAction={handleAction} />
             ))}
           </div>
         )}
-
-      </main>
+      </div>
     </>
   );
 }
