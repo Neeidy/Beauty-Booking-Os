@@ -96,7 +96,7 @@ export default function BookingForm() {
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get("source") === "google_business") setBookingSource("google_business");
     }
-
+  });
   useEffect(() => {
     setValue("serviceId", selectedServiceId);
   }, [selectedServiceId, setValue]);
