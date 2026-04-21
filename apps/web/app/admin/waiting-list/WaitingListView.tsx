@@ -26,184 +26,135 @@ interface WaitingListViewProps {
 }
 
 function formatDate(dateStr: string): string {
-  // dateStr is YYYY-MM-DD — parse as noon UTC to avoid date shift
   return new Intl.DateTimeFormat("de-AT", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    timeZone: "UTC",
+    day: "2-digit", month: "2-digit", year: "numeric", timeZone: "UTC",
   }).format(new Date(`${dateStr}T12:00:00Z`));
 }
 
 function formatDateTime(isoStr: string): string {
   const d = new Date(isoStr);
-  const datePart = new Intl.DateTimeFormat("de-AT", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    timeZone: "Europe/Vienna",
+  return new Intl.DateTimeFormat("de-AT", {
+    day: "2-digit", month: "2-digit", year: "numeric",
+    hour: "2-digit", minute: "2-digit", timeZone: "Europe/Vienna",
   }).format(d);
-  const timePart = new Intl.DateTimeFormat("de-AT", {
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: "Europe/Vienna",
-  }).format(d);
-  return `${datePart} ${timePart}`;
 }
 
+function getInitials(name: string | null): string {
+  if (!name) return "?";
+  return name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+}
+
+const AVATAR_VARIANTS = ["", "v2", "v3", "v4"];
+
 export default function WaitingListView({ initialData }: WaitingListViewProps) {
-  const [dateFilter, setDateFilter] = useState("");
   const [notifiedFilter, setNotifiedFilter] = useState<"all" | "open" | "notified">("all");
 
   if (!initialData) {
     return (
-      <div
-        className="rounded-sm border p-6 text-sm text-center"
-        style={{ borderColor: "var(--color-accent)", color: "var(--color-text)" }}
-      >
-        Daten konnten nicht geladen werden
+      <div className="empty">
+        <div className="empty-ico">⚠</div>
+        <h4>Fehler beim Laden</h4>
+        <p>Bitte Seite neu laden.</p>
       </div>
     );
   }
 
   const { entries, total } = initialData;
+  const openCount = entries.filter((e) => !e.notified).length;
   const notifiedCount = entries.filter((e) => e.notified).length;
 
-  // Client-side filtering of the loaded entries
   const filtered = entries.filter((entry) => {
-    if (dateFilter && entry.requestedDate !== dateFilter) return false;
     if (notifiedFilter === "open" && entry.notified) return false;
     if (notifiedFilter === "notified" && !entry.notified) return false;
     return true;
   });
 
   return (
-    <div>
-      {/* Summary bar */}
-      <div
-        className="mb-4 text-sm"
-        style={{ color: "var(--color-text-muted)" }}
-      >
-        {total} Einträge | {notifiedCount} benachrichtigt
-      </div>
-
-      {/* Filter row */}
-      <div className="flex flex-wrap items-center gap-3 mb-5">
-        <input
-          type="date"
-          value={dateFilter}
-          onChange={(e) => setDateFilter(e.target.value)}
-          className="rounded-sm border px-3 py-1.5 text-sm outline-none"
-          style={{
-            borderColor: "var(--color-accent)",
-            backgroundColor: "#fff",
-            color: "var(--color-primary)",
-          }}
-        />
-        <div className="flex rounded-sm border overflow-hidden text-sm" style={{ borderColor: "var(--color-accent)" }}>
-          {(["all", "open", "notified"] as const).map((f) => (
-            <button
-              key={f}
-              type="button"
-              onClick={() => setNotifiedFilter(f)}
-              className="px-3 py-1.5 transition-colors"
-              style={{
-                backgroundColor: notifiedFilter === f ? "var(--color-primary)" : "#fff",
-                color: notifiedFilter === f ? "var(--color-background)" : "var(--color-primary)",
-              }}
-            >
-              {f === "all" ? "Alle" : f === "open" ? "Offen" : "Benachrichtigt"}
-            </button>
-          ))}
+    <>
+      <div className="adm-toolbar">
+        <div className="adm-search">
+          <input type="search" placeholder="Kunde, Leistung, Datum..." readOnly />
         </div>
-        {dateFilter && (
-          <button
-            type="button"
-            onClick={() => setDateFilter("")}
-            className="text-xs underline"
-            style={{ color: "var(--color-text-muted)" }}
-          >
-            Filter zurücksetzen
-          </button>
-        )}
-      </div>
-
-      {filtered.length === 0 ? (
-        <div
-          className="rounded-sm border p-8 text-sm text-center"
-          style={{ borderColor: "var(--color-accent)", color: "var(--color-text-muted)" }}
+        <button
+          className={`adm-filter-chip${notifiedFilter === "all" ? " active" : ""}`}
+          onClick={() => setNotifiedFilter("all")}
         >
-          Keine Wartelisteneinträge vorhanden
-        </div>
-      ) : (
-        <div className="overflow-x-auto rounded-sm border" style={{ borderColor: "var(--color-accent)" }}>
-          <table className="w-full text-sm border-collapse">
+          Alle ({total})
+        </button>
+        <button
+          className={`adm-filter-chip${notifiedFilter === "open" ? " active" : ""}`}
+          onClick={() => setNotifiedFilter("open")}
+        >
+          ⏳ Wartend ({openCount})
+        </button>
+        <button
+          className={`adm-filter-chip${notifiedFilter === "notified" ? " active" : ""}`}
+          onClick={() => setNotifiedFilter("notified")}
+        >
+          📣 Benachrichtigt ({notifiedCount})
+        </button>
+      </div>
+
+      <div className="adm-body">
+        {filtered.length === 0 ? (
+          <div className="empty">
+            <div className="empty-ico">✓</div>
+            <h4>Keine Einträge</h4>
+            <p>Keine Wartelisteneinträge für diesen Filter.</p>
+          </div>
+        ) : (
+          <table className="clients-table wl-table">
             <thead>
-              <tr style={{ backgroundColor: "var(--color-primary)", color: "var(--color-background)" }}>
-                {["Datum", "Kunde", "E-Mail", "Telefon", "Hizmet", "Status", "Registriert"].map((h) => (
-                  <th key={h} className="px-4 py-3 text-left font-medium text-xs uppercase tracking-wider">
-                    {h}
-                  </th>
-                ))}
+              <tr>
+                <th>Kunde</th>
+                <th>Gewünschte Leistung</th>
+                <th>Wunschdatum</th>
+                <th>Registriert</th>
+                <th>Status</th>
+                <th>Aktion</th>
               </tr>
             </thead>
             <tbody>
-              {filtered.map((entry, i) => (
-                <tr
-                  key={entry.id}
-                  style={{
-                    backgroundColor: i % 2 === 0 ? "#fff" : "var(--color-background)",
-                    borderBottom: "1px solid var(--color-accent)",
-                  }}
-                >
-                  <td className="px-4 py-3 whitespace-nowrap" style={{ color: "var(--color-primary)" }}>
-                    {formatDate(entry.requestedDate)}
-                  </td>
-                  <td className="px-4 py-3" style={{ color: "var(--color-primary)" }}>
-                    {entry.customerName ?? "—"}
-                  </td>
-                  <td className="px-4 py-3" style={{ color: "var(--color-text)" }}>
-                    {entry.customerEmail
-                      ? entry.customerEmail.length > 30
-                        ? entry.customerEmail.slice(0, 30) + "…"
-                        : entry.customerEmail
-                      : "—"}
-                  </td>
-                  <td className="px-4 py-3" style={{ color: "var(--color-text)" }}>
-                    {entry.customerPhone ?? "—"}
-                  </td>
-                  <td className="px-4 py-3 font-mono text-xs" style={{ color: "var(--color-text-muted)" }}>
-                    {entry.requestedServiceId.slice(0, 8)}…
-                  </td>
-                  <td className="px-4 py-3">
-                    <span
-                      className="inline-block rounded-full px-2.5 py-0.5 text-xs font-medium"
-                      style={
-                        entry.notified
-                          ? {
-                              border: "1px solid var(--color-primary)",
-                              background: "color-mix(in srgb, var(--color-primary) 15%, var(--color-background))",
-                              color: "var(--color-primary)",
-                            }
-                          : {
-                              border: "1px solid var(--color-secondary)",
-                              background: "color-mix(in srgb, var(--color-secondary) 15%, var(--color-background))",
-                              color: "var(--color-text)",
-                            }
-                      }
-                    >
-                      {entry.notified ? "Benachrichtigt" : "Wartend"}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 whitespace-nowrap text-xs" style={{ color: "var(--color-text-muted)" }}>
-                    {formatDateTime(entry.registeredAt)}
-                  </td>
-                </tr>
-              ))}
+              {filtered.map((entry, i) => {
+                const avatarVariant = AVATAR_VARIANTS[i % AVATAR_VARIANTS.length] ?? "";
+                const avatarClass = `client-avatar${avatarVariant ? " " + avatarVariant : ""}`;
+                return (
+                  <tr key={entry.id}>
+                    <td>
+                      <div className="client-name-cell">
+                        <div className={avatarClass}>{getInitials(entry.customerName)}</div>
+                        <div className="client-name-wrap">
+                          <span className="client-name">{entry.customerName ?? "—"}</span>
+                          <span className="client-email">
+                            {entry.customerEmail ?? entry.customerPhone ?? "—"}
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <strong>{entry.requestedServiceId.slice(0, 8)}…</strong>
+                    </td>
+                    <td>{formatDate(entry.requestedDate)}</td>
+                    <td style={{ fontSize: "12px", color: "var(--color-text-muted)" }}>
+                      {formatDateTime(entry.registeredAt)}
+                    </td>
+                    <td>
+                      <span className={`wl-status ${entry.notified ? "notified" : "pending"}`}>
+                        {entry.notified ? "📣 Benachrichtigt" : "⏳ Wartend"}
+                      </span>
+                    </td>
+                    <td>
+                      <button className="btn btn-ghost btn-sm">
+                        {entry.notified ? "Nochmal senden" : "Slot anbieten"}
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   );
 }

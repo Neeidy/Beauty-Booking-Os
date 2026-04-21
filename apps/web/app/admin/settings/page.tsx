@@ -7,13 +7,11 @@ export default function SettingsPage() {
     <>
       <header className="adm-header">
         <div className="adm-header-title">
-          <span className="breadcrumb">System</span>
+          <span className="breadcrumb">Studio-Einstellungen</span>
           <h2>Einstellungen</h2>
         </div>
       </header>
-      <div className="adm-body">
-        <SettingsView />
-      </div>
+      <SettingsView />
     </>
   );
 }

@@ -47,9 +47,7 @@ export default async function WaitingListPage() {
           <h2>Warteliste</h2>
         </div>
       </header>
-      <div className="adm-body">
-        <WaitingListView initialData={data} />
-      </div>
+      <WaitingListView initialData={data} />
     </>
   );
 }

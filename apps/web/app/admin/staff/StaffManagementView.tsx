@@ -16,6 +16,13 @@ interface ServiceOption {
   active: boolean;
 }
 
+const AVATAR_GRADIENTS = [
+  undefined,
+  "linear-gradient(135deg,var(--color-rose),var(--color-amber))",
+  "linear-gradient(135deg,var(--color-emerald),var(--color-cyan))",
+  "linear-gradient(135deg,var(--color-purple),var(--color-rose))",
+];
+
 export default function StaffManagementView() {
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const [services, setServices] = useState<ServiceOption[]>([]);
@@ -39,7 +46,6 @@ export default function StaffManagementView() {
       if (!staffRes.ok) throw new Error("Staff load failed");
       const staffData = await staffRes.json();
       setStaff(staffData.staff ?? []);
-
       if (svcRes.ok) {
         const svcData = await svcRes.json();
         setServices((svcData.services ?? []).filter((s: ServiceOption) => s.active));
@@ -105,9 +111,7 @@ export default function StaffManagementView() {
     if (!confirm(`${member.name} wirklich löschen?`)) return;
     setSaveMessage(null);
     try {
-      const res = await fetch(`/api/admin/staff?id=${member.id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(`/api/admin/staff?id=${member.id}`, { method: "DELETE" });
       if (!res.ok) throw new Error();
       setSaveMessage(`${member.name} gelöscht.`);
       await loadAll();
@@ -149,101 +153,113 @@ export default function StaffManagementView() {
   }
 
   if (isLoading) return (
-    <p style={{ color: "var(--color-text-muted)", fontSize: "14px" }}>Lädt...</p>
+    <div className="adm-body">
+      <div style={{ color: "var(--color-text-muted)", fontSize: "14px" }}>Lädt...</div>
+    </div>
   );
 
   if (error) return (
-    <p style={{ color: "var(--color-text-muted)", fontSize: "14px" }}>⚠ {error}</p>
+    <div className="adm-body">
+      <div className="empty">
+        <div className="empty-ico">⚠</div>
+        <h4>Fehler beim Laden</h4>
+        <p>{error}</p>
+      </div>
+    </div>
   );
 
   return (
-    <div>
+    <div className="adm-body">
       {saveMessage && (
         <div style={{
-          marginBottom: "1rem", padding: "8px 12px",
-          border: "1px solid var(--color-primary)", borderRadius: "6px",
-          fontSize: "13px", color: "var(--color-primary)",
+          marginBottom: "16px", padding: "8px 12px",
+          border: "1px solid var(--color-accent)", borderRadius: "var(--radius-md)",
+          fontSize: "13px", color: "var(--color-text)",
+          background: "var(--color-bg-card)",
         }}>
           {saveMessage}
         </div>
       )}
 
-      {/* Staff kartları */}
-      <div style={{ display: "grid", gap: "1rem", marginBottom: "2rem" }}>
-        {staff.length === 0 && (
-          <p style={{ color: "var(--color-text-muted)", fontSize: "14px" }}>
-            Keine Teammitglieder konfiguriert.
-          </p>
-        )}
-        {staff.map(member => (
+      <div className="staff-grid">
+        {staff.map((member, i) => (
           <StaffCard
             key={member.id}
             member={member}
             services={services}
+            avatarGradient={AVATAR_GRADIENTS[i % AVATAR_GRADIENTS.length]}
             onToggleActive={() => handleToggleActive(member)}
             onUpdateServices={(ids) => handleUpdateServices(member, ids)}
             onUpdateName={(name, title) => handleUpdateName(member, name, title)}
             onDelete={() => handleDelete(member)}
           />
         ))}
+
+        {/* Add new card */}
+        <button
+          className="staff-card"
+          onClick={() => setShowAddForm(true)}
+          style={{
+            background: "transparent",
+            border: "1.5px dashed var(--color-border)",
+            cursor: "pointer",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: "260px",
+            color: "var(--color-text-muted)",
+            fontSize: "14px",
+            fontWeight: 500,
+          }}
+        >
+          + Neue:n Mitarbeiter:in hinzufügen
+        </button>
       </div>
 
-      {/* Yeni staff ekle */}
-      {!showAddForm ? (
-        <button
-          type="button"
-          onClick={() => setShowAddForm(true)}
-          style={secondaryButtonStyle}
-        >
-          + Teammitglied hinzufügen
-        </button>
-      ) : (
+      {/* Add form modal-style */}
+      {showAddForm && (
         <div style={{
-          border: "1px solid var(--color-accent)", borderRadius: "8px",
-          padding: "1.25rem", background: "var(--color-background)",
+          marginTop: "24px",
+          border: "1px solid var(--color-border)",
+          borderRadius: "var(--radius-lg)",
+          padding: "20px",
+          background: "var(--color-bg-card)",
         }}>
-          <h3 style={{ color: "var(--color-text)", fontSize: "14px",
-            fontWeight: 600, marginBottom: "1rem" }}>
+          <h3 style={{ fontSize: "14px", fontWeight: 600, marginBottom: "16px", color: "var(--color-text)" }}>
             Neues Teammitglied
           </h3>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem", marginBottom: "0.75rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
             <div>
-              <label style={labelStyle}>Name *</label>
+              <label className="form-label">Name *</label>
               <input
+                className="form-input"
                 value={newName}
-                onChange={e => setNewName(e.target.value)}
-                style={{ ...inputStyle, width: "100%" }}
+                onChange={(e) => setNewName(e.target.value)}
                 placeholder="z.B. Maria"
               />
             </div>
             <div>
-              <label style={labelStyle}>Titel *</label>
+              <label className="form-label">Titel *</label>
               <input
+                className="form-input"
                 value={newTitle}
-                onChange={e => setNewTitle(e.target.value)}
-                style={{ ...inputStyle, width: "100%" }}
+                onChange={(e) => setNewTitle(e.target.value)}
                 placeholder="z.B. Nageldesignerin"
               />
             </div>
           </div>
 
           {services.length > 0 && (
-            <div style={{ marginBottom: "0.75rem" }}>
-              <label style={labelStyle}>Leistungen</label>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-                {services.map(svc => (
-                  <label key={svc.id} style={{
-                    display: "flex", alignItems: "center", gap: "4px",
-                    fontSize: "13px", color: "var(--color-text)", cursor: "pointer",
-                  }}>
+            <div style={{ marginBottom: "12px" }}>
+              <label className="form-label">Leistungen</label>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                {services.map((svc) => (
+                  <label key={svc.id} style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "13px", color: "var(--color-text)", cursor: "pointer" }}>
                     <input
                       type="checkbox"
                       checked={newServiceIds.includes(svc.id)}
-                      onChange={e => {
-                        setNewServiceIds(prev =>
-                          e.target.checked
-                            ? [...prev, svc.id]
-                            : prev.filter(id => id !== svc.id)
+                      onChange={(e) => {
+                        setNewServiceIds((prev) =>
+                          e.target.checked ? [...prev, svc.id] : prev.filter((id) => id !== svc.id)
                         );
                       }}
                     />
@@ -254,26 +270,20 @@ export default function StaffManagementView() {
             </div>
           )}
 
-          <div style={{ display: "flex", gap: "0.5rem" }}>
+          <div style={{ display: "flex", gap: "8px" }}>
             <button
               type="button"
               onClick={handleAdd}
               disabled={isAdding}
-              style={{
-                background: "var(--color-primary)",
-                color: "var(--color-background)",
-                border: "none", padding: "8px 16px",
-                borderRadius: "6px", fontSize: "13px",
-                cursor: isAdding ? "not-allowed" : "pointer",
-                opacity: isAdding ? 0.6 : 1,
-              }}
+              className="btn btn-primary btn-sm"
+              style={{ opacity: isAdding ? 0.6 : 1 }}
             >
               {isAdding ? "Wird hinzugefügt..." : "Hinzufügen"}
             </button>
             <button
               type="button"
               onClick={() => { setShowAddForm(false); setNewName(""); setNewTitle(""); setNewServiceIds([]); }}
-              style={secondaryButtonStyle}
+              className="btn btn-ghost btn-sm"
             >
               Abbrechen
             </button>
@@ -284,13 +294,12 @@ export default function StaffManagementView() {
   );
 }
 
-// ── StaffCard Sub-Component ────────────────────────────────────────────────
-
 function StaffCard({
-  member, services, onToggleActive, onUpdateServices, onUpdateName, onDelete,
+  member, services, avatarGradient, onToggleActive, onUpdateServices, onUpdateName, onDelete,
 }: {
-  member: { id: string; name: string; title: string; active: boolean; serviceIds: string[] };
-  services: { id: string; serviceName: string }[];
+  member: StaffMember;
+  services: ServiceOption[];
+  avatarGradient: string | undefined;
   onToggleActive: () => void;
   onUpdateServices: (ids: string[]) => void;
   onUpdateName: (name: string, title: string) => void;
@@ -301,129 +310,68 @@ function StaffCard({
   const [editTitle, setEditTitle] = useState(member.title);
   const [editServiceIds, setEditServiceIds] = useState<string[]>(member.serviceIds ?? []);
 
+  const initials = member.name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+
   return (
-    <div style={{
-      border: "1px solid var(--color-accent)", borderRadius: "8px",
-      padding: "1rem", background: "var(--color-background)",
-      opacity: member.active ? 1 : 0.6,
-    }}>
+    <div className={`staff-card${member.active ? "" : " inactive"}`}>
       {!isEditing ? (
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-          <div>
-            {/* Avatar */}
-            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.5rem" }}>
-              <div style={{
-                width: "40px", height: "40px", borderRadius: "50%",
-                background: "var(--color-secondary)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: "1rem", fontWeight: 700, color: "var(--color-background)",
-                flexShrink: 0,
-              }}>
-                {member.name.charAt(0).toUpperCase()}
-              </div>
-              <div>
-                <div style={{ fontWeight: 600, color: "var(--color-text)", fontSize: "14px" }}>
-                  {member.name}
-                </div>
-                <div style={{ fontSize: "12px", color: "var(--color-text-muted)" }}>
-                  {member.title}
-                </div>
-              </div>
+        <>
+          <div className="staff-card-top">
+            <div className="staff-avatar" style={avatarGradient ? { background: avatarGradient } : undefined}>
+              {initials}
             </div>
-
-            {/* Bağlı hizmetler */}
-            {services.length > 0 && (
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "4px", marginTop: "0.5rem" }}>
-                {member.serviceIds?.length > 0 ? (
-                  member.serviceIds.map(sid => {
-                    const svc = services.find(s => s.id === sid);
-                    return svc ? (
-                      <span key={sid} style={{
-                        fontSize: "11px", padding: "2px 8px", borderRadius: "999px",
-                        border: "1px solid var(--color-accent)", color: "var(--color-text-muted)",
-                      }}>
-                        {svc.serviceName}
-                      </span>
-                    ) : null;
-                  })
-                ) : (
-                  <span style={{ fontSize: "11px", color: "var(--color-text-muted)" }}>
-                    Alle Leistungen
-                  </span>
-                )}
-              </div>
-            )}
+            <div>
+              <div className="staff-name">{member.name}</div>
+              <div className="staff-title">{member.title}</div>
+            </div>
           </div>
 
-          {/* Aksiyonlar */}
-          <div style={{ display: "flex", gap: "0.5rem", flexShrink: 0 }}>
-            <span style={{
-              fontSize: "11px", padding: "2px 8px", borderRadius: "999px",
-              border: member.active
-                ? "1px solid var(--color-primary)"
-                : "1px solid var(--color-text-muted)",
-              color: member.active ? "var(--color-primary)" : "var(--color-text-muted)",
-            }}>
-              {member.active ? "Aktiv" : "Inaktiv"}
-            </span>
-            <button type="button" onClick={() => setIsEditing(true)} style={secondaryButtonStyle}>
-              Bearbeiten
-            </button>
-            <button type="button" onClick={onToggleActive} style={secondaryButtonStyle}>
-              {member.active ? "Deaktivieren" : "Aktivieren"}
-            </button>
-            <button
-              type="button"
-              onClick={onDelete}
-              style={{
-                ...secondaryButtonStyle,
-                borderColor: "var(--color-text-muted)",
-                color: "var(--color-text-muted)",
-              }}
-            >
-              Löschen
-            </button>
+          <div className="staff-services">
+            {(member.serviceIds?.length > 0)
+              ? member.serviceIds.map((sid) => {
+                  const svc = services.find((s) => s.id === sid);
+                  return svc ? <span key={sid} className="staff-svc-chip">{svc.serviceName}</span> : null;
+                })
+              : <span className="staff-svc-chip">Alle Leistungen</span>
+            }
           </div>
-        </div>
+
+          <div className="staff-card-bot">
+            <label className="toggle">
+              <input type="checkbox" checked={member.active} onChange={onToggleActive} />
+              <span className="toggle-slider" />
+            </label>
+            <div style={{ display: "flex", gap: "6px" }}>
+              <button className="btn btn-ghost btn-sm" onClick={() => setIsEditing(true)}>Bearbeiten</button>
+              <button className="btn btn-ghost btn-sm" onClick={onDelete} style={{ color: "var(--color-rose)" }}>Löschen</button>
+            </div>
+          </div>
+        </>
       ) : (
-        // Edit mode
         <div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem", marginBottom: "0.75rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
             <div>
-              <label style={labelStyle}>Name</label>
-              <input
-                value={editName}
-                onChange={e => setEditName(e.target.value)}
-                style={{ ...inputStyle, width: "100%" }}
-              />
+              <label className="form-label">Name</label>
+              <input className="form-input" value={editName} onChange={(e) => setEditName(e.target.value)} />
             </div>
             <div>
-              <label style={labelStyle}>Titel</label>
-              <input
-                value={editTitle}
-                onChange={e => setEditTitle(e.target.value)}
-                style={{ ...inputStyle, width: "100%" }}
-              />
+              <label className="form-label">Titel</label>
+              <input className="form-input" value={editTitle} onChange={(e) => setEditTitle(e.target.value)} />
             </div>
           </div>
 
           {services.length > 0 && (
-            <div style={{ marginBottom: "0.75rem" }}>
-              <label style={labelStyle}>Leistungen</label>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-                {services.map(svc => (
-                  <label key={svc.id} style={{
-                    display: "flex", alignItems: "center", gap: "4px",
-                    fontSize: "13px", color: "var(--color-text)", cursor: "pointer",
-                  }}>
+            <div style={{ marginBottom: "12px" }}>
+              <label className="form-label">Leistungen</label>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                {services.map((svc) => (
+                  <label key={svc.id} style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "13px", color: "var(--color-text)", cursor: "pointer" }}>
                     <input
                       type="checkbox"
                       checked={editServiceIds.includes(svc.id)}
-                      onChange={e => {
-                        setEditServiceIds(prev =>
-                          e.target.checked
-                            ? [...prev, svc.id]
-                            : prev.filter(id => id !== svc.id)
+                      onChange={(e) => {
+                        setEditServiceIds((prev) =>
+                          e.target.checked ? [...prev, svc.id] : prev.filter((id) => id !== svc.id)
                         );
                       }}
                     />
@@ -434,31 +382,27 @@ function StaffCard({
             </div>
           )}
 
-          <div style={{ display: "flex", gap: "0.5rem" }}>
+          <div style={{ display: "flex", gap: "8px" }}>
             <button
               type="button"
+              className="btn btn-primary btn-sm"
               onClick={() => {
                 onUpdateName(editName, editTitle);
                 onUpdateServices(editServiceIds);
                 setIsEditing(false);
-              }}
-              style={{
-                background: "var(--color-primary)", color: "var(--color-background)",
-                border: "none", padding: "8px 16px", borderRadius: "6px",
-                fontSize: "13px", cursor: "pointer",
               }}
             >
               Speichern
             </button>
             <button
               type="button"
+              className="btn btn-ghost btn-sm"
               onClick={() => {
                 setEditName(member.name);
                 setEditTitle(member.title);
                 setEditServiceIds(member.serviceIds ?? []);
                 setIsEditing(false);
               }}
-              style={secondaryButtonStyle}
             >
               Abbrechen
             </button>
@@ -468,32 +412,3 @@ function StaffCard({
     </div>
   );
 }
-
-// ── Shared Styles ──────────────────────────────────────────────────────────
-
-const inputStyle: React.CSSProperties = {
-  border: "1px solid var(--color-accent)",
-  borderRadius: "4px",
-  padding: "6px 8px",
-  fontSize: "13px",
-  color: "var(--color-text)",
-  background: "var(--color-background)",
-};
-
-const labelStyle: React.CSSProperties = {
-  fontSize: "12px",
-  color: "var(--color-text-muted)",
-  display: "block",
-  marginBottom: "4px",
-};
-
-const secondaryButtonStyle: React.CSSProperties = {
-  background: "var(--color-background)",
-  color: "var(--color-text)",
-  border: "1px solid var(--color-accent)",
-  padding: "6px 12px",
-  borderRadius: "6px",
-  fontSize: "12px",
-  cursor: "pointer",
-  minHeight: "32px",
-};
