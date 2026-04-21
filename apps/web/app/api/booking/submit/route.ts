@@ -128,7 +128,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     // Step 5 — Forward to /api/lead
-    const origin = request.nextUrl.origin;
+    const origin =
+      process.env["NEXT_PUBLIC_APP_URL"] ??
+      process.env["APP_URL"] ??
+     (process.env["VERCEL_URL"] ? `https://${process.env["VERCEL_URL"]}` : null) ??
+      request.nextUrl.origin;
     let leadRes: Response;
     try {
       leadRes = await fetch(`${origin}/api/lead`, {
