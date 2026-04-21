@@ -121,19 +121,19 @@ export default function ClientProfileView({ data }: ClientProfileViewProps) {
             <div className="profile-stat-lbl">Termine gesamt</div>
           </div>
           <div className="profile-stat">
-            <div className="profile-stat-val" style={{ color: "var(--color-emerald)" }}>
+            <div className="profile-stat-val profile-stat-val-emerald">
               {summary.completedBookings}
             </div>
             <div className="profile-stat-lbl">Abgeschlossen</div>
           </div>
           <div className="profile-stat">
-            <div className="profile-stat-val" style={{ color: "var(--color-amber)" }}>
+            <div className="profile-stat-val profile-stat-val-amber">
               {summary.cancelledBookings}
             </div>
             <div className="profile-stat-lbl">Abgesagt</div>
           </div>
           <div className="profile-stat">
-            <div className="profile-stat-val" style={{ color: "var(--color-rose)" }}>
+            <div className="profile-stat-val profile-stat-val-rose">
               {summary.noshowCount}
             </div>
             <div className="profile-stat-lbl">No-Shows</div>
@@ -146,7 +146,7 @@ export default function ClientProfileView({ data }: ClientProfileViewProps) {
             <button className="profile-tab active">Historie ({summary.totalBookings})</button>
           </div>
           {bookings.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "48px 0", color: "var(--color-text-muted)", fontSize: "14px" }}>
+            <div className="profile-empty">
               Keine Termine vorhanden
             </div>
           ) : (

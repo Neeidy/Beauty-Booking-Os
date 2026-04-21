@@ -107,14 +107,14 @@ export default function LogsPage() {
           type="date"
           value={dateFrom}
           onChange={(e) => { setDateFrom(e.target.value); setPage(1); }}
-          style={{ flex: 1, minWidth: "160px" }}
+          className="logs-date-input"
         />
         <button onClick={fetchLogs} className="btn btn-ghost btn-sm">Filtern</button>
       </div>
 
       <div className="adm-body">
         {data && (
-          <p style={{ fontSize: "12px", color: "var(--color-text-muted)", marginBottom: "12px" }}>
+          <p className="log-count">
             {data.total} Einträge — Seite {data.page} von {data.totalPages}
           </p>
         )}
@@ -126,13 +126,13 @@ export default function LogsPage() {
             <p>Bitte Seite neu laden.</p>
           </div>
         ) : loading ? (
-          <div style={{ color: "var(--color-text-muted)", fontSize: "13px" }}>Wird geladen…</div>
+          <div className="loading-text">Wird geladen…</div>
         ) : (
           <LogViewer logs={data?.logs ?? []} totalTokens={data?.totalTokens ?? 0} />
         )}
 
         {data && data.totalPages > 1 && (
-          <div style={{ display: "flex", gap: "8px", alignItems: "center", marginTop: "16px" }}>
+          <div className="log-pagination">
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
@@ -140,7 +140,7 @@ export default function LogsPage() {
             >
               ← Zurück
             </button>
-            <span style={{ fontSize: "12px", color: "var(--color-text-muted)" }}>
+            <span className="log-pagination-info">
               {page} / {data.totalPages}
             </span>
             <button

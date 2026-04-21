@@ -152,9 +152,12 @@ export default function StaffManagementView() {
     }
   }
 
+  const activeCount = staff.filter((m) => m.active).length;
+  const inactiveCount = staff.filter((m) => !m.active).length;
+
   if (isLoading) return (
     <div className="adm-body">
-      <div style={{ color: "var(--color-text-muted)", fontSize: "14px" }}>Lädt...</div>
+      <div className="loading-text">Lädt...</div>
     </div>
   );
 
@@ -169,128 +172,110 @@ export default function StaffManagementView() {
   );
 
   return (
-    <div className="adm-body">
-      {saveMessage && (
-        <div style={{
-          marginBottom: "16px", padding: "8px 12px",
-          border: "1px solid var(--color-accent)", borderRadius: "var(--radius-md)",
-          fontSize: "13px", color: "var(--color-text)",
-          background: "var(--color-bg-card)",
-        }}>
-          {saveMessage}
+    <>
+      <div className="adm-toolbar">
+        <div className="adm-search">
+          <input type="search" placeholder="Name, Leistung..." readOnly />
         </div>
-      )}
-
-      <div className="staff-grid">
-        {staff.map((member, i) => (
-          <StaffCard
-            key={member.id}
-            member={member}
-            services={services}
-            avatarGradient={AVATAR_GRADIENTS[i % AVATAR_GRADIENTS.length]}
-            onToggleActive={() => handleToggleActive(member)}
-            onUpdateServices={(ids) => handleUpdateServices(member, ids)}
-            onUpdateName={(name, title) => handleUpdateName(member, name, title)}
-            onDelete={() => handleDelete(member)}
-          />
-        ))}
-
-        {/* Add new card */}
-        <button
-          className="staff-card"
-          onClick={() => setShowAddForm(true)}
-          style={{
-            background: "transparent",
-            border: "1.5px dashed var(--color-border)",
-            cursor: "pointer",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: "260px",
-            color: "var(--color-text-muted)",
-            fontSize: "14px",
-            fontWeight: 500,
-          }}
-        >
-          + Neue:n Mitarbeiter:in hinzufügen
+        <span className="staff-count-badge">
+          {activeCount} aktiv{inactiveCount > 0 ? ` · ${inactiveCount} inaktiv` : ""}
+        </span>
+        <button className="btn btn-primary btn-sm" onClick={() => setShowAddForm(true)}>
+          + Mitarbeiter:in hinzufügen
         </button>
       </div>
 
-      {/* Add form modal-style */}
-      {showAddForm && (
-        <div style={{
-          marginTop: "24px",
-          border: "1px solid var(--color-border)",
-          borderRadius: "var(--radius-lg)",
-          padding: "20px",
-          background: "var(--color-bg-card)",
-        }}>
-          <h3 style={{ fontSize: "14px", fontWeight: 600, marginBottom: "16px", color: "var(--color-text)" }}>
-            Neues Teammitglied
-          </h3>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
-            <div>
-              <label className="form-label">Name *</label>
-              <input
-                className="form-input"
-                value={newName}
-                onChange={(e) => setNewName(e.target.value)}
-                placeholder="z.B. Maria"
-              />
-            </div>
-            <div>
-              <label className="form-label">Titel *</label>
-              <input
-                className="form-input"
-                value={newTitle}
-                onChange={(e) => setNewTitle(e.target.value)}
-                placeholder="z.B. Nageldesignerin"
-              />
-            </div>
-          </div>
+      <div className="adm-body">
+        {saveMessage && (
+          <div className="save-banner">{saveMessage}</div>
+        )}
 
-          {services.length > 0 && (
-            <div style={{ marginBottom: "12px" }}>
-              <label className="form-label">Leistungen</label>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                {services.map((svc) => (
-                  <label key={svc.id} style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "13px", color: "var(--color-text)", cursor: "pointer" }}>
-                    <input
-                      type="checkbox"
-                      checked={newServiceIds.includes(svc.id)}
-                      onChange={(e) => {
-                        setNewServiceIds((prev) =>
-                          e.target.checked ? [...prev, svc.id] : prev.filter((id) => id !== svc.id)
-                        );
-                      }}
-                    />
-                    {svc.serviceName}
-                  </label>
-                ))}
+        <div className="staff-grid">
+          {staff.map((member, i) => (
+            <StaffCard
+              key={member.id}
+              member={member}
+              services={services}
+              avatarGradient={AVATAR_GRADIENTS[i % AVATAR_GRADIENTS.length]}
+              onToggleActive={() => handleToggleActive(member)}
+              onUpdateServices={(ids) => handleUpdateServices(member, ids)}
+              onUpdateName={(name, title) => handleUpdateName(member, name, title)}
+              onDelete={() => handleDelete(member)}
+            />
+          ))}
+
+          <button className="staff-card staff-card-add" onClick={() => setShowAddForm(true)}>
+            + Neue:n Mitarbeiter:in hinzufügen
+          </button>
+        </div>
+
+        {showAddForm && (
+          <div className="staff-form-panel">
+            <h3 className="staff-form-title">Neues Teammitglied</h3>
+            <div className="staff-form-grid">
+              <div>
+                <label className="form-label">Name *</label>
+                <input
+                  className="form-input"
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                  placeholder="z.B. Maria"
+                />
+              </div>
+              <div>
+                <label className="form-label">Titel *</label>
+                <input
+                  className="form-input"
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  placeholder="z.B. Nageldesignerin"
+                />
               </div>
             </div>
-          )}
 
-          <div style={{ display: "flex", gap: "8px" }}>
-            <button
-              type="button"
-              onClick={handleAdd}
-              disabled={isAdding}
-              className="btn btn-primary btn-sm"
-              style={{ opacity: isAdding ? 0.6 : 1 }}
-            >
-              {isAdding ? "Wird hinzugefügt..." : "Hinzufügen"}
-            </button>
-            <button
-              type="button"
-              onClick={() => { setShowAddForm(false); setNewName(""); setNewTitle(""); setNewServiceIds([]); }}
-              className="btn btn-ghost btn-sm"
-            >
-              Abbrechen
-            </button>
+            {services.length > 0 && (
+              <div className="staff-svc-list">
+                <label className="form-label">Leistungen</label>
+                <div className="staff-svc-chips">
+                  {services.map((svc) => (
+                    <label key={svc.id} className="staff-svc-checkbox">
+                      <input
+                        type="checkbox"
+                        checked={newServiceIds.includes(svc.id)}
+                        onChange={(e) => {
+                          setNewServiceIds((prev) =>
+                            e.target.checked ? [...prev, svc.id] : prev.filter((id) => id !== svc.id)
+                          );
+                        }}
+                      />
+                      {svc.serviceName}
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="staff-form-actions">
+              <button
+                type="button"
+                onClick={handleAdd}
+                disabled={isAdding}
+                className={`btn btn-primary btn-sm${isAdding ? " btn-loading" : ""}`}
+              >
+                {isAdding ? "Wird hinzugefügt..." : "Hinzufügen"}
+              </button>
+              <button
+                type="button"
+                onClick={() => { setShowAddForm(false); setNewName(""); setNewTitle(""); setNewServiceIds([]); }}
+                className="btn btn-ghost btn-sm"
+              >
+                Abbrechen
+              </button>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   );
 }
 
@@ -336,20 +321,22 @@ function StaffCard({
             }
           </div>
 
+          <div className="staff-card-spacer" />
+
           <div className="staff-card-bot">
             <label className="toggle">
               <input type="checkbox" checked={member.active} onChange={onToggleActive} />
               <span className="toggle-slider" />
             </label>
-            <div style={{ display: "flex", gap: "6px" }}>
+            <div className="staff-card-bot-actions">
               <button className="btn btn-ghost btn-sm" onClick={() => setIsEditing(true)}>Bearbeiten</button>
-              <button className="btn btn-ghost btn-sm" onClick={onDelete} style={{ color: "var(--color-rose)" }}>Löschen</button>
+              <button className="btn btn-ghost btn-sm btn-danger" onClick={onDelete}>Löschen</button>
             </div>
           </div>
         </>
       ) : (
         <div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
+          <div className="staff-form-grid">
             <div>
               <label className="form-label">Name</label>
               <input className="form-input" value={editName} onChange={(e) => setEditName(e.target.value)} />
@@ -361,11 +348,11 @@ function StaffCard({
           </div>
 
           {services.length > 0 && (
-            <div style={{ marginBottom: "12px" }}>
+            <div className="staff-svc-list">
               <label className="form-label">Leistungen</label>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+              <div className="staff-svc-chips">
                 {services.map((svc) => (
-                  <label key={svc.id} style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "13px", color: "var(--color-text)", cursor: "pointer" }}>
+                  <label key={svc.id} className="staff-svc-checkbox">
                     <input
                       type="checkbox"
                       checked={editServiceIds.includes(svc.id)}
@@ -382,7 +369,7 @@ function StaffCard({
             </div>
           )}
 
-          <div style={{ display: "flex", gap: "8px" }}>
+          <div className="staff-form-actions">
             <button
               type="button"
               className="btn btn-primary btn-sm"

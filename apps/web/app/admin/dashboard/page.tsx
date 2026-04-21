@@ -37,18 +37,7 @@ export default function DashboardPage() {
         </div>
         <div className="dash-header-right">
           {stats?.escalationQueue != null && stats.escalationQueue > 0 && (
-            <Link
-              href="/admin/escalations"
-              style={{
-                fontSize: "12px",
-                fontWeight: 600,
-                background: "var(--color-error-soft)",
-                color: "var(--color-error)",
-                padding: "4px 12px",
-                borderRadius: "999px",
-                textDecoration: "none",
-              }}
-            >
+            <Link href="/admin/escalations" className="kanban-pill intent-high">
               ⚠ {stats.escalationQueue} Eskalation{stats.escalationQueue > 1 ? "en" : ""}
             </Link>
           )}

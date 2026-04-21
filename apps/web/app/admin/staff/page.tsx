@@ -7,13 +7,14 @@ export default function AdminStaffPage() {
     <>
       <header className="adm-header">
         <div className="adm-header-title">
-          <span className="breadcrumb">Team</span>
+          <span className="breadcrumb">Mitarbeiter:innen</span>
           <h2>Team</h2>
         </div>
+        <div className="adm-header-actions">
+          <button className="btn btn-ghost btn-sm">Verfügbarkeit exportieren</button>
+        </div>
       </header>
-      <div className="adm-body">
-        <StaffManagementView />
-      </div>
+      <StaffManagementView />
     </>
   );
 }
