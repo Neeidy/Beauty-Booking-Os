@@ -21,10 +21,10 @@ interface EscalationCardProps {
 }
 
 const SOURCE_LABELS: Record<string, string> = {
-  web_form: "Web",
+  web_form:     "Web",
   instagram_dm: "Instagram",
-  whatsapp: "WhatsApp",
-  email: "E-Mail",
+  whatsapp:     "WhatsApp",
+  email:        "E-Mail",
 };
 
 export default function EscalationCard({ lead, onAction }: EscalationCardProps) {
@@ -51,74 +51,73 @@ export default function EscalationCard({ lead, onAction }: EscalationCardProps) 
     ? `vor ${Math.round(age / 60)} Std.`
     : `vor ${Math.round(age / 1440)} Tagen`;
 
+  const conf = lead.intentConfidence ?? 0;
+  const confFill = conf < 50 ? "var(--color-amber)" : "var(--color-emerald)";
+
   return (
-    <div className="rounded-sm border p-4 space-y-3" style={{ borderColor: "#fca5a5", backgroundColor: "#fff7f7" }}>
-      {/* Header */}
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <p className="font-semibold text-sm" style={{ color: "var(--color-primary)" }}>
-            {lead.customerName ?? "Unbekannt"}
-          </p>
-          <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>
-            {SOURCE_LABELS[lead.source] ?? lead.source} · {ageText}
-            {lead.language && ` · ${lead.language.toUpperCase()}`}
-          </p>
-        </div>
-        {lead.intentConfidence !== null && (
-          <span className="text-xs px-2 py-0.5 rounded" style={{ backgroundColor: "#fee2e2", color: "#991b1b" }}>
-            {lead.intentConfidence}% Konfidenz
-          </span>
-        )}
+    <article className="kanban-card needs-review">
+      <div className="kanban-card-top">
+        <div className="kanban-name">{lead.customerName ?? "Unbekannt"}</div>
+        <div className="kanban-when">{ageText}</div>
       </div>
 
-      {/* Contact */}
-      <div className="text-xs" style={{ color: "var(--color-text-muted)" }}>
-        {lead.customerEmail && <span className="mr-3">✉ {lead.customerEmail}</span>}
-        {lead.customerPhone && <span>☎ {lead.customerPhone}</span>}
-      </div>
-
-      {/* Intent */}
-      {lead.intent && (
-        <div>
-          <p className="text-xs font-semibold mb-0.5" style={{ color: "var(--color-text-muted)" }}>Erkannter Intent</p>
-          <p className="text-xs" style={{ color: "var(--color-primary)" }}>{lead.intent}</p>
-        </div>
-      )}
-
-      {/* Raw message */}
       {lead.rawMessage && (
-        <div className="rounded p-2 text-xs" style={{ backgroundColor: "var(--color-accent)", color: "var(--color-primary)" }}>
-          {lead.rawMessage}
+        <div className="kanban-msg">{lead.rawMessage}</div>
+      )}
+
+      <div className="kanban-meta">
+        <span className="kanban-pill">{SOURCE_LABELS[lead.source] ?? lead.source}</span>
+        {lead.intent && <span className="kanban-pill">{lead.intent}</span>}
+        {lead.language && <span className="kanban-pill">{lead.language.toUpperCase()}</span>}
+      </div>
+
+      {lead.customerEmail && (
+        <div style={{ fontSize: "12px", color: "var(--color-text-muted)", marginBottom: "4px" }}>
+          ✉ {lead.customerEmail}
+        </div>
+      )}
+      {lead.customerPhone && (
+        <div style={{ fontSize: "12px", color: "var(--color-text-muted)", marginBottom: "8px" }}>
+          ☎ {lead.customerPhone}
         </div>
       )}
 
-      {/* Actions */}
-      <div className="flex gap-2 pt-1">
-        <button
-          onClick={() => handleAction("qualify")}
-          disabled={loading}
-          className="flex-1 rounded-sm py-1.5 text-xs font-medium disabled:opacity-40"
-          style={{ backgroundColor: "#dcfce7", color: "#166534" }}
-        >
-          Qualifizieren
-        </button>
-        <button
-          onClick={() => handleAction("contacted")}
-          disabled={loading}
-          className="flex-1 rounded-sm py-1.5 text-xs font-medium disabled:opacity-40"
-          style={{ backgroundColor: "#dbeafe", color: "#1e40af" }}
-        >
-          Kontaktiert
-        </button>
-        <button
-          onClick={() => handleAction("spam")}
-          disabled={loading}
-          className="flex-1 rounded-sm py-1.5 text-xs font-medium disabled:opacity-40"
-          style={{ backgroundColor: "#f1f5f9", color: "#475569" }}
-        >
-          Spam
-        </button>
+      <div className="kanban-card-foot">
+        <div className="kanban-conf">
+          AI: {lead.intentConfidence !== null ? `${lead.intentConfidence}%` : "—"}
+          {lead.intentConfidence !== null && (
+            <span className="kanban-conf-bar">
+              <span className="kanban-conf-fill" style={{ width: `${conf}%`, background: confFill }} />
+            </span>
+          )}
+        </div>
+        <div className="kanban-act-btns">
+          <button
+            className="kanban-ico-btn"
+            title="Qualifizieren"
+            onClick={() => handleAction("qualify")}
+            disabled={loading}
+          >
+            ✓
+          </button>
+          <button
+            className="kanban-ico-btn"
+            title="Kontaktiert"
+            onClick={() => handleAction("contacted")}
+            disabled={loading}
+          >
+            ✉
+          </button>
+          <button
+            className="kanban-ico-btn"
+            title="Spam"
+            onClick={() => handleAction("spam")}
+            disabled={loading}
+          >
+            ✕
+          </button>
+        </div>
       </div>
-    </div>
+    </article>
   );
 }

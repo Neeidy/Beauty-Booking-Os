@@ -45,7 +45,7 @@ export default function EscalationsPage() {
     void fetchEscalations();
   }, [fetchEscalations]);
 
-  const handleAction = (leadId: string) => {
+  const handleAction = (leadId: string, _action?: string) => {
     setData((prev) => {
       if (!prev) return prev;
       const filtered = prev.leads.filter((l) => l.id !== leadId);

@@ -22,19 +22,19 @@ interface LogViewerProps {
   totalTokens: number;
 }
 
-const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
-  success:   { bg: "#dcfce7", text: "#166534" },
-  failure:   { bg: "#fee2e2", text: "#991b1b" },
-  timeout:   { bg: "#fef9c3", text: "#854d0e" },
-  escalated: { bg: "#ede9fe", text: "#5b21b6" },
+const STATUS_LEVEL: Record<string, string> = {
+  success:   "success",
+  failure:   "error",
+  timeout:   "warn",
+  escalated: "warn",
 };
 
 const EVENT_ICONS: Record<string, string> = {
-  agent_call:        "🤖",
-  flow_step:         "→",
-  error:             "✕",
-  human_escalation:  "👤",
-  config_change:     "⚙",
+  agent_call:       "🤖",
+  flow_step:        "→",
+  error:            "✕",
+  human_escalation: "👤",
+  config_change:    "⚙",
 };
 
 export default function LogViewer({ logs, totalTokens }: LogViewerProps) {
@@ -42,131 +42,133 @@ export default function LogViewer({ logs, totalTokens }: LogViewerProps) {
 
   if (logs.length === 0) {
     return (
-      <div className="text-sm text-center py-12" style={{ color: "var(--color-text-muted)" }}>
-        Keine Logs gefunden.
+      <div className="empty">
+        <div className="empty-ico">📋</div>
+        <h4>Keine Logs</h4>
+        <p>Keine Einträge für diesen Filter.</p>
       </div>
     );
   }
 
   return (
     <div>
-      {/* Token summary */}
       {totalTokens > 0 && (
-        <div className="px-4 py-2 text-xs border-b" style={{ borderColor: "var(--color-accent)", color: "var(--color-text-muted)" }}>
-          Tokens in dieser Ansicht: <strong style={{ color: "var(--color-primary)" }}>{totalTokens.toLocaleString("de-AT")}</strong>
-          <span className="ml-2">≈ €{(totalTokens * (3 / 1_000_000) * 0.92).toFixed(4)}</span>
+        <div style={{ padding: "8px 16px", fontSize: "12px", color: "var(--color-text-muted)", borderBottom: "1px solid var(--color-border)" }}>
+          Tokens in dieser Ansicht: <strong style={{ color: "var(--color-text)" }}>{totalTokens.toLocaleString("de-AT")}</strong>
+          <span style={{ marginLeft: "8px" }}>≈ €{(totalTokens * (3 / 1_000_000) * 0.92).toFixed(4)}</span>
         </div>
       )}
 
-      <div className="divide-y" style={{ borderColor: "var(--color-accent)" }}>
-        {logs.map((log) => {
-          const isExpanded = expandedId === log.id;
-          const statusStyle = STATUS_COLORS[log.status] ?? { bg: "#f1f5f9", text: "#475569" };
-          const icon = EVENT_ICONS[log.eventType] ?? "•";
+      <table className="logs-table">
+        <thead>
+          <tr>
+            <th style={{ width: "120px" }}>Timestamp</th>
+            <th style={{ width: "80px" }}>Level</th>
+            <th style={{ width: "150px" }}>Agent</th>
+            <th>Event / Message</th>
+            <th style={{ width: "90px" }}>Tokens</th>
+            <th style={{ width: "70px" }}>Dauer</th>
+          </tr>
+        </thead>
+        <tbody>
+          {logs.map((log) => {
+            const isExpanded = expandedId === log.id;
+            const levelClass = STATUS_LEVEL[log.status] ?? "info";
+            const icon = EVENT_ICONS[log.eventType] ?? "•";
 
-          return (
-            <div key={log.id}>
-              <div
-                className="flex items-start gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer"
-                onClick={() => setExpandedId(isExpanded ? null : log.id)}
-              >
-                {/* Time */}
-                <span className="text-xs pt-0.5 w-32 shrink-0" style={{ color: "var(--color-text-muted)", fontFamily: "monospace" }}>
-                  {new Date(log.createdAt).toLocaleTimeString("de-AT", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    second: "2-digit",
-                  })}
-                  <span className="block text-xs">
+            return (
+              <>
+                <tr
+                  key={log.id}
+                  onClick={() => setExpandedId(isExpanded ? null : log.id)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <td className="log-ts">
+                    {new Date(log.createdAt).toLocaleTimeString("de-AT", {
+                      hour: "2-digit", minute: "2-digit", second: "2-digit",
+                    })}
+                    <br />
                     {new Date(log.createdAt).toLocaleDateString("de-AT", { day: "2-digit", month: "2-digit" })}
-                  </span>
-                </span>
-
-                {/* Icon + event type */}
-                <span className="text-sm w-4 shrink-0">{icon}</span>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xs font-medium" style={{ color: "var(--color-primary)" }}>
-                      {log.eventType}
-                    </span>
+                  </td>
+                  <td>
+                    <span className={`log-level ${levelClass}`}>{log.status}</span>
+                  </td>
+                  <td>
                     {log.agentName && (
-                      <span className="text-xs px-1.5 py-0.5 rounded" style={{ backgroundColor: "var(--color-accent)", color: "var(--color-secondary)" }}>
-                        {log.agentName}
-                      </span>
+                      <span className="log-agent">{icon} {log.agentName}</span>
                     )}
-                    <span className="text-xs px-1.5 py-0.5 rounded font-medium" style={{ backgroundColor: statusStyle.bg, color: statusStyle.text }}>
-                      {log.status}
-                    </span>
-                    {log.durationMs !== null && (
-                      <span className="text-xs" style={{ color: "var(--color-text-muted)" }}>{log.durationMs}ms</span>
-                    )}
-                    {log.tokenCount !== null && log.tokenCount > 0 && (
-                      <span className="text-xs" style={{ color: "var(--color-text-muted)" }}>{log.tokenCount} tok</span>
-                    )}
-                  </div>
-                  {log.outputSummary && (
-                    <p className="text-xs mt-0.5 truncate" style={{ color: "var(--color-text-muted)" }}>
-                      {log.outputSummary}
-                    </p>
-                  )}
-                  {log.errorMessage && (
-                    <p className="text-xs mt-0.5 truncate" style={{ color: "#dc2626" }}>
-                      {log.errorMessage}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {isExpanded && (
-                <div className="px-4 pb-3 pt-1 ml-7" style={{ backgroundColor: "#fafaf8", borderTop: "1px solid var(--color-accent)" }}>
-                  <div className="grid grid-cols-2 gap-3 text-xs">
-                    <div>
-                      <p className="font-semibold mb-1" style={{ color: "var(--color-text-muted)" }}>Log-ID</p>
-                      <p style={{ fontFamily: "monospace", color: "var(--color-primary)" }}>{log.id}</p>
-                    </div>
-                    {log.leadId && (
-                      <div>
-                        <p className="font-semibold mb-1" style={{ color: "var(--color-text-muted)" }}>Lead-ID</p>
-                        <p style={{ fontFamily: "monospace", color: "var(--color-primary)" }}>{log.leadId}</p>
-                      </div>
-                    )}
-                    {log.bookingId && (
-                      <div>
-                        <p className="font-semibold mb-1" style={{ color: "var(--color-text-muted)" }}>Booking-ID</p>
-                        <p style={{ fontFamily: "monospace", color: "var(--color-primary)" }}>{log.bookingId}</p>
-                      </div>
-                    )}
-                    {log.inputSummary && (
-                      <div className="col-span-2">
-                        <p className="font-semibold mb-1" style={{ color: "var(--color-text-muted)" }}>Input</p>
-                        <p className="rounded p-2" style={{ backgroundColor: "var(--color-accent)", color: "var(--color-primary)" }}>
-                          {log.inputSummary}
-                        </p>
-                      </div>
-                    )}
+                  </td>
+                  <td>
+                    <div className="log-msg">{log.eventType}</div>
                     {log.outputSummary && (
-                      <div className="col-span-2">
-                        <p className="font-semibold mb-1" style={{ color: "var(--color-text-muted)" }}>Output</p>
-                        <p className="rounded p-2" style={{ backgroundColor: "var(--color-accent)", color: "var(--color-primary)" }}>
-                          {log.outputSummary}
-                        </p>
-                      </div>
+                      <div className="log-meta">{log.outputSummary}</div>
                     )}
                     {log.errorMessage && (
-                      <div className="col-span-2">
-                        <p className="font-semibold mb-1" style={{ color: "#dc2626" }}>Fehler</p>
-                        <p className="rounded p-2" style={{ backgroundColor: "#fee2e2", color: "#991b1b" }}>
-                          {log.errorMessage}
-                        </p>
-                      </div>
+                      <div className="log-meta" style={{ color: "var(--color-rose)" }}>{log.errorMessage}</div>
                     )}
-                  </div>
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
+                  </td>
+                  <td className="log-tokens">
+                    {log.tokenCount !== null && log.tokenCount > 0 ? log.tokenCount.toLocaleString("de-AT") : "—"}
+                  </td>
+                  <td className="log-duration">
+                    {log.durationMs !== null ? `${log.durationMs}ms` : "—"}
+                  </td>
+                </tr>
+                {isExpanded && (
+                  <tr key={`${log.id}-expanded`} className="expanded-row">
+                    <td colSpan={6}>
+                      <div style={{ padding: "12px 16px", background: "var(--color-bg-surface)", fontSize: "12px" }}>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                          <div>
+                            <div style={{ fontWeight: 600, color: "var(--color-text-muted)", marginBottom: "4px" }}>Log-ID</div>
+                            <div style={{ fontFamily: "monospace" }}>{log.id}</div>
+                          </div>
+                          {log.leadId && (
+                            <div>
+                              <div style={{ fontWeight: 600, color: "var(--color-text-muted)", marginBottom: "4px" }}>Lead-ID</div>
+                              <div style={{ fontFamily: "monospace" }}>{log.leadId}</div>
+                            </div>
+                          )}
+                          {log.bookingId && (
+                            <div>
+                              <div style={{ fontWeight: 600, color: "var(--color-text-muted)", marginBottom: "4px" }}>Booking-ID</div>
+                              <div style={{ fontFamily: "monospace" }}>{log.bookingId}</div>
+                            </div>
+                          )}
+                          {log.inputSummary && (
+                            <div style={{ gridColumn: "1 / -1" }}>
+                              <div style={{ fontWeight: 600, color: "var(--color-text-muted)", marginBottom: "4px" }}>Input</div>
+                              <div style={{ background: "var(--color-bg-card)", padding: "8px", borderRadius: "var(--radius-sm)", fontFamily: "monospace", whiteSpace: "pre-wrap" }}>
+                                {log.inputSummary}
+                              </div>
+                            </div>
+                          )}
+                          {log.outputSummary && (
+                            <div style={{ gridColumn: "1 / -1" }}>
+                              <div style={{ fontWeight: 600, color: "var(--color-text-muted)", marginBottom: "4px" }}>Output</div>
+                              <div style={{ background: "var(--color-bg-card)", padding: "8px", borderRadius: "var(--radius-sm)", fontFamily: "monospace", whiteSpace: "pre-wrap" }}>
+                                {log.outputSummary}
+                              </div>
+                            </div>
+                          )}
+                          {log.errorMessage && (
+                            <div style={{ gridColumn: "1 / -1" }}>
+                              <div style={{ fontWeight: 600, color: "var(--color-rose)", marginBottom: "4px" }}>Fehler</div>
+                              <div style={{ background: "var(--color-rose-soft)", padding: "8px", borderRadius: "var(--radius-sm)", color: "var(--color-rose)" }}>
+                                {log.errorMessage}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 }
