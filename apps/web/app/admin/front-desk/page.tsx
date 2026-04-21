@@ -2,6 +2,10 @@ export const dynamic = "force-dynamic";
 
 import FrontDeskBoard from "./FrontDeskBoard";
 import type { FrontDeskLead } from "./LeadCard";
+import { getDb, leads } from "@beauty-booking/db";
+import { eq, desc } from "drizzle-orm";
+
+const CLIENT_ID = process.env["DEMO_CLIENT_ID"] ?? "00000000-0000-0000-0000-000000000000";
 
 type Lane = "new" | "contacted" | "qualified" | "booked" | "lost";
 
@@ -13,11 +17,6 @@ interface FrontDeskColumns {
   lost: FrontDeskLead[];
 }
 
-interface LeadsApiResponse {
-  leads: FrontDeskLead[];
-  total: number;
-}
-
 function statusToLane(status: string): Lane {
   if (status === "contacted") return "contacted";
   if (status === "qualified" || status === "booking_started") return "qualified";
@@ -27,9 +26,6 @@ function statusToLane(status: string): Lane {
 }
 
 export default async function FrontDeskPage() {
-  const baseUrl = process.env["APP_URL"] ?? "http://localhost:3030";
-  const adminSecret = process.env["ADMIN_SECRET"] ?? "change-me-in-production";
-
   const empty: FrontDeskColumns = {
     new: [], contacted: [], qualified: [], booked: [], lost: [],
   };
@@ -37,19 +33,21 @@ export default async function FrontDeskPage() {
   const columns: FrontDeskColumns = { ...empty };
 
   try {
-    const res = await fetch(
-      `${baseUrl}/api/admin/leads?limit=100`,
-      {
-        headers: { "x-admin-secret": adminSecret },
-        cache: "no-store",
-      }
-    );
-    if (res.ok) {
-      const data = (await res.json()) as LeadsApiResponse;
-      for (const lead of data.leads) {
-        const lane = statusToLane(lead.status);
-        columns[lane].push(lead);
-      }
+    const db = getDb();
+    const rows = await db
+      .select()
+      .from(leads)
+      .where(eq(leads.clientId, CLIENT_ID))
+      .orderBy(desc(leads.createdAt))
+      .limit(100);
+
+    for (const row of rows) {
+      const lead: FrontDeskLead = {
+        ...row,
+        createdAt: row.createdAt instanceof Date ? row.createdAt.toISOString() : String(row.createdAt),
+      };
+      const lane = statusToLane(lead.status);
+      columns[lane].push(lead);
     }
   } catch {
     // renders with empty columns
