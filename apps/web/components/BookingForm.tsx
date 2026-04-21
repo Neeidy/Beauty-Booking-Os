@@ -69,6 +69,7 @@ export default function BookingForm() {
   const {
     register,
     handleSubmit,
+    trigger,
     formState: { errors },
     getValues,
   } = useForm<BookingFormData>({
@@ -372,7 +373,15 @@ export default function BookingForm() {
 
           <div className="step-nav">
             <button className="btn btn-ghost" onClick={() => setStep(2)}>← Zurück</button>
-            <button className="btn btn-primary" onClick={() => setStep(4)}>Weiter →</button>
+            <button
+              className="btn btn-primary"
+              onClick={async () => {
+                const ok = await trigger(["customerName", "customerEmail", "customerPhone"]);
+                if (ok) setStep(4);
+              }}
+            >
+              Weiter →
+            </button>
           </div>
         </section>
       )}

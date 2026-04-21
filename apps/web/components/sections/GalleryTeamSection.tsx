@@ -69,7 +69,7 @@ export default function GalleryTeamSection() {
           <div className="gallery-grid">
             {GALLERY.map(({ src, alt, cat, h }, i) => (
               <div key={i} className="gallery-tile" data-h={h}>
-                <div className="img-wrap" style={{ height: "100%", position: "relative" }}>
+                <div className="img-wrap">
                   <Image src={src} alt={alt} fill style={{ objectFit: "cover" }} />
                 </div>
                 <span className="gallery-cat">{cat}</span>
