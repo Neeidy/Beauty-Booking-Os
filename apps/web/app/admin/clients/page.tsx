@@ -97,7 +97,7 @@ async function getCustomers(): Promise<CustomerRow[]> {
       : null;
 
     const totalRevenueCents = related.reduce(
-      (sum, b) => sum + (b.priceEur ?? 0),
+      (sum, b) => sum + parseFloat(String(b.priceEur ?? "0")),
       0
     );
 

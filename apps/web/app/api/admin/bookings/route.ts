@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { type NextRequest, NextResponse } from "next/server";
 import { isAdminApiAuthenticated } from "@/lib/admin-auth";
 import { getDb, bookings } from "@beauty-booking/db";
