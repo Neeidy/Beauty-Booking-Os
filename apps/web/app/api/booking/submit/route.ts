@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { getDb, slotReservations } from "@beauty-booking/db";
+import { getDb, slotReservations, services, bookings } from "@beauty-booking/db";
 import { and, eq } from "drizzle-orm";
 import {
   expireStaleSlotReservations,
@@ -63,6 +63,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         expiresAt: slotReservations.expiresAt,
         serviceId: slotReservations.serviceId,
         slotStart: slotReservations.slotStart,
+        slotEnd: slotReservations.slotEnd,
       })
       .from(slotReservations)
       .where(
@@ -182,6 +183,43 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         ...(leadId ? { leadId } : {}),
       })
       .where(eq(slotReservations.id, reservation.id));
+
+    // Step 7 — Create booking record
+    try {
+      const svcRows = await db
+        .select({ durationMinutes: services.durationMinutes })
+        .from(services)
+        .where(eq(services.id, reservation.serviceId))
+        .limit(1);
+
+      const durationMinutes = svcRows[0]?.durationMinutes ?? 60;
+
+      const payload = forwardPayload as Record<string, unknown>;
+      const customerName =
+        (payload["customerName"] as string | undefined) ?? "Unbekannt";
+      const customerContact =
+        (payload["customerEmail"] as string | undefined) ??
+        (payload["customerPhone"] as string | undefined) ??
+        "";
+
+      const notes = (payload["notes"] as string | undefined) ?? null;
+
+      await db.insert(bookings).values({
+        clientId: CLIENT_ID,
+        leadId: leadId ?? null,
+        serviceId: reservation.serviceId,
+        customerName,
+        customerContact,
+        appointmentAt: reservation.slotStart,
+        durationMinutes,
+        status: "pending",
+        notes,
+      });
+    } catch (bookingErr) {
+      // Non-fatal — lead already created, log and continue
+      console.error("[POST /api/booking/submit] booking insert failed", bookingErr);
+      logError("/api/booking/submit", bookingErr);
+    }
 
     // Forward the lead response back to the client
     const responseBody = leadId !== undefined
