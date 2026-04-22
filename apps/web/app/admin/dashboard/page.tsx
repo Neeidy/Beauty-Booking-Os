@@ -70,6 +70,20 @@ function getStatusLabel(status: string): string {
   return `● ${status}`;
 }
 
+function getGreeting(): string {
+  const hour = parseInt(
+    new Intl.DateTimeFormat("de-AT", {
+      hour: "numeric",
+      hour12: false,
+      timeZone: "Europe/Vienna",
+    }).format(new Date()),
+    10
+  );
+  if (hour >= 5 && hour < 12) return "Guten Morgen, Admin 👋";
+  if (hour >= 12 && hour < 18) return "Guten Tag, Admin 👋";
+  return "Guten Abend, Admin 👋";
+}
+
 function getTodayLabel(): string {
   const now = new Date();
   return now.toLocaleDateString("de-AT", {
@@ -122,7 +136,7 @@ export default function DashboardPage() {
     <div className="dash-main">
       <header className="dash-header">
         <div>
-          <h3>Guten Morgen, Admin 👋</h3>
+          <h3>{getGreeting()}</h3>
           <div className="dash-date">{getTodayLabel()}</div>
         </div>
         <div className="dash-header-right">
@@ -131,7 +145,7 @@ export default function DashboardPage() {
               ⚠ {stats.escalationQueue} Eskalation{stats.escalationQueue > 1 ? "en" : ""}
             </Link>
           )}
-          <button className="dash-bell" aria-label="Notifications">🔔</button>
+          <button className="dash-bell" aria-label="Notifications" style={{ opacity: 0.3, cursor: "not-allowed" }} disabled>🔔</button>
           <div className="dash-avatar">A</div>
         </div>
       </header>
@@ -164,7 +178,7 @@ export default function DashboardPage() {
         </div>
         <div className="stat-card">
           <div className="stat-num" style={{ color: "var(--color-emerald)" }}>
-            {stats ? `€ ${(stats.aiCosts.estimatedCostEur * 1000).toFixed(0)}` : "—"}
+            {"—"}
           </div>
           <div className="stat-label">Wochenumsatz</div>
           <div className="stat-trend up">
@@ -238,7 +252,7 @@ export default function DashboardPage() {
                         </span>
                       </td>
                       <td className="appt-actions-cell">
-                        <button>•••</button>
+                        <button style={{ opacity: 0.3, cursor: "not-allowed" }} disabled>•••</button>
                       </td>
                     </tr>
                   );

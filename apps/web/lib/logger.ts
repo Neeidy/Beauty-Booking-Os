@@ -1,31 +1,21 @@
-import fs from "fs";
-import path from "path";
-
-const LOG_DIR = path.join(process.cwd(), "logs");
-const LOG_FILE = path.join(LOG_DIR, "app.log");
-const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5MB rotation
-
-function ensureLogDir() {
-  if (!fs.existsSync(LOG_DIR)) fs.mkdirSync(LOG_DIR, { recursive: true });
-}
-
-function rotateIfNeeded() {
-  try {
-    const stat = fs.statSync(LOG_FILE);
-    if (stat.size > MAX_SIZE_BYTES) {
-      fs.renameSync(LOG_FILE, LOG_FILE + ".1");
-    }
-  } catch {}
-}
+import { getDb, eventLogs } from "@beauty-booking/db";
 
 export function writeLog(entry: Record<string, unknown>) {
-  if (typeof window !== "undefined") return; // client-side guard
-  try {
-    ensureLogDir();
-    rotateIfNeeded();
-    const line = JSON.stringify({ ...entry, ts: new Date().toISOString() }) + "\n";
-    fs.appendFileSync(LOG_FILE, line);
-  } catch {} // never crash the app for logging
+  if (typeof window !== "undefined") return;
+  const { type, method, path: p, status, durationMs, error, message, ...rest } = entry as Record<string, unknown>;
+  void (async () => {
+    try {
+      const db = getDb();
+      await db.insert(eventLogs).values({
+        clientId: "00000000-0000-0000-0000-000000000000",
+        eventType: (type as string) ?? "log",
+        agentName: "logger",
+        status: status != null ? String(status) : "info",
+        tokenCount: 0,
+        payload: { method, path: p, durationMs, error, message, ...rest, ts: new Date().toISOString() },
+      });
+    } catch {} // never crash the app for logging
+  })();
 }
 
 export function logRequest(
