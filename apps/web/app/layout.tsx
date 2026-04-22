@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import { loadBranding, brandingToCss } from "@/lib/load-branding";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -59,6 +60,7 @@ export default function RootLayout({
       </head>
       <body className="font-sans antialiased" style={{ backgroundColor: "var(--color-bg)" }}>
         {children}
+        <ThemeToggle />
       </body>
     </html>
   );
