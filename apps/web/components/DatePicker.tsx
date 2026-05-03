@@ -183,15 +183,15 @@ export default function DatePicker({ selectedDate, onDateChange, disabled = fals
                 opacity: isDisabled ? 0.4 : 1,
                 pointerEvents: isDisabled ? "none" : "auto",
                 backgroundColor: isSelected
-                  ? "var(--color-primary)"
+                  ? "var(--color-accent)"
                   : "transparent",
                 color: isSelected
                   ? "#fff"
                   : "var(--color-primary)",
                 border: isToday && !isSelected
-                  ? "1px solid var(--color-primary)"
+                  ? "1px solid var(--color-accent)"
                   : isSelected
-                  ? "1px solid var(--color-primary)"
+                  ? "1px solid var(--color-accent)"
                   : "1px solid transparent",
                 cursor: isDisabled ? "default" : "pointer",
               }}

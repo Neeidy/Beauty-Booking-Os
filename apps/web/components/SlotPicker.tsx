@@ -241,11 +241,11 @@ export default function SlotPicker({
                 opacity: !isAvailable ? 0.4 : 1,
                 pointerEvents: !isAvailable ? "none" : "auto",
                 backgroundColor: isSelected
-                  ? "var(--color-primary)"
+                  ? "var(--color-accent)"
                   : "var(--color-background)",
                 color: isSelected ? "#fff" : "var(--color-primary)",
                 border: isSelected
-                  ? "2px solid var(--color-primary)"
+                  ? "2px solid var(--color-accent)"
                   : "1px solid var(--color-primary)",
                 cursor: !isAvailable ? "default" : "pointer",
               }}
