@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 
 interface Booking {
   id: string;
@@ -31,13 +32,18 @@ const STATUS_PILL: Record<string, string> = {
   rescheduled: "pending",
 };
 
-const NEXT_ACTIONS: Record<string, { label: string; next: string }[]> = {
-  pending:   [{ label: "Bestätigen", next: "confirmed" }],
-  confirmed: [{ label: "Abgeschlossen", next: "completed" }, { label: "No-Show", next: "no_show" }],
-  reminded:  [{ label: "Abgeschlossen", next: "completed" }, { label: "No-Show", next: "no_show" }],
+// next-status values are stable; the button label comes from dict via labelKey.
+const NEXT_ACTIONS: Record<string, { labelKey: "nextConfirm" | "nextCompleted" | "nextNoShow"; next: string }[]> = {
+  pending:   [{ labelKey: "nextConfirm", next: "confirmed" }],
+  confirmed: [{ labelKey: "nextCompleted", next: "completed" }, { labelKey: "nextNoShow", next: "no_show" }],
+  reminded:  [{ labelKey: "nextCompleted", next: "completed" }, { labelKey: "nextNoShow", next: "no_show" }],
 };
 
 export default function BookingTable({ bookings, onStatusChange }: BookingTableProps) {
+  const { dict, locale } = useI18n();
+  const t = dict.admin.bookings;
+  const statusLabels = dict.admin.statusLabels as Record<string, string>;
+  const dateLocale = locale === "de" ? "de-AT" : "en-GB";
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [pendingAction, setPendingAction] = useState<string | null>(null);
 
@@ -59,8 +65,8 @@ export default function BookingTable({ bookings, onStatusChange }: BookingTableP
     return (
       <div className="empty">
         <div className="empty-ico">📅</div>
-        <h4>Keine Buchungen</h4>
-        <p>Keine Buchungen für diesen Filter.</p>
+        <h4>{t.emptyTitle}</h4>
+        <p>{t.emptyText}</p>
       </div>
     );
   }
@@ -69,13 +75,13 @@ export default function BookingTable({ bookings, onStatusChange }: BookingTableP
     <table className="appt-table">
       <thead>
         <tr>
-          <th>Termin</th>
-          <th>Kunde</th>
-          <th>Kontakt</th>
-          <th>Dauer</th>
-          <th>Status</th>
-          <th>Erinnerungen</th>
-          <th>Aktionen</th>
+          <th>{t.thAppointment}</th>
+          <th>{t.thCustomer}</th>
+          <th>{t.thContact}</th>
+          <th>{t.thDuration}</th>
+          <th>{t.thStatus}</th>
+          <th>{t.thReminders}</th>
+          <th>{t.thActions}</th>
           <th></th>
         </tr>
       </thead>
@@ -91,20 +97,20 @@ export default function BookingTable({ bookings, onStatusChange }: BookingTableP
             <>
               <tr key={booking.id}>
                 <td className="appt-time">
-                  {apptDate.toLocaleDateString("de-AT", { day: "2-digit", month: "2-digit", year: "2-digit", timeZone: "Europe/Vienna" })}
+                  {apptDate.toLocaleDateString(dateLocale, { day: "2-digit", month: "2-digit", year: "2-digit", timeZone: "Europe/Vienna" })}
                   <br />
                   <span style={{ fontSize: "11px", color: "var(--color-text-muted)" }}>
-                    {apptDate.toLocaleTimeString("de-AT", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Vienna" })}
+                    {apptDate.toLocaleTimeString(dateLocale, { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Vienna" })}
                   </span>
                 </td>
                 <td className="appt-name">{booking.customerName}</td>
                 <td style={{ color: "var(--color-text-muted)", fontSize: "12px" }}>{booking.customerContact}</td>
-                <td style={{ color: "var(--color-text-muted)", fontSize: "12px" }}>{booking.durationMinutes} Min.</td>
+                <td style={{ color: "var(--color-text-muted)", fontSize: "12px" }}>{booking.durationMinutes} {t.minutesUnit}</td>
                 <td>
-                  <span className={`status-pill ${pillClass}`}>● {booking.status}</span>
+                  <span className={`status-pill ${pillClass}`}>● {statusLabels[booking.status] ?? booking.status}</span>
                 </td>
                 <td style={{ color: "var(--color-text-muted)", fontSize: "12px" }}>
-                  {reminderCount > 0 ? `${reminderCount}x` : "—"}
+                  {reminderCount > 0 ? t.remindersCount.replace("{count}", String(reminderCount)) : "—"}
                 </td>
                 <td className="appt-actions-cell">
                   <div style={{ display: "flex", gap: "6px" }}>
@@ -116,7 +122,7 @@ export default function BookingTable({ bookings, onStatusChange }: BookingTableP
                         className="btn btn-ghost btn-sm"
                         style={{ opacity: pendingAction === booking.id ? 0.5 : 1 }}
                       >
-                        {a.label}
+                        {t[a.labelKey]}
                       </button>
                     ))}
                   </div>
@@ -135,24 +141,24 @@ export default function BookingTable({ bookings, onStatusChange }: BookingTableP
                   <td colSpan={8} style={{ background: "var(--color-bg-surface)", padding: "12px 16px" }}>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", fontSize: "12px" }}>
                       <div>
-                        <div style={{ fontWeight: 600, color: "var(--color-text-muted)", marginBottom: "4px" }}>Buchungs-ID</div>
+                        <div style={{ fontWeight: 600, color: "var(--color-text-muted)", marginBottom: "4px" }}>{t.bookingId}</div>
                         <div style={{ fontFamily: "monospace", color: "var(--color-text)" }}>{booking.id}</div>
                       </div>
                       <div>
-                        <div style={{ fontWeight: 600, color: "var(--color-text-muted)", marginBottom: "4px" }}>Erstellt am</div>
-                        <div style={{ color: "var(--color-text)" }}>{new Date(booking.createdAt).toLocaleString("de-AT")}</div>
+                        <div style={{ fontWeight: 600, color: "var(--color-text-muted)", marginBottom: "4px" }}>{t.createdAt}</div>
+                        <div style={{ color: "var(--color-text)" }}>{new Date(booking.createdAt).toLocaleString(dateLocale)}</div>
                       </div>
                       {booking.notes && (
                         <div style={{ gridColumn: "1 / -1" }}>
-                          <div style={{ fontWeight: 600, color: "var(--color-text-muted)", marginBottom: "4px" }}>Notizen</div>
+                          <div style={{ fontWeight: 600, color: "var(--color-text-muted)", marginBottom: "4px" }}>{t.notes}</div>
                           <div style={{ color: "var(--color-text)" }}>{booking.notes}</div>
                         </div>
                       )}
                       {booking.cancelledAt && (
                         <div style={{ gridColumn: "1 / -1" }}>
-                          <div style={{ fontWeight: 600, color: "var(--color-rose)", marginBottom: "4px" }}>Storniert</div>
+                          <div style={{ fontWeight: 600, color: "var(--color-rose)", marginBottom: "4px" }}>{t.cancelled}</div>
                           <div style={{ color: "var(--color-text)" }}>
-                            {new Date(booking.cancelledAt).toLocaleString("de-AT")}
+                            {new Date(booking.cancelledAt).toLocaleString(dateLocale)}
                             {booking.cancelReason && ` — ${booking.cancelReason}`}
                           </div>
                         </div>

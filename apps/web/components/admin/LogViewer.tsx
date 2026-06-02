@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 
 interface EventLog {
   id: string;
@@ -48,14 +49,17 @@ function agentBadgeClass(agentName: string | null): string {
 }
 
 export default function LogViewer({ logs, totalTokens }: LogViewerProps) {
+  const { dict, locale } = useI18n();
+  const t = dict.admin.logs;
+  const numLocale = locale === "de" ? "de-AT" : "en-GB";
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   if (logs.length === 0) {
     return (
       <div className="empty">
         <div className="empty-ico">📋</div>
-        <h4>Keine Logs</h4>
-        <p>Keine Einträge für diesen Filter.</p>
+        <h4>{t.emptyTitle}</h4>
+        <p>{t.emptyText}</p>
       </div>
     );
   }
@@ -64,7 +68,7 @@ export default function LogViewer({ logs, totalTokens }: LogViewerProps) {
     <div>
       {totalTokens > 0 && (
         <div style={{ padding: "8px 16px", fontSize: "12px", color: "var(--color-text-muted)", borderBottom: "1px solid var(--color-border)" }}>
-          Tokens in dieser Ansicht: <strong style={{ color: "var(--color-text)" }}>{totalTokens.toLocaleString("de-AT")}</strong>
+          {t.tokensInView} <strong style={{ color: "var(--color-text)" }}>{totalTokens.toLocaleString(numLocale)}</strong>
           <span style={{ marginLeft: "8px" }}>≈ €{(totalTokens * (3 / 1_000_000) * 0.92).toFixed(4)}</span>
         </div>
       )}
@@ -72,12 +76,12 @@ export default function LogViewer({ logs, totalTokens }: LogViewerProps) {
       <table className="logs-table">
         <thead>
           <tr>
-            <th style={{ width: "120px" }}>Timestamp</th>
-            <th style={{ width: "80px" }}>Level</th>
-            <th style={{ width: "150px" }}>Agent</th>
-            <th>Event / Message</th>
-            <th style={{ width: "90px" }}>Tokens</th>
-            <th style={{ width: "70px" }}>Dauer</th>
+            <th style={{ width: "120px" }}>{t.thTimestamp}</th>
+            <th style={{ width: "80px" }}>{t.thLevel}</th>
+            <th style={{ width: "150px" }}>{t.thAgent}</th>
+            <th>{t.thEventMessage}</th>
+            <th style={{ width: "90px" }}>{t.thTokens}</th>
+            <th style={{ width: "70px" }}>{t.thDuration}</th>
           </tr>
         </thead>
         <tbody>
@@ -94,11 +98,11 @@ export default function LogViewer({ logs, totalTokens }: LogViewerProps) {
                   style={{ cursor: "pointer" }}
                 >
                   <td className="log-ts">
-                    {new Date(log.createdAt).toLocaleTimeString("de-AT", {
+                    {new Date(log.createdAt).toLocaleTimeString(numLocale, {
                       hour: "2-digit", minute: "2-digit", second: "2-digit",
                     })}
                     <br />
-                    {new Date(log.createdAt).toLocaleDateString("de-AT", { day: "2-digit", month: "2-digit" })}
+                    {new Date(log.createdAt).toLocaleDateString(numLocale, { day: "2-digit", month: "2-digit" })}
                   </td>
                   <td>
                     <span className={`log-level ${levelClass}`}>{log.status}</span>
@@ -120,7 +124,7 @@ export default function LogViewer({ logs, totalTokens }: LogViewerProps) {
                     )}
                   </td>
                   <td className="log-tokens">
-                    {log.tokenCount !== null && log.tokenCount > 0 ? log.tokenCount.toLocaleString("de-AT") : "—"}
+                    {log.tokenCount !== null && log.tokenCount > 0 ? log.tokenCount.toLocaleString(numLocale) : "—"}
                   </td>
                   <td className="log-duration">
                     {log.durationMs !== null ? `${log.durationMs}ms` : "—"}
@@ -132,24 +136,24 @@ export default function LogViewer({ logs, totalTokens }: LogViewerProps) {
                       <div style={{ padding: "12px 16px", background: "var(--color-bg-surface)", fontSize: "12px" }}>
                         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                           <div>
-                            <div style={{ fontWeight: 600, color: "var(--color-text-muted)", marginBottom: "4px" }}>Log-ID</div>
+                            <div style={{ fontWeight: 600, color: "var(--color-text-muted)", marginBottom: "4px" }}>{t.logId}</div>
                             <div style={{ fontFamily: "monospace" }}>{log.id}</div>
                           </div>
                           {log.leadId && (
                             <div>
-                              <div style={{ fontWeight: 600, color: "var(--color-text-muted)", marginBottom: "4px" }}>Lead-ID</div>
+                              <div style={{ fontWeight: 600, color: "var(--color-text-muted)", marginBottom: "4px" }}>{t.leadId}</div>
                               <div style={{ fontFamily: "monospace" }}>{log.leadId}</div>
                             </div>
                           )}
                           {log.bookingId && (
                             <div>
-                              <div style={{ fontWeight: 600, color: "var(--color-text-muted)", marginBottom: "4px" }}>Booking-ID</div>
+                              <div style={{ fontWeight: 600, color: "var(--color-text-muted)", marginBottom: "4px" }}>{t.bookingId}</div>
                               <div style={{ fontFamily: "monospace" }}>{log.bookingId}</div>
                             </div>
                           )}
                           {log.inputSummary && (
                             <div style={{ gridColumn: "1 / -1" }}>
-                              <div style={{ fontWeight: 600, color: "var(--color-text-muted)", marginBottom: "4px" }}>Input</div>
+                              <div style={{ fontWeight: 600, color: "var(--color-text-muted)", marginBottom: "4px" }}>{t.input}</div>
                               <div style={{ background: "var(--color-bg-card)", padding: "8px", borderRadius: "var(--radius-sm)", fontFamily: "monospace", whiteSpace: "pre-wrap" }}>
                                 {log.inputSummary}
                               </div>
@@ -157,7 +161,7 @@ export default function LogViewer({ logs, totalTokens }: LogViewerProps) {
                           )}
                           {log.outputSummary && (
                             <div style={{ gridColumn: "1 / -1" }}>
-                              <div style={{ fontWeight: 600, color: "var(--color-text-muted)", marginBottom: "4px" }}>Output</div>
+                              <div style={{ fontWeight: 600, color: "var(--color-text-muted)", marginBottom: "4px" }}>{t.output}</div>
                               <div style={{ background: "var(--color-bg-card)", padding: "8px", borderRadius: "var(--radius-sm)", fontFamily: "monospace", whiteSpace: "pre-wrap" }}>
                                 {log.outputSummary}
                               </div>
@@ -165,7 +169,7 @@ export default function LogViewer({ logs, totalTokens }: LogViewerProps) {
                           )}
                           {log.errorMessage && (
                             <div style={{ gridColumn: "1 / -1" }}>
-                              <div style={{ fontWeight: 600, color: "var(--color-rose)", marginBottom: "4px" }}>Fehler</div>
+                              <div style={{ fontWeight: 600, color: "var(--color-rose)", marginBottom: "4px" }}>{t.error}</div>
                               <div style={{ background: "var(--color-rose-soft)", padding: "8px", borderRadius: "var(--radius-sm)", color: "var(--color-rose)" }}>
                                 {log.errorMessage}
                               </div>

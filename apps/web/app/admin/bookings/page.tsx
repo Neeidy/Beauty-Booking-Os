@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import BookingTable from "../../../components/admin/BookingTable";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 
 interface Booking {
   id: string;
@@ -27,6 +28,9 @@ interface BookingsResponse {
 const STATUS_OPTIONS = ["", "pending", "confirmed", "reminded", "completed", "no_show", "cancelled", "rescheduled"];
 
 export default function BookingsPage() {
+  const { dict } = useI18n();
+  const t = dict.admin.bookings;
+  const statusLabels = dict.admin.statusLabels as Record<string, string>;
   const [data, setData] = useState<BookingsResponse | null>(null);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -76,11 +80,11 @@ export default function BookingsPage() {
     <>
       <header className="adm-header">
         <div className="adm-header-title">
-          <span className="breadcrumb">Buchungen</span>
-          <h2>Buchungen</h2>
+          <span className="breadcrumb">{t.breadcrumb}</span>
+          <h2>{t.title}</h2>
         </div>
         <div className="adm-header-actions">
-          <button onClick={fetchBookings} className="btn btn-ghost btn-sm">⟳ Aktualisieren</button>
+          <button onClick={fetchBookings} className="btn btn-ghost btn-sm">{t.refresh}</button>
         </div>
       </header>
 
@@ -90,39 +94,42 @@ export default function BookingsPage() {
           onChange={(e) => { setStatus(e.target.value); setPage(1); }}
         >
           {STATUS_OPTIONS.map((s) => (
-            <option key={s} value={s}>{s === "" ? "Alle Status" : s}</option>
+            <option key={s} value={s}>{s === "" ? t.allStatus : (statusLabels[s] ?? s)}</option>
           ))}
         </select>
         <input
           type="date"
           value={dateFrom}
           onChange={(e) => { setDateFrom(e.target.value); setPage(1); }}
-          placeholder="Von"
+          placeholder={t.fromPlaceholder}
         />
         <input
           type="date"
           value={dateTo}
           onChange={(e) => { setDateTo(e.target.value); setPage(1); }}
-          placeholder="Bis"
+          placeholder={t.toPlaceholder}
         />
-        <button onClick={fetchBookings} className="btn btn-ghost btn-sm">Filtern</button>
+        <button onClick={fetchBookings} className="btn btn-ghost btn-sm">{t.filter}</button>
       </div>
 
       <div className="adm-body">
         {data && (
           <p style={{ fontSize: "12px", color: "var(--color-text-muted)", marginBottom: "12px" }}>
-            {data.total} Buchungen — Seite {data.page} von {data.totalPages}
+            {t.count
+              .replace("{total}", String(data.total))
+              .replace("{page}", String(data.page))
+              .replace("{totalPages}", String(data.totalPages))}
           </p>
         )}
 
         {error ? (
           <div className="empty">
             <div className="empty-ico">⚠</div>
-            <h4>Fehler beim Laden</h4>
-            <p>Bitte Seite neu laden.</p>
+            <h4>{t.loadErrorTitle}</h4>
+            <p>{t.loadErrorText}</p>
           </div>
         ) : loading ? (
-          <div style={{ color: "var(--color-text-muted)", fontSize: "13px" }}>Wird geladen…</div>
+          <div style={{ color: "var(--color-text-muted)", fontSize: "13px" }}>{t.loading}</div>
         ) : (
           <BookingTable bookings={data?.bookings ?? []} onStatusChange={handleStatusChange} />
         )}
@@ -134,7 +141,7 @@ export default function BookingsPage() {
               disabled={page === 1}
               className="btn btn-ghost btn-sm"
             >
-              ← Zurück
+              {t.back}
             </button>
             <span style={{ fontSize: "12px", color: "var(--color-text-muted)" }}>
               {page} / {data.totalPages}
@@ -144,7 +151,7 @@ export default function BookingsPage() {
               disabled={page === data.totalPages}
               className="btn btn-ghost btn-sm"
             >
-              Weiter →
+              {t.next}
             </button>
           </div>
         )}

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import LogViewer from "../../../components/admin/LogViewer";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 
 interface EventLog {
   id: string;
@@ -31,6 +32,8 @@ const AGENT_NAMES = ["", "orchestrator", "intake-agent", "booking-agent", "follo
 const STATUS_OPTIONS = ["", "success", "failure", "timeout", "escalated"];
 
 export default function LogsPage() {
+  const { dict } = useI18n();
+  const t = dict.admin.logs;
   const [data, setData] = useState<LogsResponse | null>(null);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -76,11 +79,11 @@ export default function LogsPage() {
     <>
       <header className="adm-header">
         <div className="adm-header-title">
-          <span className="breadcrumb">System · event_logs</span>
-          <h2>AI Agent Logs</h2>
+          <span className="breadcrumb">{t.breadcrumb}</span>
+          <h2>{t.title}</h2>
         </div>
         <div className="adm-header-actions">
-          <button onClick={fetchLogs} className="btn btn-ghost btn-sm">⟳ Aktualisieren</button>
+          <button onClick={fetchLogs} className="btn btn-ghost btn-sm">{t.refresh}</button>
         </div>
       </header>
 
@@ -89,19 +92,19 @@ export default function LogsPage() {
           value={eventType}
           onChange={(e) => { setEventType(e.target.value); setPage(1); }}
         >
-          {EVENT_TYPES.map((t) => <option key={t} value={t}>{t === "" ? "Alle Typen" : t}</option>)}
+          {EVENT_TYPES.map((opt) => <option key={opt} value={opt}>{opt === "" ? t.allTypes : opt}</option>)}
         </select>
         <select
           value={agentName}
           onChange={(e) => { setAgentName(e.target.value); setPage(1); }}
         >
-          {AGENT_NAMES.map((a) => <option key={a} value={a}>{a === "" ? "Alle Agents" : a}</option>)}
+          {AGENT_NAMES.map((a) => <option key={a} value={a}>{a === "" ? t.allAgents : a}</option>)}
         </select>
         <select
           value={status}
           onChange={(e) => { setStatus(e.target.value); setPage(1); }}
         >
-          {STATUS_OPTIONS.map((s) => <option key={s} value={s}>{s === "" ? "Alle Status" : s}</option>)}
+          {STATUS_OPTIONS.map((s) => <option key={s} value={s}>{s === "" ? t.allStatus : s}</option>)}
         </select>
         <input
           type="date"
@@ -109,24 +112,27 @@ export default function LogsPage() {
           onChange={(e) => { setDateFrom(e.target.value); setPage(1); }}
           className="logs-date-input"
         />
-        <button onClick={fetchLogs} className="btn btn-ghost btn-sm">Filtern</button>
+        <button onClick={fetchLogs} className="btn btn-ghost btn-sm">{t.filter}</button>
       </div>
 
       <div className="adm-body">
         {data && (
           <p className="log-count">
-            {data.total} Einträge — Seite {data.page} von {data.totalPages}
+            {t.count
+              .replace("{total}", String(data.total))
+              .replace("{page}", String(data.page))
+              .replace("{totalPages}", String(data.totalPages))}
           </p>
         )}
 
         {error ? (
           <div className="empty">
             <div className="empty-ico">⚠</div>
-            <h4>Fehler beim Laden</h4>
-            <p>Bitte Seite neu laden.</p>
+            <h4>{t.loadErrorTitle}</h4>
+            <p>{t.loadErrorText}</p>
           </div>
         ) : loading ? (
-          <div className="loading-text">Wird geladen…</div>
+          <div className="loading-text">{t.loading}</div>
         ) : (
           <LogViewer logs={data?.logs ?? []} totalTokens={data?.totalTokens ?? 0} />
         )}
@@ -138,7 +144,7 @@ export default function LogsPage() {
               disabled={page === 1}
               className="btn btn-ghost btn-sm"
             >
-              ← Zurück
+              {t.back}
             </button>
             <span className="log-pagination-info">
               {page} / {data.totalPages}
@@ -148,7 +154,7 @@ export default function LogsPage() {
               disabled={page === data.totalPages}
               className="btn btn-ghost btn-sm"
             >
-              Weiter →
+              {t.next}
             </button>
           </div>
         )}

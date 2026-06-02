@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import EscalationCard from "../../../components/admin/EscalationCard";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 
 interface Lead {
   id: string;
@@ -22,6 +23,8 @@ interface EscalationsResponse {
 }
 
 export default function EscalationsPage() {
+  const { dict } = useI18n();
+  const t = dict.admin.escalations;
   const [data, setData] = useState<EscalationsResponse | null>(null);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -57,12 +60,12 @@ export default function EscalationsPage() {
     <>
       <header className="adm-header">
         <div className="adm-header-title">
-          <h2>Eskalations-Queue</h2>
-          <div className="breadcrumb">Admin / Eskalationen</div>
+          <h2>{t.title}</h2>
+          <div className="breadcrumb">{t.breadcrumb}</div>
         </div>
         <div className="adm-header-actions">
           <button onClick={fetchEscalations} className="btn btn-ghost" style={{ fontSize: "13px" }}>
-            Aktualisieren
+            {t.refresh}
           </button>
         </div>
       </header>
@@ -77,28 +80,28 @@ export default function EscalationsPage() {
           fontSize: "13px",
           marginBottom: "20px",
         }}>
-          Diese Anfragen wurden vom AI mit niedriger Konfidenz (&lt;70%) klassifiziert und benötigen manuelle Bearbeitung.
+          {t.notice}
         </div>
 
         {data && (
           <p style={{ fontSize: "12px", color: "var(--color-text-muted)", marginBottom: "16px" }}>
-            {data.total} offene Anfrage{data.total !== 1 ? "n" : ""}
+            {(data.total === 1 ? t.openOne : t.openMany).replace("{count}", String(data.total))}
           </p>
         )}
 
         {error ? (
           <div className="empty">
             <div className="empty-ico">⚠</div>
-            <h4>Fehler beim Laden</h4>
-            <p>Bitte Seite neu laden.</p>
+            <h4>{t.loadErrorTitle}</h4>
+            <p>{t.loadErrorText}</p>
           </div>
         ) : loading ? (
-          <div style={{ color: "var(--color-text-muted)", fontSize: "13px" }}>Wird geladen…</div>
+          <div style={{ color: "var(--color-text-muted)", fontSize: "13px" }}>{t.loading}</div>
         ) : data && data.leads.length === 0 ? (
           <div className="empty">
             <div className="empty-ico">✓</div>
-            <h4>Keine offenen Anfragen</h4>
-            <p>Alle Leads wurden bearbeitet.</p>
+            <h4>{t.emptyTitle}</h4>
+            <p>{t.emptyText}</p>
           </div>
         ) : (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(480px, 1fr))", gap: "16px" }}>
