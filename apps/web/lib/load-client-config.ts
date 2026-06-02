@@ -1,5 +1,22 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
+
+/**
+ * Resolves a clients/<slug>/<file> path across environments.
+ * Local dev: cwd = apps/web/, so the monorepo root is two levels up.
+ * Vercel/serverless: cwd is the monorepo root, so clients/ is directly under it.
+ * Returns the first candidate that exists; falls back to the last candidate
+ * (so readFileSync throws a meaningful ENOENT with a real path if none exist).
+ */
+function resolveClientFile(slug: string, fileName: string): string {
+  const cwd = process.cwd();
+  const candidates = [
+    resolve(cwd, "clients", slug, fileName),
+    resolve(cwd, "..", "..", "clients", slug, fileName),
+    resolve(cwd, "apps", "web", "..", "..", "clients", slug, fileName),
+  ];
+  return candidates.find((p) => existsSync(p)) ?? candidates[candidates.length - 1]!;
+}
 
 export type ClientConfig = {
   clientName: string;
@@ -72,15 +89,8 @@ export function loadClientConfig(slug?: string): ClientConfig {
     process.env["NEXT_PUBLIC_DEFAULT_CLIENT_SLUG"] ??
     "demo-salon";
 
-  // Mirrors loadBranding() path convention: cwd = apps/web/, so ../../ = monorepo root
-  const configPath = resolve(
-    process.cwd(),
-    "..",
-    "..",
-    "clients",
-    resolvedSlug,
-    "client.config.json"
-  );
+  // Resolve robustly across local (cwd=apps/web) and Vercel (cwd=monorepo root).
+  const configPath = resolveClientFile(resolvedSlug, "client.config.json");
 
   try {
     const raw = readFileSync(configPath, "utf-8");

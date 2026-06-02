@@ -1,8 +1,18 @@
 import type { NextConfig } from "next";
+import { resolve } from "node:path";
 
 const ALLOWED_ORIGIN = process.env["NEXT_PUBLIC_SALON_DOMAIN"] ?? "*";
 
 const nextConfig: NextConfig = {
+  // Bundle the monorepo clients/ configs into every serverless function.
+  // loadClientConfig()/loadBranding() read these JSON files at runtime via fs;
+  // without this they are not traced into the Vercel deploy and readFileSync
+  // throws ENOENT (the server-side exception seen on every page in production).
+  outputFileTracingRoot: resolve(__dirname, "..", ".."),
+  outputFileTracingIncludes: {
+    "/**": ["../../clients/**/*.json"],
+  },
+
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },

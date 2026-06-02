@@ -8,6 +8,21 @@ export { brandingToCss } from "./branding-to-css";
 import fs from "fs";
 import path from "path";
 
+/**
+ * Resolves a clients/<slug>/<file> path across environments.
+ * Local dev: cwd = apps/web/, so the monorepo root is two levels up.
+ * Vercel/serverless: cwd is the monorepo root, so clients/ is directly under it.
+ */
+function resolveClientFile(slug: string, fileName: string): string {
+  const cwd = process.cwd();
+  const candidates = [
+    path.resolve(cwd, "clients", slug, fileName),
+    path.resolve(cwd, "..", "..", "clients", slug, fileName),
+    path.resolve(cwd, "apps", "web", "..", "..", "clients", slug, fileName),
+  ];
+  return candidates.find((p) => fs.existsSync(p)) ?? candidates[candidates.length - 1]!;
+}
+
 export interface BrandColors {
   primary: string;
   secondary: string;
@@ -62,14 +77,7 @@ const DEFAULT_SLUG =
  * Path is resolved relative to the monorepo root (two levels above apps/web/).
  */
 export function loadBranding(slug: string = DEFAULT_SLUG): BrandTokens {
-  const brandingPath = path.resolve(
-    process.cwd(),
-    "..",
-    "..",
-    "clients",
-    slug,
-    "branding.json"
-  );
+  const brandingPath = resolveClientFile(slug, "branding.json");
   const raw = fs.readFileSync(brandingPath, "utf-8");
   return JSON.parse(raw) as BrandTokens;
 }
