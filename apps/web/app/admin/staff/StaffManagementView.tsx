@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useI18n } from "@/lib/i18n/I18nProvider";
+import type { Dictionary } from "@/lib/i18n/dictionary";
 
 interface StaffMember {
   id: string;
@@ -11,17 +13,17 @@ interface StaffMember {
   joinedAt?: string;
 }
 
-function getTenureLabel(joinedAt?: string): string | null {
+function getTenureLabel(joinedAt: string | undefined, tenure: Dictionary["admin"]["staff"]["tenure"]): string | null {
   if (!joinedAt) return null;
   const joined = new Date(joinedAt);
   const now = new Date();
   const years = now.getFullYear() - joined.getFullYear();
   const months = now.getMonth() - joined.getMonth();
   const totalMonths = years * 12 + months;
-  if (totalMonths < 1) return "Neu im Team";
-  if (totalMonths < 12) return `${totalMonths} Mon. im Team`;
+  if (totalMonths < 1) return tenure.new;
+  if (totalMonths < 12) return tenure.months.replace("{count}", String(totalMonths));
   const y = Math.floor(totalMonths / 12);
-  return `Seit ${y} Jahr${y > 1 ? "en" : ""} dabei`;
+  return y > 1 ? tenure.yearsMany.replace("{count}", String(y)) : tenure.yearsOne;
 }
 
 interface ServiceOption {
@@ -38,6 +40,8 @@ const AVATAR_GRADIENTS = [
 ];
 
 export default function StaffManagementView() {
+  const { dict } = useI18n();
+  const t = dict.admin.staff;
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const [services, setServices] = useState<ServiceOption[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -65,7 +69,7 @@ export default function StaffManagementView() {
         setServices((svcData.services ?? []).filter((s: ServiceOption) => s.active));
       }
     } catch {
-      setError("Team konnte nicht geladen werden.");
+      setError(t.messages.loadError);
     } finally {
       setIsLoading(false);
     }
@@ -82,10 +86,10 @@ export default function StaffManagementView() {
         body: JSON.stringify({ id: member.id, active: !member.active }),
       });
       if (!res.ok) throw new Error();
-      setSaveMessage(member.active ? `${member.name} deaktiviert.` : `${member.name} aktiviert.`);
+      setSaveMessage((member.active ? t.messages.deactivated : t.messages.activated).replace("{name}", member.name));
       await loadAll();
     } catch {
-      setSaveMessage("Fehler beim Speichern.");
+      setSaveMessage(t.messages.saveError);
     }
   }
 
@@ -98,10 +102,10 @@ export default function StaffManagementView() {
         body: JSON.stringify({ id: member.id, serviceIds }),
       });
       if (!res.ok) throw new Error();
-      setSaveMessage(`${member.name} aktualisiert.`);
+      setSaveMessage(t.messages.updated.replace("{name}", member.name));
       await loadAll();
     } catch {
-      setSaveMessage("Fehler beim Speichern.");
+      setSaveMessage(t.messages.saveError);
     }
   }
 
@@ -114,29 +118,29 @@ export default function StaffManagementView() {
         body: JSON.stringify({ id: member.id, name, title }),
       });
       if (!res.ok) throw new Error();
-      setSaveMessage("Gespeichert ✓");
+      setSaveMessage(t.messages.saved);
       await loadAll();
     } catch {
-      setSaveMessage("Fehler beim Speichern.");
+      setSaveMessage(t.messages.saveError);
     }
   }
 
   async function handleDelete(member: StaffMember) {
-    if (!confirm(`${member.name} wirklich löschen?`)) return;
+    if (!confirm(t.messages.confirmDelete.replace("{name}", member.name))) return;
     setSaveMessage(null);
     try {
       const res = await fetch(`/api/admin/staff?id=${member.id}`, { method: "DELETE" });
       if (!res.ok) throw new Error();
-      setSaveMessage(`${member.name} gelöscht.`);
+      setSaveMessage(t.messages.deleted.replace("{name}", member.name));
       await loadAll();
     } catch {
-      setSaveMessage("Fehler beim Löschen.");
+      setSaveMessage(t.messages.deleteError);
     }
   }
 
   async function handleAdd() {
     if (!newName.trim() || !newTitle.trim()) {
-      setSaveMessage("Name und Titel sind erforderlich.");
+      setSaveMessage(t.messages.nameRequired);
       return;
     }
     setIsAdding(true);
@@ -153,14 +157,14 @@ export default function StaffManagementView() {
         }),
       });
       if (!res.ok) throw new Error();
-      setSaveMessage("Teammitglied hinzugefügt ✓");
+      setSaveMessage(t.messages.added);
       setNewName("");
       setNewTitle("");
       setNewServiceIds([]);
       setShowAddForm(false);
       await loadAll();
     } catch {
-      setSaveMessage("Fehler beim Hinzufügen.");
+      setSaveMessage(t.messages.addError);
     } finally {
       setIsAdding(false);
     }
@@ -171,7 +175,7 @@ export default function StaffManagementView() {
 
   if (isLoading) return (
     <div className="adm-body">
-      <div className="loading-text">Lädt...</div>
+      <div className="loading-text">{t.loading}</div>
     </div>
   );
 
@@ -179,7 +183,7 @@ export default function StaffManagementView() {
     <div className="adm-body">
       <div className="empty">
         <div className="empty-ico">⚠</div>
-        <h4>Fehler beim Laden</h4>
+        <h4>{t.errorTitle}</h4>
         <p>{error}</p>
       </div>
     </div>
@@ -189,13 +193,15 @@ export default function StaffManagementView() {
     <>
       <div className="adm-toolbar">
         <div className="adm-search">
-          <input type="search" placeholder="Name, Leistung..." readOnly />
+          <input type="search" placeholder={t.toolbar.searchPlaceholder} readOnly />
         </div>
         <span className="staff-count-badge">
-          {activeCount} aktiv{inactiveCount > 0 ? ` · ${inactiveCount} inaktiv` : ""}
+          {inactiveCount > 0
+            ? t.toolbar.countActiveInactive.replace("{active}", String(activeCount)).replace("{inactive}", String(inactiveCount))
+            : t.toolbar.countActive.replace("{active}", String(activeCount))}
         </span>
         <button className="btn btn-primary btn-sm" onClick={() => setShowAddForm(true)}>
-          + Mitarbeiter:in hinzufügen
+          {t.toolbar.add}
         </button>
       </div>
 
@@ -219,37 +225,37 @@ export default function StaffManagementView() {
           ))}
 
           <button className="staff-card staff-card-add" onClick={() => setShowAddForm(true)}>
-            + Neue:n Mitarbeiter:in hinzufügen
+            {t.addForm.addCardCta}
           </button>
         </div>
 
         {showAddForm && (
           <div className="staff-form-panel">
-            <h3 className="staff-form-title">Neues Teammitglied</h3>
+            <h3 className="staff-form-title">{t.addForm.title}</h3>
             <div className="staff-form-grid">
               <div>
-                <label className="form-label">Name *</label>
+                <label className="form-label">{t.addForm.name}</label>
                 <input
                   className="form-input"
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
-                  placeholder="z.B. Maria"
+                  placeholder={t.addForm.namePlaceholder}
                 />
               </div>
               <div>
-                <label className="form-label">Titel *</label>
+                <label className="form-label">{t.addForm.titleLabel}</label>
                 <input
                   className="form-input"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
-                  placeholder="z.B. Nageldesignerin"
+                  placeholder={t.addForm.titlePlaceholder}
                 />
               </div>
             </div>
 
             {services.length > 0 && (
               <div className="staff-svc-list">
-                <label className="form-label">Leistungen</label>
+                <label className="form-label">{t.addForm.services}</label>
                 <div className="staff-svc-chips">
                   {services.map((svc) => (
                     <label key={svc.id} className="staff-svc-checkbox">
@@ -276,14 +282,14 @@ export default function StaffManagementView() {
                 disabled={isAdding}
                 className={`btn btn-primary btn-sm${isAdding ? " btn-loading" : ""}`}
               >
-                {isAdding ? "Wird hinzugefügt..." : "Hinzufügen"}
+                {isAdding ? t.addForm.adding : t.addForm.submit}
               </button>
               <button
                 type="button"
                 onClick={() => { setShowAddForm(false); setNewName(""); setNewTitle(""); setNewServiceIds([]); }}
                 className="btn btn-ghost btn-sm"
               >
-                Abbrechen
+                {t.addForm.cancel}
               </button>
             </div>
           </div>
@@ -304,6 +310,8 @@ function StaffCard({
   onUpdateName: (name: string, title: string) => void;
   onDelete: () => void;
 }) {
+  const { dict } = useI18n();
+  const t = dict.admin.staff;
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(member.name);
   const [editTitle, setEditTitle] = useState(member.title);
@@ -325,8 +333,8 @@ function StaffCard({
             </div>
           </div>
 
-          {getTenureLabel(member.joinedAt) && (
-            <div className="staff-tenure">{getTenureLabel(member.joinedAt)}</div>
+          {getTenureLabel(member.joinedAt, t.tenure) && (
+            <div className="staff-tenure">{getTenureLabel(member.joinedAt, t.tenure)}</div>
           )}
 
           <div className="staff-services">
@@ -335,7 +343,7 @@ function StaffCard({
                   const svc = services.find((s) => s.id === sid);
                   return svc ? <span key={sid} className="staff-svc-chip">{svc.serviceName}</span> : null;
                 })
-              : <span className="staff-svc-chip">Alle Leistungen</span>
+              : <span className="staff-svc-chip">{t.card.allServices}</span>
             }
           </div>
 
@@ -347,8 +355,8 @@ function StaffCard({
               <span className="toggle-slider" />
             </label>
             <div className="staff-card-bot-actions">
-              <button className="btn btn-ghost btn-sm" onClick={() => setIsEditing(true)}>Bearbeiten</button>
-              <button className="btn btn-ghost btn-sm btn-danger" onClick={onDelete}>Löschen</button>
+              <button className="btn btn-ghost btn-sm" onClick={() => setIsEditing(true)}>{t.card.edit}</button>
+              <button className="btn btn-ghost btn-sm btn-danger" onClick={onDelete}>{t.card.delete}</button>
             </div>
           </div>
         </>
@@ -356,18 +364,18 @@ function StaffCard({
         <div>
           <div className="staff-form-grid">
             <div>
-              <label className="form-label">Name</label>
+              <label className="form-label">{t.card.name}</label>
               <input className="form-input" value={editName} onChange={(e) => setEditName(e.target.value)} />
             </div>
             <div>
-              <label className="form-label">Titel</label>
+              <label className="form-label">{t.card.titleLabel}</label>
               <input className="form-input" value={editTitle} onChange={(e) => setEditTitle(e.target.value)} />
             </div>
           </div>
 
           {services.length > 0 && (
             <div className="staff-svc-list">
-              <label className="form-label">Leistungen</label>
+              <label className="form-label">{t.card.services}</label>
               <div className="staff-svc-chips">
                 {services.map((svc) => (
                   <label key={svc.id} className="staff-svc-checkbox">
@@ -397,7 +405,7 @@ function StaffCard({
                 setIsEditing(false);
               }}
             >
-              Speichern
+              {t.card.save}
             </button>
             <button
               type="button"
@@ -409,7 +417,7 @@ function StaffCard({
                 setIsEditing(false);
               }}
             >
-              Abbrechen
+              {t.card.cancel}
             </button>
           </div>
         </div>

@@ -811,6 +811,63 @@
         "recovery72": "72 Stunden",
         "recovery168": "1 Woche"
       }
+    },
+    "staff": {
+      "header": {
+        "breadcrumb": "Mitarbeiter:innen",
+        "title": "Team",
+        "exportAvailability": "Verfügbarkeit exportieren"
+      },
+      "tenure": {
+        "new": "Neu im Team",
+        "months": "{count} Mon. im Team",
+        "yearsOne": "Seit 1 Jahr dabei",
+        "yearsMany": "Seit {count} Jahren dabei"
+      },
+      "toolbar": {
+        "searchPlaceholder": "Name, Leistung...",
+        "countActive": "{active} aktiv",
+        "countActiveInactive": "{active} aktiv · {inactive} inaktiv",
+        "add": "+ Mitarbeiter:in hinzufügen"
+      },
+      "messages": {
+        "loadError": "Team konnte nicht geladen werden.",
+        "deactivated": "{name} deaktiviert.",
+        "activated": "{name} aktiviert.",
+        "updated": "{name} aktualisiert.",
+        "saved": "Gespeichert ✓",
+        "saveError": "Fehler beim Speichern.",
+        "deleted": "{name} gelöscht.",
+        "deleteError": "Fehler beim Löschen.",
+        "added": "Teammitglied hinzugefügt ✓",
+        "addError": "Fehler beim Hinzufügen.",
+        "nameRequired": "Name und Titel sind erforderlich.",
+        "confirmDelete": "{name} wirklich löschen?"
+      },
+      "loading": "Lädt...",
+      "errorTitle": "Fehler beim Laden",
+      "addForm": {
+        "title": "Neues Teammitglied",
+        "name": "Name *",
+        "titleLabel": "Titel *",
+        "namePlaceholder": "z.B. Maria",
+        "titlePlaceholder": "z.B. Nageldesignerin",
+        "services": "Leistungen",
+        "adding": "Wird hinzugefügt...",
+        "submit": "Hinzufügen",
+        "cancel": "Abbrechen",
+        "addCardCta": "+ Neue:n Mitarbeiter:in hinzufügen"
+      },
+      "card": {
+        "allServices": "Alle Leistungen",
+        "edit": "Bearbeiten",
+        "delete": "Löschen",
+        "name": "Name",
+        "titleLabel": "Titel",
+        "services": "Leistungen",
+        "save": "Speichern",
+        "cancel": "Abbrechen"
+      }
     }
   }
 }

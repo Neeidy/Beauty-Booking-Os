@@ -811,6 +811,63 @@
         "recovery72": "72 hours",
         "recovery168": "1 week"
       }
+    },
+    "staff": {
+      "header": {
+        "breadcrumb": "Staff",
+        "title": "Team",
+        "exportAvailability": "Export availability"
+      },
+      "tenure": {
+        "new": "New to the team",
+        "months": "{count} mo. on the team",
+        "yearsOne": "1 year on the team",
+        "yearsMany": "{count} years on the team"
+      },
+      "toolbar": {
+        "searchPlaceholder": "Name, service...",
+        "countActive": "{active} active",
+        "countActiveInactive": "{active} active · {inactive} inactive",
+        "add": "+ Add staff member"
+      },
+      "messages": {
+        "loadError": "Team could not be loaded.",
+        "deactivated": "{name} deactivated.",
+        "activated": "{name} activated.",
+        "updated": "{name} updated.",
+        "saved": "Saved ✓",
+        "saveError": "Error while saving.",
+        "deleted": "{name} deleted.",
+        "deleteError": "Error while deleting.",
+        "added": "Team member added ✓",
+        "addError": "Error while adding.",
+        "nameRequired": "Name and title are required.",
+        "confirmDelete": "Really delete {name}?"
+      },
+      "loading": "Loading...",
+      "errorTitle": "Failed to load",
+      "addForm": {
+        "title": "New team member",
+        "name": "Name *",
+        "titleLabel": "Title *",
+        "namePlaceholder": "e.g. Maria",
+        "titlePlaceholder": "e.g. Nail designer",
+        "services": "Services",
+        "adding": "Adding...",
+        "submit": "Add",
+        "cancel": "Cancel",
+        "addCardCta": "+ Add a new staff member"
+      },
+      "card": {
+        "allServices": "All services",
+        "edit": "Edit",
+        "delete": "Delete",
+        "name": "Name",
+        "titleLabel": "Title",
+        "services": "Services",
+        "save": "Save",
+        "cancel": "Cancel"
+      }
     }
   }
 }
