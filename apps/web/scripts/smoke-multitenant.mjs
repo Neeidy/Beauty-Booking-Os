@@ -55,8 +55,8 @@ try {
     },
     {
       name: "primary color in injected style",
-      pass: html.includes(`--color-primary: ${expected.primaryColor}`),
-      detail: `expected CSS var "--color-primary: ${expected.primaryColor}"`,
+      pass: html.includes(`--brand-primary: ${expected.primaryColor}`),
+      detail: `expected CSS var "--brand-primary: ${expected.primaryColor}"`,
     },
     {
       name: expected.hasWhatsApp ? "WhatsApp link present" : "WhatsApp link absent",
