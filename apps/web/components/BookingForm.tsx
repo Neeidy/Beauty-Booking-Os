@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { bookingFormSchema, type BookingFormData } from "../lib/booking-form-schema";
+import { makeBookingFormSchema, type BookingFormData } from "../lib/booking-form-schema";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 import servicesData from "../../../clients/demo-salon/services.json";
 import DatePicker from "./DatePicker";
 import SlotPicker from "./SlotPicker";
@@ -47,6 +48,7 @@ const DEMO_CLIENT_SLUG = process.env["NEXT_PUBLIC_DEFAULT_CLIENT_SLUG"] ?? "demo
 
 export default function BookingForm() {
   const router = useRouter();
+  const { dict, locale } = useI18n();
 
   // ── Step state ──
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
@@ -66,6 +68,8 @@ export default function BookingForm() {
 
   const selectedService = allServices.find((s) => s.id === selectedServiceId) ?? null;
 
+  const schema = useMemo(() => makeBookingFormSchema(dict), [dict]);
+
   const {
     register,
     handleSubmit,
@@ -74,7 +78,7 @@ export default function BookingForm() {
     formState: { errors },
     getValues
   } = useForm<BookingFormData>({
-    resolver: zodResolver(bookingFormSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       gdprReminders: false,
       gdprMarketing: false,
@@ -106,12 +110,12 @@ export default function BookingForm() {
     setSubmitError(null);
 
     if (!selectedSlotDatetime) {
-      setSubmitError("Bitte wählen Sie eine Uhrzeit aus.");
+      setSubmitError(dict.booking.errors.pickTime);
       setIsSubmitting(false);
       return;
     }
     if (selectedSlotDatetime && !reservationToken) {
-      setSubmitError("Bitte wählen Sie einen gültigen Slot aus.");
+      setSubmitError(dict.booking.errors.pickValidSlot);
       setIsSubmitting(false);
       return;
     }
@@ -142,7 +146,7 @@ export default function BookingForm() {
           customerEmail: data.customerEmail || undefined,
           customerPhone: data.customerPhone || undefined,
           rawMessage: messageParts.join(" | "),
-          language: "de",
+          language: locale,
           gdprConsents,
           notes: notesValue || undefined,
           reservationToken: reservationToken ?? undefined,
@@ -158,13 +162,13 @@ export default function BookingForm() {
 
       const result = await response.json() as { success: boolean; leadId?: string; error?: string };
       if (!response.ok || !result.success) {
-        setSubmitError(result.error ?? "Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.");
+        setSubmitError(result.error ?? dict.booking.errors.generic);
         return;
       }
       if (result.leadId) fetch(`/api/lead/${result.leadId}/classify`, { method: "POST" }).catch(() => {});
       router.push("/booking/thank-you");
     } catch {
-      setSubmitError("Verbindungsfehler. Bitte prüfen Sie Ihre Internetverbindung.");
+      setSubmitError(dict.booking.errors.connection);
     } finally {
       setIsSubmitting(false);
     }
@@ -183,7 +187,12 @@ export default function BookingForm() {
   function canGoStep3() { return !!selectedSlotDatetime && !!reservationToken; }
 
   // ── Stepper label ──
-  const STEPS = ["Leistung", "Termin", "Daten", "Bestätigung"];
+  const STEPS = [
+    dict.booking.steps.service,
+    dict.booking.steps.appointment,
+    dict.booking.steps.data,
+    dict.booking.steps.confirmation,
+  ];
 
   return (
     <>
@@ -205,8 +214,8 @@ export default function BookingForm() {
       {/* ── STEP 1: Leistung & Mitarbeiter ── */}
       {step === 1 && (
         <section className="step-panel">
-          <h4 className="step-title">Welche Leistung möchten Sie buchen?</h4>
-          <p className="step-sub">Wählen Sie Ihre Wunsch-Leistung und einen Mitarbeiter.</p>
+          <h4 className="step-title">{dict.booking.step1.title}</h4>
+          <p className="step-sub">{dict.booking.step1.sub}</p>
 
           <div className="svc-grid">
             {allServices.map((svc) => {
@@ -222,7 +231,7 @@ export default function BookingForm() {
                   <input type="radio" name="svc" readOnly checked={isSelected} />
                   <div className="svc-top">
                     <span className="svc-name">{svc.name}</span>
-                    <span className="svc-dur">{svc.duration} Min</span>
+                    <span className="svc-dur">{svc.duration} {dict.booking.step4.unit}</span>
                   </div>
                   <div className="svc-price">€ {(svc.priceEur / 100).toFixed(2).replace(".", ",")}</div>
                   {isSelected && <span className="svc-check">✓</span>}
@@ -233,13 +242,13 @@ export default function BookingForm() {
 
           {!staffLoadError && displayStaff.length > 0 && (
             <div className="form-row">
-              <label className="form-label">Mitarbeiter</label>
+              <label className="form-label">{dict.booking.step1.staffLabel}</label>
               <select
                 className="form-input"
                 value={selectedStaffId}
                 onChange={(e) => setSelectedStaffId(e.target.value)}
               >
-                <option value="">Egal — nächster verfügbarer</option>
+                <option value="">{dict.booking.step1.staffAny}</option>
                 {displayStaff.map((s) => (
                   <option key={s.id} value={s.id}>{s.name} ({s.title})</option>
                 ))}
@@ -252,11 +261,11 @@ export default function BookingForm() {
             disabled={!canGoStep2()}
             onClick={() => { if (canGoStep2()) setStep(2); }}
           >
-            Weiter →
+            {dict.booking.step1.next}
           </button>
           {!selectedServiceId && (
             <p style={{ fontSize: "13px", color: "var(--color-text-muted)", marginTop: "8px", textAlign: "center" }}>
-              Bitte zuerst eine Leistung auswählen
+              {dict.booking.step1.pickServiceFirst}
             </p>
           )}
         </section>
@@ -265,10 +274,14 @@ export default function BookingForm() {
       {/* ── STEP 2: Datum & Uhrzeit ── */}
       {step === 2 && (
         <section className="step-panel">
-          <h4 className="step-title">Datum &amp; Uhrzeit wählen</h4>
+          <h4 className="step-title">{dict.booking.step2.title}</h4>
           <p className="step-sub">
-            Verfügbare Termine für <strong>{selectedService?.name}</strong>
-            {selectedService ? ` · ${selectedService.duration} Min` : ""}
+            {dict.booking.step2.subAvailableFor.split("{service}")[0]}
+            <strong>{selectedService?.name}</strong>
+            {dict.booking.step2.subAvailableFor.split("{service}")[1] ?? ""}
+            {selectedService
+              ? dict.booking.step2.durationSuffix.replace("{duration}", String(selectedService.duration))
+              : ""}
           </p>
 
           <DatePicker
@@ -297,18 +310,18 @@ export default function BookingForm() {
           )}
 
           <div className="step-nav">
-            <button className="btn btn-ghost" onClick={() => setStep(1)}>← Zurück</button>
+            <button className="btn btn-ghost" onClick={() => setStep(1)}>{dict.booking.step2.back}</button>
             <button
               className="btn btn-primary"
               disabled={!canGoStep3()}
               onClick={() => { if (canGoStep3()) setStep(3); }}
             >
-              Weiter →
+              {dict.booking.step2.next}
             </button>
           </div>
           {!canGoStep3() && selectedDate && (
             <p style={{ fontSize: "13px", color: "var(--color-text-muted)", marginTop: "8px", textAlign: "center" }}>
-              Bitte einen verfügbaren Slot auswählen
+              {dict.booking.step2.pickSlotHint}
             </p>
           )}
         </section>
@@ -317,15 +330,15 @@ export default function BookingForm() {
       {/* ── STEP 3: Kontaktdaten ── */}
       {step === 3 && (
         <section className="step-panel">
-          <h4 className="step-title">Ihre Daten</h4>
-          <p className="step-sub">Wir brauchen diese Informationen für die Bestätigung und Erinnerung.</p>
+          <h4 className="step-title">{dict.booking.step3.title}</h4>
+          <p className="step-sub">{dict.booking.step3.sub}</p>
 
           <div className="form-grid">
             <div className="form-row">
-              <label className="form-label">Name *</label>
+              <label className="form-label">{dict.booking.step3.nameLabel}</label>
               <input
                 className="form-input"
-                placeholder="Ihr vollständiger Name"
+                placeholder={dict.booking.step3.namePlaceholder}
                 autoComplete="name"
                 {...register("customerName")}
               />
@@ -335,11 +348,11 @@ export default function BookingForm() {
             </div>
 
             <div className="form-row">
-              <label className="form-label">E-Mail</label>
+              <label className="form-label">{dict.booking.step3.emailLabel}</label>
               <input
                 className="form-input"
                 type="email"
-                placeholder="ihre@email.at"
+                placeholder={dict.booking.step3.emailPlaceholder}
                 autoComplete="email"
                 {...register("customerEmail")}
               />
@@ -349,11 +362,11 @@ export default function BookingForm() {
             </div>
 
             <div className="form-row">
-              <label className="form-label">Telefon</label>
+              <label className="form-label">{dict.booking.step3.phoneLabel}</label>
               <input
                 className="form-input"
                 type="tel"
-                placeholder="+43 660 1234567"
+                placeholder={dict.booking.step3.phonePlaceholder}
                 autoComplete="tel"
                 {...register("customerPhone")}
               />
@@ -364,19 +377,19 @@ export default function BookingForm() {
 
             <div className="form-row form-row-full">
               <label className="form-label">
-                Anmerkungen <span className="form-opt">(optional)</span>
+                {dict.booking.step3.notesLabel} <span className="form-opt">{dict.booking.step3.optional}</span>
               </label>
               <textarea
                 className="form-input"
                 rows={3}
-                placeholder="Allergien, Wünsche, Farbwunsch..."
+                placeholder={dict.booking.step3.notesPlaceholder}
                 {...register("notes")}
               />
             </div>
           </div>
 
           <div className="step-nav">
-            <button className="btn btn-ghost" onClick={() => setStep(2)}>← Zurück</button>
+            <button className="btn btn-ghost" onClick={() => setStep(2)}>{dict.booking.step3.back}</button>
             <button
               className="btn btn-primary"
               onClick={async () => {
@@ -384,7 +397,7 @@ export default function BookingForm() {
                 if (ok) setStep(4);
               }}
             >
-              Weiter →
+              {dict.booking.step3.next}
             </button>
           </div>
         </section>
@@ -393,54 +406,54 @@ export default function BookingForm() {
       {/* ── STEP 4: Bestätigung & GDPR ── */}
       {step === 4 && (
         <section className="step-panel">
-          <h4 className="step-title">Termin bestätigen</h4>
-          <p className="step-sub">Bitte überprüfen Sie Ihre Buchung.</p>
+          <h4 className="step-title">{dict.booking.step4.title}</h4>
+          <p className="step-sub">{dict.booking.step4.sub}</p>
 
           <div className="summary">
             {selectedService && (
               <>
                 <div className="summary-row">
-                  <span>Leistung</span>
+                  <span>{dict.booking.step4.service}</span>
                   <strong>{selectedService.name}</strong>
                 </div>
                 <div className="summary-row">
-                  <span>Dauer</span>
-                  <strong>{selectedService.duration} Min</strong>
+                  <span>{dict.booking.step4.duration}</span>
+                  <strong>{selectedService.duration} {dict.booking.step4.unit}</strong>
                 </div>
               </>
             )}
             {selectedStaffId && staffList.find((s) => s.id === selectedStaffId) && (
               <div className="summary-row">
-                <span>Mitarbeiter</span>
+                <span>{dict.booking.step4.staff}</span>
                 <strong>{staffList.find((s) => s.id === selectedStaffId)?.name}</strong>
               </div>
             )}
             {selectedDate && (
               <div className="summary-row">
-                <span>Datum</span>
-                <strong>{new Date(selectedDate + "T00:00:00").toLocaleDateString("de-AT", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</strong>
+                <span>{dict.booking.step4.date}</span>
+                <strong>{new Date(selectedDate + "T00:00:00").toLocaleDateString(locale === "de" ? "de-AT" : "en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</strong>
               </div>
             )}
             {selectedSlotTime && (
               <div className="summary-row">
-                <span>Uhrzeit</span>
+                <span>{dict.booking.step4.time}</span>
                 <strong>{selectedSlotTime}</strong>
               </div>
             )}
             {getValues("customerName") && (
               <div className="summary-row">
-                <span>Kunde</span>
+                <span>{dict.booking.step4.customer}</span>
                 <strong>{getValues("customerName")}</strong>
               </div>
             )}
             <div className="summary-divider" />
             {selectedService && (
               <div className="summary-row total">
-                <span>Gesamt</span>
+                <span>{dict.booking.step4.total}</span>
                 <strong>€ {(selectedService.priceEur / 100).toFixed(2).replace(".", ",")}</strong>
               </div>
             )}
-            <div className="summary-note">Zahlung vor Ort — bar oder Karte.</div>
+            <div className="summary-note">{dict.booking.step4.payOnSite}</div>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -451,8 +464,8 @@ export default function BookingForm() {
               <label className="gdpr-check">
                 <input type="checkbox" {...register("gdprDataProcessing")} />
                 <span>
-                  Ich stimme der Verarbeitung meiner Daten für die Terminvereinbarung zu.{" "}
-                  <a href="/datenschutz" target="_blank" rel="noopener noreferrer">Datenschutzerklärung lesen</a>{" "}
+                  {dict.booking.gdpr.dataProcessing}{" "}
+                  <a href="/datenschutz" target="_blank" rel="noopener noreferrer">{dict.booking.gdpr.privacyLink}</a>{" "}
                   <span aria-hidden="true" style={{ color: "var(--color-rose)" }}>*</span>
                 </span>
               </label>
@@ -462,12 +475,12 @@ export default function BookingForm() {
 
               <label className="gdpr-check">
                 <input type="checkbox" {...register("gdprReminders")} />
-                <span>Ich möchte Terminerinnerungen per E-Mail oder WhatsApp erhalten.</span>
+                <span>{dict.booking.gdpr.reminders}</span>
               </label>
 
               <label className="gdpr-check">
                 <input type="checkbox" {...register("gdprMarketing")} />
-                <span>Ich möchte über Angebote und Neuigkeiten informiert werden. <span className="form-opt">(optional)</span></span>
+                <span>{dict.booking.gdpr.marketing} <span className="form-opt">{dict.booking.step3.optional}</span></span>
               </label>
             </div>
 
@@ -476,13 +489,13 @@ export default function BookingForm() {
             )}
 
             <div className="step-nav">
-              <button type="button" className="btn btn-ghost" onClick={() => setStep(3)}>← Zurück</button>
+              <button type="button" className="btn btn-ghost" onClick={() => setStep(3)}>{dict.booking.step4.back}</button>
               <button
                 type="submit"
                 className={`btn btn-primary btn-lg${isSubmitting ? " btn-loading" : ""}`}
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Wird gesendet…" : "Termin verbindlich buchen"}
+                {isSubmitting ? dict.booking.step4.submitting : dict.booking.step4.submit}
               </button>
             </div>
           </form>

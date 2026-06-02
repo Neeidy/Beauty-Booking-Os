@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 
 interface SlotItem {
   time: string;
@@ -30,6 +31,7 @@ export default function SlotPicker({
   selectedSlot,
   onSlotSelect,
 }: SlotPickerProps) {
+  const { dict } = useI18n();
   const [slots, setSlots] = useState<SlotItem[]>([]);
   const [isDayClosed, setIsDayClosed] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -76,7 +78,7 @@ export default function SlotPicker({
       })
       .catch((err: unknown) => {
         if (err instanceof Error && err.name !== "AbortError") {
-          setError("Saatler yüklenemedi, lütfen tekrar deneyin");
+          setError(dict.booking.slots.loadError);
         }
       })
       .finally(() => setLoading(false));
@@ -98,7 +100,7 @@ export default function SlotPicker({
       if (remaining === 0) {
         setReservationToken(null);
         setReservationExpiresAt(null);
-        setLockError("Rezervasyon süresi doldu. Lütfen yeniden slot seç.");
+        setLockError(dict.booking.slots.reservationExpired);
         setRetryCounter((c) => c + 1); // refetch availability
       }
     };
@@ -107,6 +109,7 @@ export default function SlotPicker({
     tick(); // immediate first tick
 
     return () => clearInterval(interval); // prevent memory leak
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reservationExpiresAt]);
 
   // Release reservation only when the component unmounts due to a date/service change
@@ -143,7 +146,7 @@ export default function SlotPicker({
       });
 
       if (res.status === 409) {
-        setLockError("Bu slot az önce doldu.");
+        setLockError(dict.booking.slots.slotJustTaken);
         setReservationToken(null);
         setReservationExpiresAt(null);
         setRetryCounter((c) => c + 1); // refetch availability
@@ -151,7 +154,7 @@ export default function SlotPicker({
       }
 
       if (!res.ok) {
-        setLockError("Slot rezerve edilemedi. Lütfen tekrar dene.");
+        setLockError(dict.booking.slots.reserveFailed);
         return;
       }
 
@@ -161,7 +164,7 @@ export default function SlotPicker({
       slotConfirmedRef.current = true;
       onSlotSelect(slot.datetime, slot.time, data.reservationToken);
     } catch {
-      setLockError("Bağlantı hatası. Lütfen tekrar dene.");
+      setLockError(dict.booking.slots.connectionError);
     }
   }
 
@@ -171,7 +174,7 @@ export default function SlotPicker({
   if (!date || !serviceId) {
     return (
       <p className="text-sm py-2" style={{ color: "var(--color-text-muted)" }}>
-        Önce tarih seçin
+        {dict.booking.slots.pickDateFirst}
       </p>
     );
   }
@@ -179,7 +182,7 @@ export default function SlotPicker({
   if (loading) {
     return (
       <p className="text-sm py-2" style={{ color: "var(--color-text-muted)" }}>
-        Müsait saatler yükleniyor…
+        {dict.booking.slots.loading}
       </p>
     );
   }
@@ -196,7 +199,7 @@ export default function SlotPicker({
           className="text-xs underline"
           style={{ color: "var(--color-secondary)" }}
         >
-          Tekrar dene
+          {dict.booking.slots.retry}
         </button>
       </div>
     );
@@ -209,7 +212,7 @@ export default function SlotPicker({
         fontSize: "14px",
         padding: "8px 0",
       }}>
-        Dieser Tag ist nicht verfügbar. Bitte wählen Sie einen anderen Tag.
+        {dict.booking.slots.dayUnavailable}
       </p>
     );
   }
@@ -217,7 +220,7 @@ export default function SlotPicker({
   if (slots.length === 0) {
     return (
       <p className="text-sm py-2" style={{ color: "var(--color-text-muted)" }}>
-        Bu gün için müsait saat bulunmuyor
+        {dict.booking.slots.noSlots}
       </p>
     );
   }
@@ -256,7 +259,7 @@ export default function SlotPicker({
                   className="absolute bottom-0.5 left-0 right-0 text-center"
                   style={{ fontSize: "9px", color: "var(--color-text-muted)", lineHeight: 1 }}
                 >
-                  Dolu
+                  {dict.booking.slots.full}
                 </span>
               )}
             </button>
@@ -267,9 +270,9 @@ export default function SlotPicker({
       {/* Reservation countdown */}
       {reservationToken && reservationCountdownSeconds > 0 && (
         <p style={{ fontSize: "12px", color: "var(--color-text-muted)", marginTop: "8px" }}>
-          Slot rezerve edildi —{" "}
-          {Math.floor(reservationCountdownSeconds / 60)}:
-          {String(reservationCountdownSeconds % 60).padStart(2, "0")} kaldı
+          {dict.booking.slots.reservedCountdown
+            .replace("{minutes}", String(Math.floor(reservationCountdownSeconds / 60)))
+            .replace("{seconds}", String(reservationCountdownSeconds % 60).padStart(2, "0"))}
         </p>
       )}
       {lockError && (
@@ -296,7 +299,7 @@ export default function SlotPicker({
           }}
         >
           <p style={{ color: "var(--color-text)", marginBottom: "8px", fontSize: "14px" }}>
-            Alle Termine für diesen Tag sind vergeben.
+            {dict.booking.slots.allBooked}
           </p>
           {!showWaitingForm ? (
             <button
@@ -313,7 +316,7 @@ export default function SlotPicker({
                 minHeight: "44px",
               }}
             >
-              Warteliste beitreten
+              {dict.booking.slots.joinWaitlist}
             </button>
           ) : (
             <WaitingListForm
@@ -350,7 +353,7 @@ export default function SlotPicker({
           }}
         >
           <p style={{ color: "var(--color-primary)", fontSize: "14px" }}>
-            ✓ Sie stehen auf der Warteliste. Wir melden uns, sobald ein Termin frei wird.
+            {dict.booking.slots.onWaitlist}
           </p>
         </div>
       )}
@@ -381,6 +384,7 @@ function WaitingListForm({
   isLoading,
   setIsLoading,
 }: WaitingListFormProps) {
+  const { dict } = useI18n();
   const [customerName, setCustomerName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
@@ -388,11 +392,11 @@ function WaitingListForm({
 
   async function handleSubmit() {
     if (!customerName.trim() || !customerEmail.trim()) {
-      onError("Name und E-Mail sind erforderlich.");
+      onError(dict.booking.waitlist.errNameEmail);
       return;
     }
     if (!gdprChecked) {
-      onError("Bitte stimmen Sie der Datenschutzerklärung zu.");
+      onError(dict.booking.waitlist.errGdpr);
       return;
     }
     setIsLoading(true);
@@ -412,12 +416,12 @@ function WaitingListForm({
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({})) as { error?: string };
-        onError(data.error ?? "Fehler beim Eintragen. Bitte versuchen Sie es erneut.");
+        onError(data.error ?? dict.booking.waitlist.errGeneric);
       } else {
         onSuccess();
       }
     } catch {
-      onError("Netzwerkfehler. Bitte versuchen Sie es erneut.");
+      onError(dict.booking.waitlist.errNetwork);
     } finally {
       setIsLoading(false);
     }
@@ -440,7 +444,7 @@ function WaitingListForm({
     <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "8px" }}>
       <input
         type="text"
-        placeholder="Name *"
+        placeholder={dict.booking.waitlist.namePlaceholder}
         value={customerName}
         onChange={(e) => setCustomerName(e.target.value)}
         required
@@ -448,7 +452,7 @@ function WaitingListForm({
       />
       <input
         type="email"
-        placeholder="E-Mail *"
+        placeholder={dict.booking.waitlist.emailPlaceholder}
         value={customerEmail}
         onChange={(e) => setCustomerEmail(e.target.value)}
         required
@@ -456,7 +460,7 @@ function WaitingListForm({
       />
       <input
         type="tel"
-        placeholder="Telefon (optional)"
+        placeholder={dict.booking.waitlist.phonePlaceholder}
         value={customerPhone}
         onChange={(e) => setCustomerPhone(e.target.value)}
         style={inputStyle}
@@ -478,7 +482,7 @@ function WaitingListForm({
           style={{ marginTop: "2px", accentColor: "var(--color-secondary)" }}
         />
         <span>
-          Ich stimme der Verarbeitung meiner Daten zur Wartelistenverwaltung zu.{" "}
+          {dict.booking.waitlist.gdprConsent}{" "}
           <span style={{ color: "#dc2626" }}>*</span>
         </span>
       </label>
@@ -498,7 +502,7 @@ function WaitingListForm({
           opacity: !gdprChecked || isLoading ? 0.6 : 1,
         }}
       >
-        {isLoading ? "Bitte warten..." : "Auf Warteliste eintragen"}
+        {isLoading ? dict.booking.waitlist.submitting : dict.booking.waitlist.submit}
       </button>
     </div>
   );

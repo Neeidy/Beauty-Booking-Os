@@ -207,5 +207,130 @@
     "legalImprint": "Imprint",
     "legalGdpr": "GDPR",
     "poweredBy": "Powered by Beauty Booking OS"
+  },
+  "booking": {
+    "back": "← Back",
+    "meta": {
+      "bookTitle": "Book an appointment — {clientName}",
+      "bookDescription": "Book your appointment at {clientName} conveniently online.",
+      "thanksTitle": "Thank you — {clientName}",
+      "thanksDescription": "Your appointment request was submitted successfully."
+    },
+    "steps": {
+      "service": "Service",
+      "appointment": "Appointment",
+      "data": "Details",
+      "confirmation": "Confirmation"
+    },
+    "step1": {
+      "title": "Which service would you like to book?",
+      "sub": "Choose your preferred service and a staff member.",
+      "staffLabel": "Staff member",
+      "staffAny": "Any — next available",
+      "next": "Continue →",
+      "pickServiceFirst": "Please select a service first"
+    },
+    "step2": {
+      "title": "Choose date & time",
+      "subAvailableFor": "Available appointments for {service}",
+      "durationSuffix": " · {duration} min",
+      "back": "← Back",
+      "next": "Continue →",
+      "pickSlotHint": "Please select an available slot"
+    },
+    "step3": {
+      "title": "Your details",
+      "sub": "We need this information for the confirmation and reminder.",
+      "nameLabel": "Name *",
+      "namePlaceholder": "Your full name",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@email.com",
+      "phoneLabel": "Phone",
+      "phonePlaceholder": "+43 660 1234567",
+      "notesLabel": "Notes",
+      "optional": "(optional)",
+      "notesPlaceholder": "Allergies, requests, color preference...",
+      "back": "← Back",
+      "next": "Continue →"
+    },
+    "step4": {
+      "title": "Confirm appointment",
+      "sub": "Please review your booking.",
+      "service": "Service",
+      "duration": "Duration",
+      "staff": "Staff member",
+      "date": "Date",
+      "time": "Time",
+      "customer": "Customer",
+      "total": "Total",
+      "payOnSite": "Payment on site — cash or card.",
+      "back": "← Back",
+      "submit": "Book appointment",
+      "submitting": "Sending…",
+      "unit": "min"
+    },
+    "gdpr": {
+      "dataProcessing": "I consent to the processing of my data for scheduling the appointment.",
+      "privacyLink": "Read the privacy policy",
+      "reminders": "I would like to receive appointment reminders by email or WhatsApp.",
+      "marketing": "I would like to be informed about offers and news."
+    },
+    "errors": {
+      "pickTime": "Please select a time.",
+      "pickValidSlot": "Please select a valid slot.",
+      "generic": "An error occurred. Please try again.",
+      "connection": "Connection error. Please check your internet connection."
+    },
+    "schema": {
+      "nameMin": "Name is required (at least 2 characters)",
+      "emailInvalid": "Invalid email address",
+      "phoneInvalid": "Invalid phone number",
+      "servicePick": "Please select a service",
+      "notesMax": "Maximum length: 500 characters",
+      "gdprRequired": "Your consent to data processing is required",
+      "contactRequired": "Please provide an email address or phone number"
+    },
+    "slots": {
+      "pickDateFirst": "Select a date first",
+      "loading": "Loading available times…",
+      "loadError": "Could not load times, please try again",
+      "retry": "Try again",
+      "dayUnavailable": "This day is not available. Please choose another day.",
+      "noSlots": "No available times for this day",
+      "full": "Full",
+      "reservedCountdown": "Slot reserved — {minutes}:{seconds} left",
+      "slotJustTaken": "This slot was just taken.",
+      "reserveFailed": "Could not reserve the slot. Please try again.",
+      "connectionError": "Connection error. Please try again.",
+      "reservationExpired": "Reservation expired. Please select a slot again.",
+      "allBooked": "All appointments for this day are taken.",
+      "joinWaitlist": "Join the waiting list",
+      "onWaitlist": "✓ You are on the waiting list. We will contact you as soon as a slot opens up."
+    },
+    "waitlist": {
+      "namePlaceholder": "Name *",
+      "emailPlaceholder": "Email *",
+      "phonePlaceholder": "Phone (optional)",
+      "gdprConsent": "I consent to the processing of my data for waiting-list management.",
+      "submit": "Join waiting list",
+      "submitting": "Please wait...",
+      "errNameEmail": "Name and email are required.",
+      "errGdpr": "Please agree to the privacy policy.",
+      "errGeneric": "Error while signing up. Please try again.",
+      "errNetwork": "Network error. Please try again."
+    },
+    "thanks": {
+      "heading": "Thank you!",
+      "leadPrefix": "Your request was submitted successfully. We will contact you within ",
+      "leadHours": "24 hours",
+      "leadSuffix": " to confirm your appointment.",
+      "questions": "Have questions?",
+      "reviewCta": "Review us on Google →",
+      "rebookHeading": "Plan another appointment right away?",
+      "rebookText": "Book your next appointment directly online — fast and easy.",
+      "rebookCta": "Book a new appointment",
+      "privacy": "Privacy",
+      "backHome": "Back to home"
+    }
   }
 }

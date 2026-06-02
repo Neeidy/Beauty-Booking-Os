@@ -207,5 +207,130 @@
     "legalImprint": "Impressum",
     "legalGdpr": "DSGVO",
     "poweredBy": "Powered by Beauty Booking OS"
+  },
+  "booking": {
+    "back": "← Zurück",
+    "meta": {
+      "bookTitle": "Termin buchen — {clientName}",
+      "bookDescription": "Buchen Sie Ihren Termin bei {clientName} bequem online.",
+      "thanksTitle": "Vielen Dank — {clientName}",
+      "thanksDescription": "Ihre Terminanfrage wurde erfolgreich übermittelt."
+    },
+    "steps": {
+      "service": "Leistung",
+      "appointment": "Termin",
+      "data": "Daten",
+      "confirmation": "Bestätigung"
+    },
+    "step1": {
+      "title": "Welche Leistung möchten Sie buchen?",
+      "sub": "Wählen Sie Ihre Wunsch-Leistung und einen Mitarbeiter.",
+      "staffLabel": "Mitarbeiter",
+      "staffAny": "Egal — nächster verfügbarer",
+      "next": "Weiter →",
+      "pickServiceFirst": "Bitte zuerst eine Leistung auswählen"
+    },
+    "step2": {
+      "title": "Datum & Uhrzeit wählen",
+      "subAvailableFor": "Verfügbare Termine für {service}",
+      "durationSuffix": " · {duration} Min",
+      "back": "← Zurück",
+      "next": "Weiter →",
+      "pickSlotHint": "Bitte einen verfügbaren Slot auswählen"
+    },
+    "step3": {
+      "title": "Ihre Daten",
+      "sub": "Wir brauchen diese Informationen für die Bestätigung und Erinnerung.",
+      "nameLabel": "Name *",
+      "namePlaceholder": "Ihr vollständiger Name",
+      "emailLabel": "E-Mail",
+      "emailPlaceholder": "ihre@email.at",
+      "phoneLabel": "Telefon",
+      "phonePlaceholder": "+43 660 1234567",
+      "notesLabel": "Anmerkungen",
+      "optional": "(optional)",
+      "notesPlaceholder": "Allergien, Wünsche, Farbwunsch...",
+      "back": "← Zurück",
+      "next": "Weiter →"
+    },
+    "step4": {
+      "title": "Termin bestätigen",
+      "sub": "Bitte überprüfen Sie Ihre Buchung.",
+      "service": "Leistung",
+      "duration": "Dauer",
+      "staff": "Mitarbeiter",
+      "date": "Datum",
+      "time": "Uhrzeit",
+      "customer": "Kunde",
+      "total": "Gesamt",
+      "payOnSite": "Zahlung vor Ort — bar oder Karte.",
+      "back": "← Zurück",
+      "submit": "Termin verbindlich buchen",
+      "submitting": "Wird gesendet…",
+      "unit": "Min"
+    },
+    "gdpr": {
+      "dataProcessing": "Ich stimme der Verarbeitung meiner Daten für die Terminvereinbarung zu.",
+      "privacyLink": "Datenschutzerklärung lesen",
+      "reminders": "Ich möchte Terminerinnerungen per E-Mail oder WhatsApp erhalten.",
+      "marketing": "Ich möchte über Angebote und Neuigkeiten informiert werden."
+    },
+    "errors": {
+      "pickTime": "Bitte wählen Sie eine Uhrzeit aus.",
+      "pickValidSlot": "Bitte wählen Sie einen gültigen Slot aus.",
+      "generic": "Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
+      "connection": "Verbindungsfehler. Bitte prüfen Sie Ihre Internetverbindung."
+    },
+    "schema": {
+      "nameMin": "Name ist erforderlich (mind. 2 Zeichen)",
+      "emailInvalid": "Ungültige E-Mail-Adresse",
+      "phoneInvalid": "Ungültige Telefonnummer",
+      "servicePick": "Bitte wählen Sie eine Leistung aus",
+      "notesMax": "Maximale Länge: 500 Zeichen",
+      "gdprRequired": "Ihre Zustimmung zur Datenverarbeitung ist erforderlich",
+      "contactRequired": "Bitte geben Sie eine E-Mail-Adresse oder Telefonnummer an"
+    },
+    "slots": {
+      "pickDateFirst": "Önce tarih seçin",
+      "loading": "Müsait saatler yükleniyor…",
+      "loadError": "Saatler yüklenemedi, lütfen tekrar deneyin",
+      "retry": "Tekrar dene",
+      "dayUnavailable": "Dieser Tag ist nicht verfügbar. Bitte wählen Sie einen anderen Tag.",
+      "noSlots": "Bu gün için müsait saat bulunmuyor",
+      "full": "Dolu",
+      "reservedCountdown": "Slot rezerve edildi — {minutes}:{seconds} kaldı",
+      "slotJustTaken": "Bu slot az önce doldu.",
+      "reserveFailed": "Slot rezerve edilemedi. Lütfen tekrar dene.",
+      "connectionError": "Bağlantı hatası. Lütfen tekrar dene.",
+      "reservationExpired": "Rezervasyon süresi doldu. Lütfen yeniden slot seç.",
+      "allBooked": "Alle Termine für diesen Tag sind vergeben.",
+      "joinWaitlist": "Warteliste beitreten",
+      "onWaitlist": "✓ Sie stehen auf der Warteliste. Wir melden uns, sobald ein Termin frei wird."
+    },
+    "waitlist": {
+      "namePlaceholder": "Name *",
+      "emailPlaceholder": "E-Mail *",
+      "phonePlaceholder": "Telefon (optional)",
+      "gdprConsent": "Ich stimme der Verarbeitung meiner Daten zur Wartelistenverwaltung zu.",
+      "submit": "Auf Warteliste eintragen",
+      "submitting": "Bitte warten...",
+      "errNameEmail": "Name und E-Mail sind erforderlich.",
+      "errGdpr": "Bitte stimmen Sie der Datenschutzerklärung zu.",
+      "errGeneric": "Fehler beim Eintragen. Bitte versuchen Sie es erneut.",
+      "errNetwork": "Netzwerkfehler. Bitte versuchen Sie es erneut."
+    },
+    "thanks": {
+      "heading": "Vielen Dank!",
+      "leadPrefix": "Ihre Anfrage wurde erfolgreich übermittelt. Wir melden uns innerhalb von ",
+      "leadHours": "24 Stunden",
+      "leadSuffix": " bei Ihnen zur Terminbestätigung.",
+      "questions": "Sie haben Fragen?",
+      "reviewCta": "Auf Google bewerten →",
+      "rebookHeading": "Gleich einen weiteren Termin planen?",
+      "rebookText": "Buchen Sie Ihren nächsten Termin direkt online — schnell und einfach.",
+      "rebookCta": "Neuen Termin buchen",
+      "privacy": "Datenschutz",
+      "backHome": "Zurück zur Startseite"
+    }
   }
 }

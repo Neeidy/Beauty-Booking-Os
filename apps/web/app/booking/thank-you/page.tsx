@@ -1,15 +1,25 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { loadClientConfig } from "../../../lib/load-client-config";
+import { getLocale } from "@/lib/i18n/server";
+import { getDictionary } from "@/lib/i18n/dictionary";
+
+export const dynamic = "force-dynamic";
 
 const config = loadClientConfig();
 
-export const metadata: Metadata = {
-  title: `Vielen Dank — ${config.clientName}`,
-  description: "Ihre Terminanfrage wurde erfolgreich übermittelt.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const dict = getDictionary(await getLocale());
+  return {
+    title: dict.booking.meta.thanksTitle.replace("{clientName}", config.clientName),
+    description: dict.booking.meta.thanksDescription,
+  };
+}
 
-export default function ThankYouPage() {
+export default async function ThankYouPage() {
+  const dict = getDictionary(await getLocale());
+  const t = dict.booking.thanks;
+
   const showWhatsApp =
     config.channels.whatsapp === true &&
     typeof config.contact.whatsappNumber === "string" &&
@@ -39,10 +49,11 @@ export default function ThankYouPage() {
         <div className="thanks-card">
           <div className="thanks-hero">✓</div>
 
-          <h1>Vielen Dank!</h1>
+          <h1>{t.heading}</h1>
           <p className="sub">
-            Ihre Anfrage wurde erfolgreich übermittelt. Wir melden uns innerhalb von{" "}
-            <strong>24 Stunden</strong> bei Ihnen zur Terminbestätigung.
+            {t.leadPrefix}
+            <strong>{t.leadHours}</strong>
+            {t.leadSuffix}
           </p>
 
           {/* Contact options */}
@@ -58,7 +69,7 @@ export default function ThankYouPage() {
             textAlign: "left",
           }}>
             <p style={{ fontSize: "12px", color: "var(--color-text-muted)", margin: "0 0 4px" }}>
-              Sie haben Fragen?
+              {t.questions}
             </p>
             <a
               href={`tel:${config.contact.phone.replace(/\s/g, "")}`}
@@ -93,21 +104,21 @@ export default function ThankYouPage() {
                 <path fill="#FBBC05" d="M3.96 10.71A5.4 5.4 0 0 1 3.68 9c0-.59.1-1.17.28-1.71V4.96h-3A9 9 0 0 0 0 9c0 1.45.35 2.82.96 4.04l3-2.33z"/>
                 <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58A9 9 0 0 0 9 0 9 9 0 0 0 .96 4.96l3 2.33C4.67 5.16 6.66 3.58 9 3.58z"/>
               </svg>
-              <span>Auf Google bewerten →</span>
+              <span>{t.reviewCta}</span>
             </a>
           )}
 
           {/* Rebook CTA */}
           <div className="rebook-cta">
-            <strong>Gleich einen weiteren Termin planen?</strong>
-            <p>Buchen Sie Ihren nächsten Termin direkt online — schnell und einfach.</p>
-            <Link href="/booking" className="btn btn-primary btn-sm">Neuen Termin buchen</Link>
+            <strong>{t.rebookHeading}</strong>
+            <p>{t.rebookText}</p>
+            <Link href="/booking" className="btn btn-primary btn-sm">{t.rebookCta}</Link>
           </div>
 
           <p style={{ marginTop: "28px", fontSize: "11px", color: "var(--color-text-faint)" }}>
-            <Link href="/datenschutz" style={{ color: "inherit", textDecoration: "underline" }}>Datenschutz</Link>
+            <Link href="/datenschutz" style={{ color: "inherit", textDecoration: "underline" }}>{t.privacy}</Link>
             {" · "}
-            <Link href="/" style={{ color: "inherit", textDecoration: "underline" }}>Zurück zur Startseite</Link>
+            <Link href="/" style={{ color: "inherit", textDecoration: "underline" }}>{t.backHome}</Link>
           </p>
         </div>
       </main>
