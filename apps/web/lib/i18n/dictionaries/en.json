@@ -332,5 +332,51 @@
       "privacy": "Privacy",
       "backHome": "Back to home"
     }
+  },
+  "legal": {
+    "meta": {
+      "datenschutzTitle": "Privacy & Consent — {clientName}",
+      "exportTitle": "Data Export — {clientName}",
+      "deleteTitle": "Request Deletion — {clientName}",
+      "reviewThanksTitle": "Thank you for your review — {clientName}"
+    },
+    "datenschutz": {
+      "heading": "Privacy & Consent",
+      "subtitle": "{clientName} — In accordance with the GDPR (EU 2016/679) and Austrian data protection law.",
+      "controllerHeading": "Data Controller",
+      "controllerBody": "{name}, {address}, Austria.",
+      "controllerEmailLabel": "Email:",
+      "purposeHeading": "Purpose of Data Processing",
+      "purposeBody": "We process your personal data (name, phone number, email address) solely for the purpose of appointment management and communication.",
+      "rightsHeading": "Your Rights",
+      "rightsBody": "You have the right to access, rectification, erasure and data portability. You can withdraw your consent at any time.",
+      "exportBtn": "Export data",
+      "deleteBtn": "Request deletion",
+      "storageHeading": "Data Storage",
+      "storageBody": "Your data is automatically anonymized after 730 days (2 years). Booking data is retained in accordance with statutory tax retention obligations.",
+      "backHome": "← Back to home"
+    },
+    "export": {
+      "heading": "Data Access & Export",
+      "intro": "Under Art. 15 & 20 GDPR you have the right to access and data portability.",
+      "emailLabel": "Export request by email:",
+      "mailtoSubject": "GDPR Data Access Request",
+      "note": "Please provide your name as well as the phone number or email registered with us. We will provide your data in JSON format within 30 days.",
+      "backLink": "← Privacy policy"
+    },
+    "delete": {
+      "heading": "Request Deletion",
+      "intro": "Under Art. 17 GDPR you have the right to erasure of your data. Please contact us by email.",
+      "emailLabel": "Please send your deletion request to:",
+      "mailtoSubject": "GDPR Deletion Request",
+      "note": "Please include your full name and the phone number or email address registered with us in your email. We will process your request within 30 days.",
+      "backLink": "← Privacy policy"
+    },
+    "reviewThanks": {
+      "heading": "Thank you!",
+      "body": "Your review helps other clients find us — and motivates our team anew every day.",
+      "rebookCta": "Book a new appointment →",
+      "homeCta": "Back to home"
+    }
   }
 }

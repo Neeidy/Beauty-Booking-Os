@@ -1,11 +1,23 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { loadClientConfig } from "@/lib/load-client-config";
+import { getLocale } from "@/lib/i18n/server";
+import { getDictionary } from "@/lib/i18n/dictionary";
 
-export const metadata: Metadata = {
-  title: "Danke für Ihre Bewertung — Vienna Glow Studio",
-};
+export const dynamic = "force-dynamic";
 
-export default function ReviewThanksPage() {
+export async function generateMetadata(): Promise<Metadata> {
+  const dict = getDictionary(await getLocale());
+  const config = loadClientConfig();
+  return {
+    title: dict.legal.meta.reviewThanksTitle.replace("{clientName}", config.clientName),
+  };
+}
+
+export default async function ReviewThanksPage() {
+  const dict = getDictionary(await getLocale());
+  const r = dict.legal.reviewThanks;
+
   return (
     <div style={{ background: "var(--color-bg-surface)", minHeight: "100vh", padding: "120px 16px 96px" }}>
       <div style={{ maxWidth: "620px", margin: "0 auto" }}>
@@ -33,10 +45,10 @@ export default function ReviewThanksPage() {
           </div>
 
           <h1 style={{ fontSize: "28px", fontWeight: 700, margin: "0 0 8px", letterSpacing: "-0.02em" }}>
-            Vielen Dank!
+            {r.heading}
           </h1>
           <p style={{ color: "var(--color-text-muted)", fontSize: "15px", marginBottom: "28px", lineHeight: 1.55, maxWidth: "420px", margin: "0 auto 28px" }}>
-            Ihre Bewertung hilft anderen Kundinnen, uns zu finden — und motiviert unser Team jeden Tag aufs Neue.
+            {r.body}
           </p>
 
           <div style={{
@@ -52,10 +64,10 @@ export default function ReviewThanksPage() {
 
           <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
             <Link href="/booking" className="btn btn-primary btn-lg">
-              Neuen Termin buchen →
+              {r.rebookCta}
             </Link>
             <Link href="/" className="btn btn-ghost btn-lg">
-              Zur Startseite
+              {r.homeCta}
             </Link>
           </div>
         </div>

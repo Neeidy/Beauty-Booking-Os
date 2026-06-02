@@ -1,12 +1,26 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { loadClientConfig } from "@/lib/load-client-config";
+import { getLocale } from "@/lib/i18n/server";
+import { getDictionary } from "@/lib/i18n/dictionary";
 
-export const metadata: Metadata = {
-  title: "Löschanfrage — Vienna Glow Studio",
-  robots: { index: false, follow: false },
-};
+export const dynamic = "force-dynamic";
 
-export default function GdprDeletePage() {
+export async function generateMetadata(): Promise<Metadata> {
+  const dict = getDictionary(await getLocale());
+  const config = loadClientConfig();
+  return {
+    title: dict.legal.meta.deleteTitle.replace("{clientName}", config.clientName),
+    robots: { index: false, follow: false },
+  };
+}
+
+export default async function GdprDeletePage() {
+  const dict = getDictionary(await getLocale());
+  const config = loadClientConfig();
+  const dl = dict.legal.delete;
+  const email = config.gdpr.dataControllerEmail;
+
   return (
     <div style={{ background: "var(--color-bg-surface)", minHeight: "100vh", padding: "120px 16px 96px" }}>
       <div style={{ maxWidth: "620px", margin: "0 auto" }}>
@@ -18,10 +32,10 @@ export default function GdprDeletePage() {
           padding: "48px 40px 40px",
         }}>
           <h1 style={{ fontSize: "28px", fontWeight: 700, margin: "0 0 8px" }}>
-            Löschanfrage stellen
+            {dl.heading}
           </h1>
           <p style={{ color: "var(--color-text-muted)", fontSize: "15px", marginBottom: "32px", lineHeight: 1.55 }}>
-            Gemäß Art. 17 DSGVO haben Sie das Recht auf Löschung Ihrer Daten. Bitte kontaktieren Sie uns per E-Mail.
+            {dl.intro}
           </p>
 
           <div style={{
@@ -32,21 +46,21 @@ export default function GdprDeletePage() {
             marginBottom: "24px",
           }}>
             <p style={{ fontSize: "13px", color: "var(--color-text-secondary)", margin: "0 0 12px" }}>
-              <strong>Bitte senden Sie Ihre Löschanfrage an:</strong>
+              <strong>{dl.emailLabel}</strong>
             </p>
             <a
-              href="mailto:datenschutz@viennaglowstudio.at?subject=Löschanfrage DSGVO"
+              href={`mailto:${email}?subject=${encodeURIComponent(dl.mailtoSubject)}`}
               className="btn btn-primary"
             >
-              ✉ datenschutz@viennaglowstudio.at
+              ✉ {email}
             </a>
           </div>
 
           <p style={{ fontSize: "12px", color: "var(--color-text-faint)", marginBottom: "24px", lineHeight: 1.6 }}>
-            Bitte geben Sie in Ihrer E-Mail Ihren vollständigen Namen und die bei uns registrierte Telefonnummer oder E-Mail-Adresse an. Wir bearbeiten Ihre Anfrage innerhalb von 30 Tagen.
+            {dl.note}
           </p>
 
-          <Link href="/datenschutz" className="btn btn-ghost btn-sm">← Datenschutzerklärung</Link>
+          <Link href="/datenschutz" className="btn btn-ghost btn-sm">{dl.backLink}</Link>
         </div>
       </div>
     </div>

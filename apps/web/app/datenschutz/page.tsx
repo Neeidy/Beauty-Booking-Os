@@ -1,12 +1,26 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { loadClientConfig } from "@/lib/load-client-config";
+import { getLocale } from "@/lib/i18n/server";
+import { getDictionary } from "@/lib/i18n/dictionary";
 
-export const metadata: Metadata = {
-  title: "Datenschutz & Einwilligung — Vienna Glow Studio",
-  robots: { index: false, follow: false },
-};
+export const dynamic = "force-dynamic";
 
-export default function DatenschutzPage() {
+export async function generateMetadata(): Promise<Metadata> {
+  const dict = getDictionary(await getLocale());
+  const config = loadClientConfig();
+  return {
+    title: dict.legal.meta.datenschutzTitle.replace("{clientName}", config.clientName),
+    robots: { index: false, follow: false },
+  };
+}
+
+export default async function DatenschutzPage() {
+  const dict = getDictionary(await getLocale());
+  const config = loadClientConfig();
+  const d = dict.legal.datenschutz;
+  const email = config.gdpr.dataControllerEmail;
+
   return (
     <div style={{ background: "var(--color-bg-surface)", minHeight: "100vh", padding: "120px 16px 96px" }}>
       <div style={{ maxWidth: "760px", margin: "0 auto" }}>
@@ -19,48 +33,50 @@ export default function DatenschutzPage() {
         }}>
           <div style={{ paddingBottom: "24px", borderBottom: "1px solid var(--color-border)", marginBottom: "24px" }}>
             <h1 style={{ fontSize: "28px", fontWeight: 700, margin: "0 0 6px" }}>
-              Datenschutz &amp; Einwilligung
+              {d.heading}
             </h1>
             <p style={{ color: "var(--color-text-muted)", fontSize: "15px", margin: 0 }}>
-              Vienna Glow Studio — Gemäß DSGVO (EU 2016/679) und österreichischem Datenschutzgesetz.
+              {d.subtitle.replace("{clientName}", config.clientName)}
             </p>
           </div>
 
           <div style={{ marginBottom: "28px" }}>
-            <h3 style={{ fontSize: "15px", fontWeight: 600, margin: "0 0 8px" }}>Verantwortliche Stelle</h3>
+            <h3 style={{ fontSize: "15px", fontWeight: 600, margin: "0 0 8px" }}>{d.controllerHeading}</h3>
             <p style={{ margin: "0 0 8px", fontSize: "13px", lineHeight: 1.65, color: "var(--color-text-secondary)" }}>
-              Vienna Glow Studio, Mariahilfer Straße 45, 1060 Wien, Österreich.<br />
-              E-Mail: <a href="mailto:datenschutz@viennaglowstudio.at" style={{ color: "var(--color-accent)" }}>datenschutz@viennaglowstudio.at</a>
+              {d.controllerBody
+                .replace("{name}", config.gdpr.dataControllerName)
+                .replace("{address}", config.contact.address)}<br />
+              {d.controllerEmailLabel} <a href={`mailto:${email}`} style={{ color: "var(--color-accent)" }}>{email}</a>
             </p>
           </div>
 
           <div style={{ marginBottom: "28px" }}>
-            <h3 style={{ fontSize: "15px", fontWeight: 600, margin: "0 0 8px" }}>Zweck der Datenverarbeitung</h3>
+            <h3 style={{ fontSize: "15px", fontWeight: 600, margin: "0 0 8px" }}>{d.purposeHeading}</h3>
             <p style={{ margin: "0 0 8px", fontSize: "13px", lineHeight: 1.65, color: "var(--color-text-secondary)" }}>
-              Wir verarbeiten Ihre personenbezogenen Daten (Name, Telefonnummer, E-Mail-Adresse) ausschließlich zum Zweck der Terminverwaltung und Kommunikation.
+              {d.purposeBody}
             </p>
           </div>
 
           <div style={{ marginBottom: "28px" }}>
-            <h3 style={{ fontSize: "15px", fontWeight: 600, margin: "0 0 8px" }}>Ihre Rechte</h3>
+            <h3 style={{ fontSize: "15px", fontWeight: 600, margin: "0 0 8px" }}>{d.rightsHeading}</h3>
             <p style={{ margin: "0 0 8px", fontSize: "13px", lineHeight: 1.65, color: "var(--color-text-secondary)" }}>
-              Sie haben das Recht auf Auskunft, Berichtigung, Löschung und Datenportabilität. Sie können Ihre Einwilligung jederzeit widerrufen.
+              {d.rightsBody}
             </p>
             <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", marginTop: "16px" }}>
-              <Link href="/gdpr/export" className="btn btn-ghost btn-sm">Daten exportieren</Link>
-              <Link href="/gdpr/delete" className="btn btn-ghost btn-sm">Löschanfrage stellen</Link>
+              <Link href="/gdpr/export" className="btn btn-ghost btn-sm">{d.exportBtn}</Link>
+              <Link href="/gdpr/delete" className="btn btn-ghost btn-sm">{d.deleteBtn}</Link>
             </div>
           </div>
 
           <div style={{ marginBottom: "28px" }}>
-            <h3 style={{ fontSize: "15px", fontWeight: 600, margin: "0 0 8px" }}>Datenspeicherung</h3>
+            <h3 style={{ fontSize: "15px", fontWeight: 600, margin: "0 0 8px" }}>{d.storageHeading}</h3>
             <p style={{ margin: "0 0 8px", fontSize: "13px", lineHeight: 1.65, color: "var(--color-text-secondary)" }}>
-              Ihre Daten werden nach 730 Tagen (2 Jahre) automatisch anonymisiert. Buchungsdaten werden gemäß steuerrechtlicher Aufbewahrungspflichten gespeichert.
+              {d.storageBody}
             </p>
           </div>
 
           <div style={{ marginTop: "32px", paddingTop: "24px", borderTop: "1px solid var(--color-border)" }}>
-            <Link href="/" className="btn btn-ghost btn-sm">← Zurück zur Startseite</Link>
+            <Link href="/" className="btn btn-ghost btn-sm">{d.backHome}</Link>
           </div>
         </div>
       </div>

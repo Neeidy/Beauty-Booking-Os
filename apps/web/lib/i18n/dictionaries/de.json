@@ -332,5 +332,51 @@
       "privacy": "Datenschutz",
       "backHome": "Zurück zur Startseite"
     }
+  },
+  "legal": {
+    "meta": {
+      "datenschutzTitle": "Datenschutz & Einwilligung — {clientName}",
+      "exportTitle": "Datenexport — {clientName}",
+      "deleteTitle": "Löschanfrage — {clientName}",
+      "reviewThanksTitle": "Danke für Ihre Bewertung — {clientName}"
+    },
+    "datenschutz": {
+      "heading": "Datenschutz & Einwilligung",
+      "subtitle": "{clientName} — Gemäß DSGVO (EU 2016/679) und österreichischem Datenschutzgesetz.",
+      "controllerHeading": "Verantwortliche Stelle",
+      "controllerBody": "{name}, {address}, Österreich.",
+      "controllerEmailLabel": "E-Mail:",
+      "purposeHeading": "Zweck der Datenverarbeitung",
+      "purposeBody": "Wir verarbeiten Ihre personenbezogenen Daten (Name, Telefonnummer, E-Mail-Adresse) ausschließlich zum Zweck der Terminverwaltung und Kommunikation.",
+      "rightsHeading": "Ihre Rechte",
+      "rightsBody": "Sie haben das Recht auf Auskunft, Berichtigung, Löschung und Datenportabilität. Sie können Ihre Einwilligung jederzeit widerrufen.",
+      "exportBtn": "Daten exportieren",
+      "deleteBtn": "Löschanfrage stellen",
+      "storageHeading": "Datenspeicherung",
+      "storageBody": "Ihre Daten werden nach 730 Tagen (2 Jahre) automatisch anonymisiert. Buchungsdaten werden gemäß steuerrechtlicher Aufbewahrungspflichten gespeichert.",
+      "backHome": "← Zurück zur Startseite"
+    },
+    "export": {
+      "heading": "Datenauskunft & Export",
+      "intro": "Gemäß Art. 15 & 20 DSGVO haben Sie das Recht auf Auskunft und Datenportabilität.",
+      "emailLabel": "Exportanfrage per E-Mail:",
+      "mailtoSubject": "Datenauskunft DSGVO",
+      "note": "Bitte geben Sie Ihren Namen sowie die bei uns registrierte Telefonnummer oder E-Mail an. Wir stellen Ihnen Ihre Daten im JSON-Format innerhalb von 30 Tagen bereit.",
+      "backLink": "← Datenschutzerklärung"
+    },
+    "delete": {
+      "heading": "Löschanfrage stellen",
+      "intro": "Gemäß Art. 17 DSGVO haben Sie das Recht auf Löschung Ihrer Daten. Bitte kontaktieren Sie uns per E-Mail.",
+      "emailLabel": "Bitte senden Sie Ihre Löschanfrage an:",
+      "mailtoSubject": "Löschanfrage DSGVO",
+      "note": "Bitte geben Sie in Ihrer E-Mail Ihren vollständigen Namen und die bei uns registrierte Telefonnummer oder E-Mail-Adresse an. Wir bearbeiten Ihre Anfrage innerhalb von 30 Tagen.",
+      "backLink": "← Datenschutzerklärung"
+    },
+    "reviewThanks": {
+      "heading": "Vielen Dank!",
+      "body": "Ihre Bewertung hilft anderen Kundinnen, uns zu finden — und motiviert unser Team jeden Tag aufs Neue.",
+      "rebookCta": "Neuen Termin buchen →",
+      "homeCta": "Zur Startseite"
+    }
   }
 }
