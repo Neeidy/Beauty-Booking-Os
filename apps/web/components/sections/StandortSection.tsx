@@ -1,10 +1,22 @@
 import Link from "next/link";
 import { getLocale } from "@/lib/i18n/server";
 import { getDictionary } from "@/lib/i18n/dictionary";
+import { loadClientConfig } from "@/lib/load-client-config";
+
+const WEEKDAY_ORDER = [
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+  "sunday",
+] as const;
 
 export default async function StandortSection() {
   const dict = getDictionary(await getLocale());
   const s = dict.standort;
+  const config = loadClientConfig();
 
   return (
     <section className="section standort" id="kontakt" style={{ background: "var(--color-bg-surface)" }}>
@@ -13,51 +25,29 @@ export default async function StandortSection() {
           <span className="caption">{s.caption}</span>
           <h3 style={{ margin: "12px 0 24px" }}>{s.heading}</h3>
           <ul className="contact-list">
-            <li><span className="contact-ic">📍</span> {s.address}</li>
-            <li><span className="contact-ic">📞</span> <a href="tel:+4312345678">{s.phone}</a></li>
-            <li><span className="contact-ic">✉️</span> <a href="mailto:hello@viennaglowstudio.at">{s.email}</a></li>
-            <li><span className="contact-ic">📸</span> {s.instagram}</li>
+            <li><span className="contact-ic">📍</span> {config.contact.address}</li>
+            <li><span className="contact-ic">📞</span> <a href={`tel:${config.contact.phone.replace(/\s/g, "")}`}>{config.contact.phone}</a></li>
+            <li><span className="contact-ic">✉️</span> <a href={`mailto:${config.contact.email}`}>{config.contact.email}</a></li>
+            {config.contact.instagramHandle && (
+              <li><span className="contact-ic">📸</span> {config.contact.instagramHandle}</li>
+            )}
           </ul>
           <table className="hours">
             <tbody>
-              <tr>
-                <td className="hours-day">{s.days.monday}</td>
-                <td className="hours-time">09:00 – 19:00</td>
-                <td><span className="hours-status open">{s.statusOpen}</span></td>
-              </tr>
-              <tr>
-                <td className="hours-day">{s.days.tuesday}</td>
-                <td className="hours-time">09:00 – 19:00</td>
-                <td><span className="hours-status open">{s.statusOpen}</span></td>
-              </tr>
-              <tr>
-                <td className="hours-day">{s.days.wednesday}</td>
-                <td className="hours-time">09:00 – 19:00</td>
-                <td><span className="hours-status open">{s.statusOpen}</span></td>
-              </tr>
-              <tr>
-                <td className="hours-day">{s.days.thursday}</td>
-                <td className="hours-time">09:00 – 21:00</td>
-                <td>
-                  <span className="hours-status open">{s.statusOpen}</span>{" "}
-                  <span className="hours-tag">{s.eveningTag}</span>
-                </td>
-              </tr>
-              <tr>
-                <td className="hours-day">{s.days.friday}</td>
-                <td className="hours-time">09:00 – 19:00</td>
-                <td><span className="hours-status open">{s.statusOpen}</span></td>
-              </tr>
-              <tr>
-                <td className="hours-day">{s.days.saturday}</td>
-                <td className="hours-time">10:00 – 17:00</td>
-                <td><span className="hours-status open">{s.statusOpen}</span></td>
-              </tr>
-              <tr>
-                <td className="hours-day">{s.days.sunday}</td>
-                <td className="hours-time">—</td>
-                <td><span className="hours-status closed">{s.statusClosed}</span></td>
-              </tr>
+              {WEEKDAY_ORDER.map((key) => {
+                const oh = config.operatingHours[key];
+                return (
+                  <tr key={key}>
+                    <td className="hours-day">{s.days[key]}</td>
+                    <td className="hours-time">{oh ? `${oh.open} – ${oh.close}` : "—"}</td>
+                    <td>
+                      {oh
+                        ? <span className="hours-status open">{s.statusOpen}</span>
+                        : <span className="hours-status closed">{s.statusClosed}</span>}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
           <p className="hours-note">{s.hoursNote}</p>
@@ -69,8 +59,8 @@ export default async function StandortSection() {
           <div className="map">
             <div className="map-grid" />
             <div className="map-pin">📍</div>
-            <div className="map-name">{s.mapName}</div>
-            <div className="map-addr">{s.mapAddr}</div>
+            <div className="map-name">{config.clientName}</div>
+            <div className="map-addr">{config.contact.address}</div>
             <div className="map-badge">{s.mapBadge}</div>
           </div>
           <div className="transport">

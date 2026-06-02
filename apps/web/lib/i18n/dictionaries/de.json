@@ -146,10 +146,6 @@
   "standort": {
     "caption": "Standort & Zeiten",
     "heading": "Besuchen Sie uns",
-    "address": "Mariahilfer Straße 45, 1060 Wien",
-    "phone": "+43 1 234 5678",
-    "email": "hello@viennaglowstudio.at",
-    "instagram": "@viennaglowstudio",
     "days": {
       "monday": "Montag",
       "tuesday": "Dienstag",
@@ -161,11 +157,8 @@
     },
     "statusOpen": "● Geöffnet",
     "statusClosed": "○ Geschlossen",
-    "eveningTag": "Abendtermine! 🌙",
     "hoursNote": "Online buchbar — auch außerhalb der Öffnungszeiten.",
     "cta": "Jetzt Termin buchen",
-    "mapName": "Vienna Glow Studio",
-    "mapAddr": "Mariahilfer Straße 45",
     "mapBadge": "🚇 U3 Neubaugasse · 3 Min.",
     "transportU3": "🚇 U3 Neubaugasse",
     "transportBus": "🚌 Bus 57A",
