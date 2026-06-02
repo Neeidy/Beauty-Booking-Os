@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 
 interface ServiceRow {
   id: string;
@@ -49,11 +50,6 @@ interface EditableService extends ServiceRow {
   deleted: boolean;
 }
 
-const WEEKDAY_LABELS: Record<string, string> = {
-  monday: "Montag", tuesday: "Dienstag", wednesday: "Mittwoch",
-  thursday: "Donnerstag", friday: "Freitag", saturday: "Samstag", sunday: "Sonntag",
-};
-
 const WEEKDAY_ORDER = [
   "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday",
 ] as const;
@@ -82,6 +78,12 @@ export default function SettingsView({
   triggerSave?: number;
   triggerDiscard?: number;
 }) {
+  const { dict, locale } = useI18n();
+  const t = dict.admin.settings;
+  // Weekday labels sourced from the shared calendar names (Mon→Sun), keyed by day for the render below.
+  const WEEKDAY_LABELS: Record<string, string> = Object.fromEntries(
+    WEEKDAY_ORDER.map((day, i) => [day, dict.admin.calendar.daysLong[i] ?? day])
+  );
   const [services, setServices] = useState<ServiceRow[]>([]);
   const [editableServices, setEditableServices] = useState<EditableService[]>([]);
   const [config, setConfig] = useState<AdminConfig | null>(null);
@@ -120,7 +122,7 @@ export default function SettingsView({
       setConfig(cfgData.config);
       setEditedConfig(cfgData.config);
     } catch {
-      setError("Einstellungen konnten nicht geladen werden.");
+      setError(t.load.loadError);
     } finally {
       setIsLoading(false);
     }
@@ -182,10 +184,10 @@ export default function SettingsView({
 
       await Promise.all([...servicePatches, ...serviceDeactivates]);
 
-      setSaveMessage("Gespeichert ✓");
+      setSaveMessage(t.load.saved);
       await loadAll();
     } catch {
-      setSaveMessage("Speichern fehlgeschlagen.");
+      setSaveMessage(t.load.saveFailed);
     } finally {
       setIsSaving(false);
     }
@@ -255,14 +257,14 @@ export default function SettingsView({
 
   if (isLoading) return (
     <div className="adm-body">
-      <p style={{ color: "var(--color-text-muted)", fontSize: "14px" }}>Lädt...</p>
+      <p style={{ color: "var(--color-text-muted)", fontSize: "14px" }}>{t.load.loading}</p>
     </div>
   );
   if (error) return (
     <div className="adm-body">
       <div className="empty">
         <div className="empty-ico">⚠</div>
-        <h4>Fehler beim Laden</h4>
+        <h4>{t.load.errorTitle}</h4>
         <p>{error}</p>
       </div>
     </div>
@@ -280,7 +282,7 @@ export default function SettingsView({
       <div className="settings-layout">
         <nav className="settings-side">
           {["sec-services", "sec-hours", "sec-closed", "sec-rules"].map((id, i) => {
-            const labels = ["Leistungen & Preise", "Öffnungszeiten", "Geschlossene Tage", "Buchungsregeln"];
+            const labels = [t.nav.services, t.nav.hours, t.nav.closed, t.nav.rules];
             return (
               <div
                 key={id}
@@ -299,17 +301,17 @@ export default function SettingsView({
           <section id="sec-services" className="settings-section">
             <div className="settings-section-title">
               <div>
-                <h4>Leistungen & Preise</h4>
-                <div className="hint">{activeServiceCount} aktive Leistungen</div>
+                <h4>{t.services.title}</h4>
+                <div className="hint">{t.services.activeCount.replace("{count}", String(activeServiceCount))}</div>
               </div>
-              <button className="btn btn-ghost btn-sm" onClick={addService}>+ Leistung hinzufügen</button>
+              <button className="btn btn-ghost btn-sm" onClick={addService}>{t.services.add}</button>
             </div>
 
             <div className="svc-edit-row svc-head">
-              <div>Name</div>
-              <div>Dauer (Min)</div>
-              <div>Preis (€)</div>
-              <div>Kategorie</div>
+              <div>{t.services.name}</div>
+              <div>{t.services.duration}</div>
+              <div>{t.services.price}</div>
+              <div>{t.services.category}</div>
               <div></div>
             </div>
 
@@ -318,7 +320,7 @@ export default function SettingsView({
                 <input
                   value={svc.editName}
                   onChange={(e) => updateService(svc.id, { editName: e.target.value })}
-                  placeholder="Leistungsname"
+                  placeholder={t.services.namePlaceholder}
                 />
                 <input
                   type="number"
@@ -330,13 +332,13 @@ export default function SettingsView({
                   type="text"
                   value={svc.editPrice}
                   onChange={(e) => updateService(svc.id, { editPrice: e.target.value })}
-                  placeholder="0.00"
+                  placeholder={t.services.pricePlaceholder}
                   style={{ width: "80px" }}
                 />
                 <input
                   value={svc.editCategory}
                   onChange={(e) => updateService(svc.id, { editCategory: e.target.value })}
-                  placeholder="Kategorie"
+                  placeholder={t.services.categoryPlaceholder}
                 />
                 <button
                   className="btn btn-ghost btn-sm"
@@ -353,8 +355,8 @@ export default function SettingsView({
           <section id="sec-hours" className="settings-section">
             <div className="settings-section-title">
               <div>
-                <h4>Öffnungszeiten</h4>
-                <div className="hint">Standard-Wochenzeiten · Ausnahmen unter &quot;Geschlossene Tage&quot;</div>
+                <h4>{t.hours.title}</h4>
+                <div className="hint">{t.hours.hint}</div>
               </div>
             </div>
 
@@ -379,7 +381,7 @@ export default function SettingsView({
                           });
                         }}
                       />
-                      <span>geöffnet</span>
+                      <span>{t.hours.open}</span>
                     </label>
                     <input
                       type="time"
@@ -421,8 +423,8 @@ export default function SettingsView({
           <section id="sec-closed" className="settings-section">
             <div className="settings-section-title">
               <div>
-                <h4>Geschlossene Tage & Feiertage</h4>
-                <div className="hint">Einzelne Tage oder Zeiträume, an denen keine Buchungen möglich sind</div>
+                <h4>{t.closed.title}</h4>
+                <div className="hint">{t.closed.hint}</div>
               </div>
               <button
                 className="btn btn-ghost btn-sm"
@@ -437,7 +439,7 @@ export default function SettingsView({
                   setNewClosedLabel("");
                 }}
               >
-                + Tag hinzufügen
+                {t.closed.add}
               </button>
             </div>
 
@@ -453,7 +455,7 @@ export default function SettingsView({
                 type="text"
                 className="form-input"
                 style={{ flex: 1 }}
-                placeholder="Bezeichnung (z.B. Staatsfeiertag)"
+                placeholder={t.closed.labelPlaceholder}
                 value={newClosedLabel}
                 onChange={(e) => setNewClosedLabel(e.target.value)}
               />
@@ -461,12 +463,12 @@ export default function SettingsView({
 
             <div className="closed-dates">
               {editedConfig.closedDates.length === 0 && (
-                <div style={{ color: "var(--color-text-muted)", fontSize: "13px" }}>Keine geschlossenen Tage eingetragen.</div>
+                <div style={{ color: "var(--color-text-muted)", fontSize: "13px" }}>{t.closed.empty}</div>
               )}
               {editedConfig.closedDates.map((date) => (
                 <div key={date} className="closed-date-row">
                   <div>
-                    <strong>{new Date(date + "T00:00:00").toLocaleDateString("de-AT", { day: "2-digit", month: "long", year: "numeric" })}</strong>
+                    <strong>{new Date(date + "T00:00:00").toLocaleDateString(locale === "de" ? "de-AT" : "en-GB", { day: "2-digit", month: "long", year: "numeric" })}</strong>
                   </div>
                   <button
                     className="btn btn-ghost btn-sm"
@@ -475,7 +477,7 @@ export default function SettingsView({
                       closedDates: editedConfig.closedDates.filter((d) => d !== date),
                     })}
                   >
-                    Entfernen
+                    {t.closed.remove}
                   </button>
                 </div>
               ))}
@@ -486,14 +488,14 @@ export default function SettingsView({
           <section id="sec-rules" className="settings-section">
             <div className="settings-section-title">
               <div>
-                <h4>Buchungsregeln</h4>
-                <div className="hint">Gültig für Online-Buchungen über die Website und Google Business</div>
+                <h4>{t.rules.title}</h4>
+                <div className="hint">{t.rules.hint}</div>
               </div>
             </div>
 
             <div className="form-grid">
               <div className="form-row">
-                <label className="form-label">Minimale Vorlaufzeit</label>
+                <label className="form-label">{t.rules.minAdvance}</label>
                 <select
                   className="form-input"
                   value={editedConfig.bookingRules.minAdvanceBookingHours}
@@ -502,16 +504,16 @@ export default function SettingsView({
                     bookingRules: { ...editedConfig.bookingRules, minAdvanceBookingHours: parseInt(e.target.value, 10) },
                   })}
                 >
-                  <option value={0}>0 Stunden (sofort buchbar)</option>
-                  <option value={2}>2 Stunden</option>
-                  <option value={4}>4 Stunden</option>
-                  <option value={12}>12 Stunden</option>
-                  <option value={24}>24 Stunden</option>
+                  <option value={0}>{t.rules.hoursImmediate}</option>
+                  <option value={2}>{t.rules.hours2}</option>
+                  <option value={4}>{t.rules.hours4}</option>
+                  <option value={12}>{t.rules.hours12}</option>
+                  <option value={24}>{t.rules.hours24}</option>
                 </select>
               </div>
 
               <div className="form-row">
-                <label className="form-label">Stornierung bis</label>
+                <label className="form-label">{t.rules.cancellation}</label>
                 <select
                   className="form-input"
                   value={editedConfig.bookingRules.cancellationPolicyHours}
@@ -520,14 +522,14 @@ export default function SettingsView({
                     bookingRules: { ...editedConfig.bookingRules, cancellationPolicyHours: parseInt(e.target.value, 10) },
                   })}
                 >
-                  <option value={0}>Jederzeit</option>
-                  <option value={24}>24 Stunden vor Termin</option>
-                  <option value={48}>48 Stunden vor Termin</option>
+                  <option value={0}>{t.rules.anytime}</option>
+                  <option value={24}>{t.rules.cancel24}</option>
+                  <option value={48}>{t.rules.cancel48}</option>
                 </select>
               </div>
 
               <div className="form-row">
-                <label className="form-label">Max. Nachfassversuche</label>
+                <label className="form-label">{t.rules.maxFollowUp}</label>
                 <select
                   className="form-input"
                   value={editedConfig.bookingRules.maxFollowUpAttempts}
@@ -536,14 +538,14 @@ export default function SettingsView({
                     bookingRules: { ...editedConfig.bookingRules, maxFollowUpAttempts: parseInt(e.target.value, 10) },
                   })}
                 >
-                  <option value={1}>1 Versuch</option>
-                  <option value={2}>2 Versuche</option>
-                  <option value={3}>3 Versuche</option>
+                  <option value={1}>{t.rules.attempts1}</option>
+                  <option value={2}>{t.rules.attempts2}</option>
+                  <option value={3}>{t.rules.attempts3}</option>
                 </select>
               </div>
 
               <div className="form-row">
-                <label className="form-label">Wartezeit Rückgewinnung (Std.)</label>
+                <label className="form-label">{t.rules.recoveryWait}</label>
                 <select
                   className="form-input"
                   value={editedConfig.bookingRules.recoveryWaitHours}
@@ -552,17 +554,17 @@ export default function SettingsView({
                     bookingRules: { ...editedConfig.bookingRules, recoveryWaitHours: parseInt(e.target.value, 10) },
                   })}
                 >
-                  <option value={24}>24 Stunden</option>
-                  <option value={48}>48 Stunden</option>
-                  <option value={72}>72 Stunden</option>
-                  <option value={168}>1 Woche</option>
+                  <option value={24}>{t.rules.recovery24}</option>
+                  <option value={48}>{t.rules.recovery48}</option>
+                  <option value={72}>{t.rules.recovery72}</option>
+                  <option value={168}>{t.rules.recovery168}</option>
                 </select>
               </div>
             </div>
 
             {isSaving && (
               <p style={{ marginTop: "12px", fontSize: "13px", color: "var(--color-text-muted)" }}>
-                Wird gespeichert...
+                {t.load.savingInline}
               </p>
             )}
           </section>

@@ -740,6 +740,77 @@
       "notes": "Notizen",
       "cancelled": "Storniert",
       "remindersCount": "{count}x"
+    },
+    "settings": {
+      "header": {
+        "breadcrumb": "Studio-Einstellungen",
+        "title": "Einstellungen",
+        "discard": "Verwerfen",
+        "save": "Änderungen speichern",
+        "saving": "Wird gespeichert..."
+      },
+      "nav": {
+        "services": "Leistungen & Preise",
+        "hours": "Öffnungszeiten",
+        "closed": "Geschlossene Tage",
+        "rules": "Buchungsregeln"
+      },
+      "load": {
+        "loading": "Lädt...",
+        "errorTitle": "Fehler beim Laden",
+        "loadError": "Einstellungen konnten nicht geladen werden.",
+        "saved": "Gespeichert ✓",
+        "saveFailed": "Speichern fehlgeschlagen.",
+        "savingInline": "Wird gespeichert..."
+      },
+      "services": {
+        "title": "Leistungen & Preise",
+        "activeCount": "{count} aktive Leistungen",
+        "add": "+ Leistung hinzufügen",
+        "name": "Name",
+        "duration": "Dauer (Min)",
+        "price": "Preis (€)",
+        "category": "Kategorie",
+        "namePlaceholder": "Leistungsname",
+        "categoryPlaceholder": "Kategorie",
+        "pricePlaceholder": "0.00"
+      },
+      "hours": {
+        "title": "Öffnungszeiten",
+        "hint": "Standard-Wochenzeiten · Ausnahmen unter \"Geschlossene Tage\"",
+        "open": "geöffnet"
+      },
+      "closed": {
+        "title": "Geschlossene Tage & Feiertage",
+        "hint": "Einzelne Tage oder Zeiträume, an denen keine Buchungen möglich sind",
+        "add": "+ Tag hinzufügen",
+        "labelPlaceholder": "Bezeichnung (z.B. Staatsfeiertag)",
+        "empty": "Keine geschlossenen Tage eingetragen.",
+        "remove": "Entfernen"
+      },
+      "rules": {
+        "title": "Buchungsregeln",
+        "hint": "Gültig für Online-Buchungen über die Website und Google Business",
+        "minAdvance": "Minimale Vorlaufzeit",
+        "cancellation": "Stornierung bis",
+        "maxFollowUp": "Max. Nachfassversuche",
+        "recoveryWait": "Wartezeit Rückgewinnung (Std.)",
+        "hoursImmediate": "0 Stunden (sofort buchbar)",
+        "hours2": "2 Stunden",
+        "hours4": "4 Stunden",
+        "hours12": "12 Stunden",
+        "hours24": "24 Stunden",
+        "anytime": "Jederzeit",
+        "cancel24": "24 Stunden vor Termin",
+        "cancel48": "48 Stunden vor Termin",
+        "attempts1": "1 Versuch",
+        "attempts2": "2 Versuche",
+        "attempts3": "3 Versuche",
+        "recovery24": "24 Stunden",
+        "recovery48": "48 Stunden",
+        "recovery72": "72 Stunden",
+        "recovery168": "1 Woche"
+      }
     }
   }
 }

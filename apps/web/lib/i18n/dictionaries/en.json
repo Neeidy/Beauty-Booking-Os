@@ -740,6 +740,77 @@
       "notes": "Notes",
       "cancelled": "Cancelled",
       "remindersCount": "{count}x"
+    },
+    "settings": {
+      "header": {
+        "breadcrumb": "Studio Settings",
+        "title": "Settings",
+        "discard": "Discard",
+        "save": "Save changes",
+        "saving": "Saving..."
+      },
+      "nav": {
+        "services": "Services & Prices",
+        "hours": "Opening Hours",
+        "closed": "Closed Days",
+        "rules": "Booking Rules"
+      },
+      "load": {
+        "loading": "Loading...",
+        "errorTitle": "Failed to load",
+        "loadError": "Settings could not be loaded.",
+        "saved": "Saved ✓",
+        "saveFailed": "Save failed.",
+        "savingInline": "Saving..."
+      },
+      "services": {
+        "title": "Services & Prices",
+        "activeCount": "{count} active services",
+        "add": "+ Add service",
+        "name": "Name",
+        "duration": "Duration (min)",
+        "price": "Price (€)",
+        "category": "Category",
+        "namePlaceholder": "Service name",
+        "categoryPlaceholder": "Category",
+        "pricePlaceholder": "0.00"
+      },
+      "hours": {
+        "title": "Opening Hours",
+        "hint": "Standard weekly hours · exceptions under \"Closed Days\"",
+        "open": "open"
+      },
+      "closed": {
+        "title": "Closed Days & Holidays",
+        "hint": "Individual days or periods when no bookings are possible",
+        "add": "+ Add day",
+        "labelPlaceholder": "Label (e.g. public holiday)",
+        "empty": "No closed days entered.",
+        "remove": "Remove"
+      },
+      "rules": {
+        "title": "Booking Rules",
+        "hint": "Applies to online bookings via the website and Google Business",
+        "minAdvance": "Minimum lead time",
+        "cancellation": "Cancellation until",
+        "maxFollowUp": "Max. follow-up attempts",
+        "recoveryWait": "Recovery wait time (hrs)",
+        "hoursImmediate": "0 hours (bookable immediately)",
+        "hours2": "2 hours",
+        "hours4": "4 hours",
+        "hours12": "12 hours",
+        "hours24": "24 hours",
+        "anytime": "Anytime",
+        "cancel24": "24 hours before appointment",
+        "cancel48": "48 hours before appointment",
+        "attempts1": "1 attempt",
+        "attempts2": "2 attempts",
+        "attempts3": "3 attempts",
+        "recovery24": "24 hours",
+        "recovery48": "48 hours",
+        "recovery72": "72 hours",
+        "recovery168": "1 week"
+      }
     }
   }
 }
