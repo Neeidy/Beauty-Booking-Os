@@ -74,8 +74,10 @@ export default async function RootLayout({
       <body className="font-sans antialiased" style={{ backgroundColor: "var(--color-bg)" }}>
         <I18nProvider locale={locale} dict={dict}>
           {children}
-          <LocaleToggle />
-          <ThemeToggle />
+          <div className="floating-controls">
+            <ThemeToggle />
+            <LocaleToggle />
+          </div>
         </I18nProvider>
       </body>
     </html>

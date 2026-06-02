@@ -15,14 +15,12 @@ export default function ThemeToggle() {
   }, []);
 
   return (
-    <div className="floating-controls">
-      <button
-        className="theme-toggle"
-        onClick={() => setDark((d) => !d)}
-        aria-label={dark ? "Light mode" : "Dark mode"}
-      >
-        {dark ? "☀️" : "🌙"}
-      </button>
-    </div>
+    <button
+      className="theme-toggle"
+      onClick={() => setDark((d) => !d)}
+      aria-label={dark ? "Light mode" : "Dark mode"}
+    >
+      {dark ? "☀️" : "🌙"}
+    </button>
   );
 }
