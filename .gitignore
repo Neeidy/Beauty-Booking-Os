@@ -44,3 +44,8 @@ NOTLAR.txt
 .env*.local
 .claude/worktrees/
 pixel-agents/
+
+# Cleanup additions
+*.rar
+.gstack/
+Beauty OS/

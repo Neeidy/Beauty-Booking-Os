@@ -231,88 +231,11 @@ booked | lost | spam
 
 ---
 
-## V2 SPRINT SEQUENCE
-
-| Sprint | Feature | Status | Tests |
-|---|---|---|---|
-| V2-1 | Admin Front Desk Kanban | ✅ DONE | 231/231 |
-| V2-2 | Customer Profile + History | ✅ DONE | 239/239 |
-| V2-3 | Admin Weekly Calendar | ✅ DONE | 247/247 |
-| V2-4 | Live Slot Selection (customer) | ✅ DONE | 255/255 |
-| V2-5 | Waiting List (Warteliste) | ✅ DONE | 265/265 |
-| V2-6 | Business Hours Config + Bug Fixes | ✅ DONE | 270/270 |
-| V2-7 | Staff Profilleri (Config-Driven) | ✅ DONE | 274/274 |
-| V2-8 | Google Business Booking | ✅ DONE | 278/278 |
-| V2-9 | Google Reviews Automation | ✅ DONE | 282/282 |
-| V2-10 | Rebooking Hatırlatması | ✅ DONE | 290/290 |
-| V2-11 | Slot Reservation + Locking | ✅ DONE | 290/290 |
-| V2-12 | Admin Settings Edit | ✅ DONE | 298/298 |
-| V2-13 | Staff CRUD + Hizmet Bağlantısı | ✅ DONE | 306/306 |
-
----
-
 ## DEBUGGING FIRST STOP
 
 Any runtime issue → check `event_logs` table + admin `/logs` page first.
 Second stop: `pnpm typecheck` → `pnpm test`.
 Never commit with failing tests.
-
----
-
-## GSTACK
-
-gstack is installed at `~/.claude/skills/gstack`.
-
-**Web browsing:** use `/browse` from gstack for all web browsing. Never use `mcp__claude-in-chrome__*` tools.
-
-**Note:** `./setup` requires bun (`bun.sh`) — run it once bun is installed to enable the `/browse` browser binary and `/qa` skills.
-
-**Available skills:**
-
-| Skill | Purpose |
-|---|---|
-| `/office-hours` | Product thinking — describe what you're building |
-| `/plan-ceo-review` | CEO review of a feature idea |
-| `/plan-eng-review` | Engineering review of a plan |
-| `/plan-design-review` | Design review of a plan |
-| `/plan-devex-review` | DX/ergonomics review |
-| `/design-consultation` | Design consultation session |
-| `/design-shotgun` | Rapid multi-angle design exploration |
-| `/design-html` | Generate HTML/CSS design |
-| `/design-review` | Catch AI design slop |
-| `/review` | Code review before shipping |
-| `/ship` | Ship a PR end-to-end |
-| `/land-and-deploy` | Land and deploy after merge |
-| `/canary` | Canary deploy check |
-| `/benchmark` | Benchmark performance |
-| `/browse` | Web browsing (requires bun setup) |
-| `/connect-chrome` | Connect to Chrome browser |
-| `/qa` | Full QA pass on a URL |
-| `/qa-only` | QA without setup steps |
-| `/setup-browser-cookies` | Set up browser cookies |
-| `/setup-deploy` | Set up deploy pipeline |
-| `/retro` | Sprint retrospective |
-| `/investigate` | Deep investigation of a problem |
-| `/document-release` | Document a release |
-| `/codex` | Codex-style agentic task |
-| `/cso` | Security audit (OWASP + STRIDE) |
-| `/autoplan` | Auto-generate an implementation plan |
-| `/devex-review` | Developer experience review |
-| `/careful` | Extra-careful implementation mode |
-| `/freeze` | Freeze a file from AI edits |
-| `/guard` | Guard against regressions |
-| `/unfreeze` | Unfreeze a frozen file |
-| `/gstack-upgrade` | Upgrade gstack to latest |
-| `/learn` | Learn from codebase patterns |
-
----
-
-## STAFF PAGE — BACKLOG (not started)
-
-These features were discussed but not yet implemented. Pick up when ready:
-
-- **30-günlük randevu sayısı per staff:** `bookings` tablosunda staff bilgisi şu an `notes` alanında serbest metin. Doğru sayı için bookings'e `staffId` kolonu gerekir (schema değişikliği) veya notes parsing yapılır. Staff card'da göstermek için `/api/admin/staff` GET'i bu sayıyı da döndürmeli.
-- **Yıldız puanı ortalaması per staff:** V2-9 Google Reviews entegrasyonu salon geneli. Per-staff rating için review'lara staff etiketleme gerekir (Google API'den gelmiyor, manuel etiket gerekir). Şimdilik gösterilemez.
 
 ---
 
