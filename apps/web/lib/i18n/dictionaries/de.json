@@ -324,6 +324,11 @@
       "rebookCta": "Neuen Termin buchen",
       "privacy": "Datenschutz",
       "backHome": "Zurück zur Startseite"
+    },
+    "datePicker": {
+      "weekdaysShort": ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"],
+      "prevMonth": "Vorheriger Monat",
+      "nextMonth": "Nächster Monat"
     }
   },
   "legal": {

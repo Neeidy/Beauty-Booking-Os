@@ -1,14 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 
 interface DatePickerProps {
   selectedDate: string | null;
   onDateChange: (date: string) => void;
   disabled?: boolean;
 }
-
-const WEEKDAY_LABELS = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
 
 function toDateString(year: number, month: number, day: number): string {
   const mm = String(month + 1).padStart(2, "0");
@@ -29,6 +28,8 @@ function addDaysStr(dateStr: string, days: number): string {
 }
 
 export default function DatePicker({ selectedDate, onDateChange, disabled = false }: DatePickerProps) {
+  const { dict, locale } = useI18n();
+  const dp = dict.booking.datePicker;
   const [viewYear, setViewYear] = useState(() => new Date().getFullYear());
   const [viewMonth, setViewMonth] = useState(() => new Date().getMonth()); // 0-indexed
 
@@ -47,8 +48,8 @@ export default function DatePicker({ selectedDate, onDateChange, disabled = fals
   const isCurrentMonth = viewYear === todayYear && viewMonth === todayMonth;
   const canGoForward = viewYear < maxYear || (viewYear === maxYear && viewMonth < maxMonth);
 
-  // Month header label (German)
-  const monthLabel = new Intl.DateTimeFormat("de-AT", {
+  // Month header label (locale-aware)
+  const monthLabel = new Intl.DateTimeFormat(locale === "de" ? "de-AT" : "en-GB", {
     month: "long",
     year: "numeric",
     timeZone: "UTC",
@@ -115,7 +116,7 @@ export default function DatePicker({ selectedDate, onDateChange, disabled = fals
             color: isCurrentMonth ? "var(--color-text-muted)" : "var(--color-primary)",
             cursor: isCurrentMonth ? "default" : "pointer",
           }}
-          aria-label="Vorheriger Monat"
+          aria-label={dp.prevMonth}
         >
           ←
         </button>
@@ -134,7 +135,7 @@ export default function DatePicker({ selectedDate, onDateChange, disabled = fals
             color: !canGoForward ? "var(--color-text-muted)" : "var(--color-primary)",
             cursor: !canGoForward ? "default" : "pointer",
           }}
-          aria-label="Nächster Monat"
+          aria-label={dp.nextMonth}
         >
           →
         </button>
@@ -145,9 +146,9 @@ export default function DatePicker({ selectedDate, onDateChange, disabled = fals
         className="grid grid-cols-7 mb-1"
         role="row"
       >
-        {WEEKDAY_LABELS.map((label) => (
+        {dp.weekdaysShort.map((label, i) => (
           <div
-            key={label}
+            key={i}
             className="text-center text-xs py-1"
             style={{ color: "var(--color-text-muted)" }}
           >

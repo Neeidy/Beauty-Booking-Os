@@ -324,6 +324,11 @@
       "rebookCta": "Book a new appointment",
       "privacy": "Privacy",
       "backHome": "Back to home"
+    },
+    "datePicker": {
+      "weekdaysShort": ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
+      "prevMonth": "Previous month",
+      "nextMonth": "Next month"
     }
   },
   "legal": {
