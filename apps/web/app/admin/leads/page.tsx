@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import LeadTable from "../../../components/admin/LeadTable";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 
 interface Lead {
   id: string;
@@ -29,6 +30,10 @@ const STATUS_OPTIONS = ["", "new", "contacted", "qualified", "booking_started", 
 const SOURCE_OPTIONS = ["", "web_form", "instagram_dm", "whatsapp", "email", "phone", "walk_in"];
 
 export default function LeadsPage() {
+  const { dict } = useI18n();
+  const t = dict.admin.leads;
+  const statusLabels = dict.admin.statusLabels as Record<string, string>;
+  const sourceLabels = dict.admin.sourceLabels as Record<string, string>;
   const [data, setData] = useState<LeadsResponse | null>(null);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -76,11 +81,11 @@ export default function LeadsPage() {
     <>
       <header className="adm-header">
         <div className="adm-header-title">
-          <span className="breadcrumb">CRM</span>
-          <h2>Leads</h2>
+          <span className="breadcrumb">{t.breadcrumb}</span>
+          <h2>{t.title}</h2>
         </div>
         <div className="adm-header-actions">
-          <button onClick={fetchLeads} className="btn btn-ghost btn-sm">⟳ Aktualisieren</button>
+          <button onClick={fetchLeads} className="btn btn-ghost btn-sm">{t.refresh}</button>
         </div>
       </header>
       <main className="adm-body">
@@ -89,12 +94,12 @@ export default function LeadsPage() {
         <div className="flex flex-wrap gap-3 items-end">
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--color-text-muted)" }}>
-              Suche
+              {t.labelSearch}
             </label>
             <input
               type="text"
               value={search}
-              placeholder="Name, E-Mail, Telefon…"
+              placeholder={t.searchPlaceholder}
               onChange={(e) => { setSearch(e.target.value); handleFilterChange(); }}
               className="rounded-sm border px-3 py-1.5 text-sm"
               style={{ borderColor: "var(--color-accent)", color: "var(--color-primary)", minWidth: "200px" }}
@@ -102,7 +107,7 @@ export default function LeadsPage() {
           </div>
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--color-text-muted)" }}>
-              Status
+              {t.labelStatus}
             </label>
             <select
               value={status}
@@ -111,13 +116,13 @@ export default function LeadsPage() {
               style={{ borderColor: "var(--color-accent)", color: "var(--color-primary)" }}
             >
               {STATUS_OPTIONS.map((s) => (
-                <option key={s} value={s}>{s === "" ? "Alle Status" : s}</option>
+                <option key={s} value={s}>{s === "" ? t.allStatus : (statusLabels[s] ?? s)}</option>
               ))}
             </select>
           </div>
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--color-text-muted)" }}>
-              Kanal
+              {t.labelChannel}
             </label>
             <select
               value={source}
@@ -126,13 +131,13 @@ export default function LeadsPage() {
               style={{ borderColor: "var(--color-accent)", color: "var(--color-primary)" }}
             >
               {SOURCE_OPTIONS.map((s) => (
-                <option key={s} value={s}>{s === "" ? "Alle Kanäle" : s}</option>
+                <option key={s} value={s}>{s === "" ? t.allChannels : (sourceLabels[s] ?? s)}</option>
               ))}
             </select>
           </div>
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--color-text-muted)" }}>
-              Von
+              {t.labelFrom}
             </label>
             <input
               type="date"
@@ -144,7 +149,7 @@ export default function LeadsPage() {
           </div>
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--color-text-muted)" }}>
-              Bis
+              {t.labelTo}
             </label>
             <input
               type="date"
@@ -159,7 +164,10 @@ export default function LeadsPage() {
         {/* Results info */}
         {data && (
           <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>
-            {data.total} Leads gefunden — Seite {data.page} von {data.totalPages}
+            {t.resultsInfo
+              .replace("{total}", String(data.total))
+              .replace("{page}", String(data.page))
+              .replace("{totalPages}", String(data.totalPages))}
           </p>
         )}
 
@@ -167,11 +175,11 @@ export default function LeadsPage() {
         <div className="rounded-sm border" style={{ borderColor: "var(--color-accent)", backgroundColor: "#fff" }}>
           {error ? (
             <div className="p-4 text-sm" style={{ color: "#dc2626" }}>
-              Fehler beim Laden. Bitte Seite neu laden.
+              {t.loadError}
             </div>
           ) : loading ? (
             <div className="p-4 text-sm" style={{ color: "var(--color-text-muted)" }}>
-              Wird geladen…
+              {t.loading}
             </div>
           ) : (
             <LeadTable leads={data?.leads ?? []} />
@@ -187,7 +195,7 @@ export default function LeadsPage() {
               className="rounded-sm border px-3 py-1.5 text-sm disabled:opacity-40"
               style={{ borderColor: "var(--color-accent)", color: "var(--color-primary)" }}
             >
-              ← Zurück
+              {t.back}
             </button>
             <span className="text-sm" style={{ color: "var(--color-text-muted)" }}>
               {page} / {data.totalPages}
@@ -198,7 +206,7 @@ export default function LeadsPage() {
               className="rounded-sm border px-3 py-1.5 text-sm disabled:opacity-40"
               style={{ borderColor: "var(--color-accent)", color: "var(--color-primary)" }}
             >
-              Weiter →
+              {t.next}
             </button>
           </div>
         )}

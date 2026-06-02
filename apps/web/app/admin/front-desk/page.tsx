@@ -4,6 +4,8 @@ import FrontDeskBoard from "./FrontDeskBoard";
 import type { FrontDeskLead } from "./LeadCard";
 import { getDb, leads } from "@beauty-booking/db";
 import { eq, desc } from "drizzle-orm";
+import { getLocale } from "@/lib/i18n/server";
+import { getDictionary } from "@/lib/i18n/dictionary";
 
 const CLIENT_ID = process.env["DEMO_CLIENT_ID"] ?? "00000000-0000-0000-0000-000000000000";
 
@@ -26,6 +28,9 @@ function statusToLane(status: string): Lane {
 }
 
 export default async function FrontDeskPage() {
+  const dict = getDictionary(await getLocale());
+  const t = dict.admin.frontDesk;
+
   const empty: FrontDeskColumns = {
     new: [], contacted: [], qualified: [], booked: [], lost: [],
   };
@@ -57,12 +62,12 @@ export default async function FrontDeskPage() {
     <>
       <header className="adm-header">
         <div className="adm-header-title">
-          <span className="breadcrumb">Lead Management</span>
-          <h2>Front Desk</h2>
+          <span className="breadcrumb">{t.breadcrumb}</span>
+          <h2>{t.title}</h2>
         </div>
         <div className="adm-header-actions">
-          <button className="btn btn-ghost btn-sm">Exportieren</button>
-          <button className="btn btn-primary btn-sm">+ Neuer Lead</button>
+          <button className="btn btn-ghost btn-sm">{t.export}</button>
+          <button className="btn btn-primary btn-sm">{t.newLead}</button>
         </div>
       </header>
 

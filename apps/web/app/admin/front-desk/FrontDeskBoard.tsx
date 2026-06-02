@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import LeadCard, { type FrontDeskLead } from "./LeadCard";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 
 type Lane = "new" | "contacted" | "qualified" | "booked" | "lost";
 
@@ -17,12 +18,13 @@ interface FrontDeskBoardProps {
   initialColumns: FrontDeskColumns;
 }
 
-const COLUMN_CONFIG: { key: Lane; title: string }[] = [
-  { key: "new",       title: "Neu" },
-  { key: "contacted", title: "Kontaktiert" },
-  { key: "qualified", title: "Qualifiziert" },
-  { key: "booked",    title: "Gebucht" },
-  { key: "lost",      title: "Verloren / Spam" },
+// Column order is static; titles come from dict.admin.frontDesk.col*.
+const COLUMN_KEYS: { key: Lane; titleKey: "colNew" | "colContacted" | "colQualified" | "colBooked" | "colLost" }[] = [
+  { key: "new",       titleKey: "colNew" },
+  { key: "contacted", titleKey: "colContacted" },
+  { key: "qualified", titleKey: "colQualified" },
+  { key: "booked",    titleKey: "colBooked" },
+  { key: "lost",      titleKey: "colLost" },
 ];
 
 function statusToLane(status: string): Lane {
@@ -34,6 +36,8 @@ function statusToLane(status: string): Lane {
 }
 
 export default function FrontDeskBoard({ initialColumns }: FrontDeskBoardProps) {
+  const { dict } = useI18n();
+  const t = dict.admin.frontDesk;
   const [columns, setColumns] = useState<FrontDeskColumns>(initialColumns);
   const [error, setError] = useState<string | null>(null);
   const [sourceFilter, setSourceFilter] = useState<string>("all");
@@ -74,7 +78,7 @@ export default function FrontDeskBoard({ initialColumns }: FrontDeskBoardProps) 
         [fromLane]: [...prev[fromLane], lead],
         [toLane]: prev[toLane].filter((l) => l.id !== leadId),
       }));
-      setError("Status konnte nicht aktualisiert werden.");
+      setError(t.errorStatusUpdate);
       setTimeout(() => setError(null), 3000);
     }
   }
@@ -93,37 +97,37 @@ export default function FrontDeskBoard({ initialColumns }: FrontDeskBoardProps) 
     <>
       <div className="adm-toolbar">
         <div className="adm-search">
-          <input type="search" placeholder="Suche nach Name, Telefon oder Nachricht..." readOnly />
+          <input type="search" placeholder={t.searchPlaceholder} readOnly />
         </div>
         <button
           className={`adm-filter-chip${sourceFilter === "all" ? " active" : ""}`}
           onClick={() => setSourceFilter("all")}
         >
-          Alle Quellen
+          {t.filterAll}
         </button>
         <button
           className={`adm-filter-chip${sourceFilter === "web" ? " active" : ""}`}
           onClick={() => setSourceFilter("web")}
         >
-          🌐 Web
+          {t.filterWeb}
         </button>
         <button
           className={`adm-filter-chip${sourceFilter === "google" ? " active" : ""}`}
           onClick={() => setSourceFilter("google")}
         >
-          📱 Google
+          {t.filterGoogle}
         </button>
         <button
           className={`adm-filter-chip${sourceFilter === "phone" ? " active" : ""}`}
           onClick={() => setSourceFilter("phone")}
         >
-          ☎ Telefon
+          {t.filterPhone}
         </button>
         <button
           className={`adm-filter-chip${sourceFilter === "instagram" ? " active" : ""}`}
           onClick={() => setSourceFilter("instagram")}
         >
-          📸 Instagram
+          {t.filterInstagram}
         </button>
       </div>
 
@@ -143,14 +147,14 @@ export default function FrontDeskBoard({ initialColumns }: FrontDeskBoardProps) 
 
       <div className="adm-body">
         <div className="kanban">
-          {COLUMN_CONFIG.map(({ key, title }) => {
+          {COLUMN_KEYS.map(({ key, titleKey }) => {
             const items = columns[key].filter(filterLead);
             return (
               <section key={key} className="kanban-col" data-lane={key}>
                 <header className="kanban-col-head">
                   <span className="kanban-col-head-left">
                     <span className="kanban-col-dot" />
-                    {title}
+                    {t[titleKey]}
                   </span>
                   <span className="kanban-count">{items.length}</span>
                 </header>
@@ -176,7 +180,7 @@ export default function FrontDeskBoard({ initialColumns }: FrontDeskBoardProps) 
                   )}
                 </div>
                 {key === "new" && (
-                  <button className="kanban-col-new-btn">+ Lead hinzufügen</button>
+                  <button className="kanban-col-new-btn">{t.addLead}</button>
                 )}
               </section>
             );

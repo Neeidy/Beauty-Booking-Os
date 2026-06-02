@@ -3,18 +3,13 @@ export const dynamic = "force-dynamic";
 import Link from "next/link";
 import { getDb, leads, bookings, services } from "@beauty-booking/db";
 import { eq, desc } from "drizzle-orm";
+import { getLocale } from "@/lib/i18n/server";
+import { getDictionary } from "@/lib/i18n/dictionary";
+import type { Locale } from "@/lib/i18n/locales";
 
 const CLIENT_ID = process.env.DEMO_CLIENT_ID ?? "00000000-0000-0000-0000-000000000000";
 
 const AVATAR_VARIANTS = ["", " v2", " v3", " v4"];
-
-const SOURCE_BADGE: Record<string, string> = {
-  web_form:     "🌐 Web",
-  google:       "📱 Google",
-  google_business: "📱 Google",
-  phone:        "☎ Telefon",
-  instagram_dm: "📸 Instagram",
-};
 
 interface CustomerRow {
   id: string;
@@ -118,15 +113,20 @@ async function getCustomers(): Promise<CustomerRow[]> {
   return customers;
 }
 
-function formatDate(iso: string | null): string {
+function formatDate(iso: string | null, locale: Locale): string {
   if (!iso) return "—";
-  return new Intl.DateTimeFormat("de-AT", {
+  return new Intl.DateTimeFormat(locale === "de" ? "de-AT" : "en-GB", {
     day: "numeric", month: "short", year: "numeric",
     timeZone: "Europe/Vienna",
   }).format(new Date(iso));
 }
 
 export default async function ClientsPage() {
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
+  const t = dict.admin.clients;
+  const sourceLabels = dict.admin.sourceLabels as Record<string, string>;
+
   let customers: CustomerRow[] = [];
   try {
     customers = await getCustomers();
@@ -138,48 +138,48 @@ export default async function ClientsPage() {
     <>
       <header className="adm-header">
         <div className="adm-header-title">
-          <span className="breadcrumb">CRM</span>
+          <span className="breadcrumb">{t.breadcrumb}</span>
           <h2>
-            Kunden{" "}
+            {t.title}{" "}
             <span style={{ color: "var(--color-text-muted)", fontWeight: 400, fontSize: "14px", marginLeft: "8px" }}>
-              · {customers.length} aktiv
+              {t.activeSuffix.replace("{count}", String(customers.length))}
             </span>
           </h2>
         </div>
         <div className="adm-header-actions">
-          <button className="btn btn-ghost btn-sm">Exportieren</button>
-          <button className="btn btn-primary btn-sm">+ Neuer Kunde</button>
+          <button className="btn btn-ghost btn-sm">{t.export}</button>
+          <button className="btn btn-primary btn-sm">{t.newCustomer}</button>
         </div>
       </header>
 
       <div className="adm-toolbar">
         <div className="adm-search">
-          <input type="search" placeholder="Name, E-Mail oder Telefon..." readOnly />
+          <input type="search" placeholder={t.searchPlaceholder} readOnly />
         </div>
-        <button className="adm-filter-chip active">Alle</button>
-        <button className="adm-filter-chip">⭐ VIP ({customers.filter((c) => c.isVip).length})</button>
-        <button className="adm-filter-chip">Aktiv (90 T)</button>
-        <button className="adm-filter-chip">Inaktiv (&gt;180 T)</button>
-        <button className="adm-filter-chip">Neu (30 T)</button>
+        <button className="adm-filter-chip active">{t.filterAll}</button>
+        <button className="adm-filter-chip">{t.filterVip.replace("{count}", String(customers.filter((c) => c.isVip).length))}</button>
+        <button className="adm-filter-chip">{t.filterActive90}</button>
+        <button className="adm-filter-chip">{t.filterInactive180}</button>
+        <button className="adm-filter-chip">{t.filterNew30}</button>
       </div>
 
       <div className="adm-body">
         {customers.length === 0 ? (
           <div className="empty">
             <div className="empty-ico">👤</div>
-            <h4>Noch keine Kunden</h4>
-            <p>Wenn Leads eingehen, erscheinen sie hier.</p>
+            <h4>{t.emptyTitle}</h4>
+            <p>{t.emptyText}</p>
           </div>
         ) : (
           <table className="clients-table">
             <thead>
               <tr>
-                <th>Kunde</th>
-                <th>Termine</th>
-                <th>Umsatz</th>
-                <th>Letzter Besuch</th>
-                <th>Nächster Termin</th>
-                <th>Quelle</th>
+                <th>{t.thCustomer}</th>
+                <th>{t.thAppointments}</th>
+                <th>{t.thRevenue}</th>
+                <th>{t.thLastVisit}</th>
+                <th>{t.thNextAppointment}</th>
+                <th>{t.thSource}</th>
                 <th></th>
               </tr>
             </thead>
@@ -195,7 +195,7 @@ export default async function ClientsPage() {
                   .join("")
                   .toUpperCase();
                 const avatarVariant = AVATAR_VARIANTS[idx % AVATAR_VARIANTS.length] ?? "";
-                const sourceBadge = SOURCE_BADGE[c.source ?? ""] ?? null;
+                const sourceBadge = sourceLabels[c.source ?? ""] ?? null;
 
                 return (
                   <tr key={c.id}>
@@ -205,7 +205,7 @@ export default async function ClientsPage() {
                         <div className="client-name-wrap">
                           <span className="client-name">
                             {c.name ?? "—"}
-                            {c.isVip && <span className="client-vip">VIP</span>}
+                            {c.isVip && <span className="client-vip">{t.vip}</span>}
                           </span>
                           <span className="client-email">{c.email ?? c.phone ?? "—"}</span>
                         </div>
@@ -213,10 +213,10 @@ export default async function ClientsPage() {
                     </td>
                     <td className="client-stat">{c.totalBookings}</td>
                     <td className="client-stat">
-                      € {(c.totalRevenueCents / 100).toLocaleString("de-AT", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      € {(c.totalRevenueCents / 100).toLocaleString(locale === "de" ? "de-AT" : "en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </td>
-                    <td>{formatDate(c.lastVisit)}</td>
-                    <td>{formatDate(c.nextAppointment)}</td>
+                    <td>{formatDate(c.lastVisit, locale)}</td>
+                    <td>{formatDate(c.nextAppointment, locale)}</td>
                     <td>
                       {sourceBadge && <span className="src-badge">{sourceBadge}</span>}
                     </td>

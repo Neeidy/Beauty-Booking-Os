@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useI18n } from "@/lib/i18n/I18nProvider";
+import type { Dictionary } from "@/lib/i18n/dictionary";
 
 export interface FrontDeskLead {
   id: string;
@@ -34,23 +36,14 @@ const SOURCE_CLASS: Record<string, string> = {
   instagram: "src-instagram",
 };
 
-const SOURCE_LABEL: Record<string, string> = {
-  web_form: "🌐 Web",
-  google_business: "📱 Google",
-  google: "📱 Google",
-  phone: "☎ Telefon",
-  instagram_dm: "📸 Instagram",
-  instagram: "📸 Instagram",
-};
-
-function formatWhen(isoStr: string): string {
+function formatWhen(isoStr: string, rt: Dictionary["admin"]["relativeTime"]): string {
   const diff = Date.now() - new Date(isoStr).getTime();
   const mins = Math.floor(diff / 60000);
-  if (mins < 1) return "gerade eben";
-  if (mins < 60) return `vor ${mins} Min`;
+  if (mins < 1) return rt.justNow;
+  if (mins < 60) return rt.minutesAgo.replace("{m}", String(mins));
   const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `vor ${hrs} Std`;
-  return `vor ${Math.floor(hrs / 24)} Tagen`;
+  if (hrs < 24) return rt.hoursAgo.replace("{h}", String(hrs));
+  return rt.daysAgo.replace("{d}", String(Math.floor(hrs / 24)));
 }
 
 function confColor(confidence: number): string {
@@ -60,6 +53,9 @@ function confColor(confidence: number): string {
 }
 
 export default function LeadCard({ lead, lane, onStatusChange }: LeadCardProps) {
+  const { dict } = useI18n();
+  const t = dict.admin.leadCard;
+  const sourceLabels = dict.admin.sourceLabels as Record<string, string>;
   const [loading, setLoading] = useState(false);
 
   const isNeedsReview =
@@ -68,7 +64,7 @@ export default function LeadCard({ lead, lane, onStatusChange }: LeadCardProps) 
     lead.intentConfidence !== null && lead.intentConfidence >= 0.8;
 
   const srcClass = SOURCE_CLASS[lead.source ?? ""] ?? "";
-  const srcLabel = SOURCE_LABEL[lead.source ?? ""] ?? lead.source ?? "—";
+  const srcLabel = sourceLabels[lead.source ?? ""] ?? lead.source ?? "—";
 
   async function move(newStatus: string) {
     setLoading(true);
@@ -82,8 +78,8 @@ export default function LeadCard({ lead, lane, onStatusChange }: LeadCardProps) 
   return (
     <article className={`kanban-card${isNeedsReview ? " needs-review" : ""}`}>
       <div className="kanban-card-top">
-        <div className="kanban-name">{lead.customerName ?? "Unbekannt"}</div>
-        <div className="kanban-when">{formatWhen(lead.createdAt)}</div>
+        <div className="kanban-name">{lead.customerName ?? t.unknown}</div>
+        <div className="kanban-when">{formatWhen(lead.createdAt, dict.admin.relativeTime)}</div>
       </div>
 
       {lead.rawMessage && (
@@ -101,7 +97,7 @@ export default function LeadCard({ lead, lane, onStatusChange }: LeadCardProps) 
           <span className="kanban-pill">{lead.intent}</span>
         )}
         {isHighIntent && (
-          <span className="kanban-pill intent-high">High Intent</span>
+          <span className="kanban-pill intent-high">{t.highIntent}</span>
         )}
       </div>
 
@@ -109,7 +105,7 @@ export default function LeadCard({ lead, lane, onStatusChange }: LeadCardProps) 
         <div className="kanban-conf">
           {lead.intentConfidence !== null ? (
             <>
-              AI: {(lead.intentConfidence * 100).toFixed(0)}%
+              {t.aiPrefix} {(lead.intentConfidence * 100).toFixed(0)}%
               <span className="kanban-conf-bar">
                 <span
                   className="kanban-conf-fill"
@@ -121,7 +117,7 @@ export default function LeadCard({ lead, lane, onStatusChange }: LeadCardProps) 
               </span>
             </>
           ) : (
-            "AI: —"
+            `${t.aiPrefix} —`
           )}
         </div>
         <div className="kanban-act-btns">
@@ -129,7 +125,7 @@ export default function LeadCard({ lead, lane, onStatusChange }: LeadCardProps) 
             <>
               <button
                 className="kanban-ico-btn"
-                title="Kontaktiert"
+                title={t.titleContacted}
                 disabled={loading}
                 onClick={() => move("contacted")}
               >
@@ -137,7 +133,7 @@ export default function LeadCard({ lead, lane, onStatusChange }: LeadCardProps) 
               </button>
               <button
                 className="kanban-ico-btn"
-                title="Verloren"
+                title={t.titleLost}
                 disabled={loading}
                 onClick={() => move("lost")}
               >
@@ -149,7 +145,7 @@ export default function LeadCard({ lead, lane, onStatusChange }: LeadCardProps) 
             <>
               <button
                 className="kanban-ico-btn"
-                title="Qualifiziert"
+                title={t.titleQualified}
                 disabled={loading}
                 onClick={() => move("qualified")}
               >
@@ -157,7 +153,7 @@ export default function LeadCard({ lead, lane, onStatusChange }: LeadCardProps) 
               </button>
               <button
                 className="kanban-ico-btn"
-                title="Verloren"
+                title={t.titleLost}
                 disabled={loading}
                 onClick={() => move("lost")}
               >
@@ -168,7 +164,7 @@ export default function LeadCard({ lead, lane, onStatusChange }: LeadCardProps) 
           {lane === "qualified" && (
             <button
               className="kanban-ico-btn"
-              title="Buchen"
+              title={t.titleBook}
               disabled={loading}
               onClick={() => move("booked")}
             >
@@ -178,7 +174,7 @@ export default function LeadCard({ lead, lane, onStatusChange }: LeadCardProps) 
           {lane === "booked" && (
             <button
               className="kanban-ico-btn"
-              title="Details"
+              title={t.titleDetails}
               disabled={loading}
               onClick={() => undefined}
             >
@@ -188,7 +184,7 @@ export default function LeadCard({ lead, lane, onStatusChange }: LeadCardProps) 
           {lane === "lost" && (
             <button
               className="kanban-ico-btn"
-              title="Wiederherstellen"
+              title={t.titleRestore}
               disabled={loading}
               onClick={() => move("new")}
             >

@@ -4,6 +4,8 @@ import Link from "next/link";
 import ClientProfileView from "./ClientProfileView";
 import { getDb, bookings, services, leads } from "@beauty-booking/db";
 import { eq, desc, inArray, asc } from "drizzle-orm";
+import { getLocale } from "@/lib/i18n/server";
+import { getDictionary } from "@/lib/i18n/dictionary";
 
 interface ClientBooking {
   id: string;
@@ -186,6 +188,8 @@ export default async function ClientProfilePage({
   params: Promise<{ identifier: string }>;
 }) {
   const { identifier } = await params;
+  const dict = getDictionary(await getLocale());
+  const t = dict.admin.clients;
 
   let data: ClientProfileData | null = null;
   try {
@@ -199,13 +203,13 @@ export default async function ClientProfilePage({
       <header className="adm-header">
         <div className="adm-header-title">
           <span className="breadcrumb">
-            <Link href="/admin/clients" style={{ color: "inherit" }}>← Kunden</Link>
+            <Link href="/admin/clients" style={{ color: "inherit" }}>{t.profileBack}</Link>
             {data?.customer?.name ? ` / ${data.customer.name}` : ""}
           </span>
-          <h2>{data?.customer?.name ?? "Kundenprofil"}</h2>
+          <h2>{data?.customer?.name ?? t.profileTitle}</h2>
         </div>
         <div className="adm-header-actions">
-          <Link href="/admin/clients" className="btn btn-ghost btn-sm">← Zurück</Link>
+          <Link href="/admin/clients" className="btn btn-ghost btn-sm">{t.profileBackBtn}</Link>
         </div>
       </header>
       <div className="adm-body">
@@ -218,13 +222,13 @@ export default async function ClientProfilePage({
             padding: "12px 16px",
             fontSize: "14px",
           }}>
-            Profil konnte nicht geladen werden.{" "}
-            <Link href="/admin/leads" style={{ color: "var(--color-accent)", fontWeight: 600 }}>← Zurück</Link>
+            {t.profileLoadError}{" "}
+            <Link href="/admin/leads" style={{ color: "var(--color-accent)", fontWeight: 600 }}>{t.profileBackBtn}</Link>
           </div>
         ) : data.customer === null ? (
           <div style={{ textAlign: "center", padding: "64px 0", color: "var(--color-text-muted)", fontSize: "14px" }}>
-            Kunde nicht gefunden.{" "}
-            <Link href="/admin/leads" style={{ color: "var(--color-accent)" }}>← Zurück</Link>
+            {t.profileNotFound}{" "}
+            <Link href="/admin/leads" style={{ color: "var(--color-accent)" }}>{t.profileBackBtn}</Link>
           </div>
         ) : (
           <ClientProfileView data={data} />
