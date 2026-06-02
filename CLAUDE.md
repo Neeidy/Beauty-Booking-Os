@@ -11,6 +11,7 @@
 - **Next:** Frontend Redesign Workstream
 - **packages/db:** schema.ts updated for V2-11 (slot_reservations table). FROZEN again.
 - **DB schema:** Migration 003_slot_reservations.sql applied — slot_reservations table live
+- Known issues & deferred fixes → docs/known-issues.md
 
 ---
 
