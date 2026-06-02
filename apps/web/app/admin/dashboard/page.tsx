@@ -2,6 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useI18n } from "@/lib/i18n/I18nProvider";
+import type { Dictionary } from "@/lib/i18n/dictionary";
+import type { Locale } from "@/lib/i18n/locales";
+
+type DashDict = Dictionary["admin"]["dashboard"];
 
 interface DashboardStats {
   today: { newLeads: number; bookingsToday: number; pendingActions: number; remindersScheduled: number };
@@ -61,16 +66,16 @@ function getStatusPillClass(status: string): string {
   return "pending";
 }
 
-function getStatusLabel(status: string): string {
-  if (status === "confirmed" || status === "reminded") return "● Bestätigt";
-  if (status === "pending") return "● Ausstehend";
-  if (status === "cancelled") return "● Abgesagt";
-  if (status === "no_show") return "● Nicht erschienen";
-  if (status === "completed") return "● Abgeschlossen";
+function getStatusLabel(status: string, d: DashDict): string {
+  if (status === "confirmed" || status === "reminded") return d.statusConfirmed;
+  if (status === "pending") return d.statusPending;
+  if (status === "cancelled") return d.statusCancelled;
+  if (status === "no_show") return d.statusNoShow;
+  if (status === "completed") return d.statusCompleted;
   return `● ${status}`;
 }
 
-function getGreeting(): string {
+function getGreeting(d: DashDict): string {
   const hour = parseInt(
     new Intl.DateTimeFormat("de-AT", {
       hour: "numeric",
@@ -79,29 +84,31 @@ function getGreeting(): string {
     }).format(new Date()),
     10
   );
-  if (hour >= 5 && hour < 12) return "Guten Morgen, Admin 👋";
-  if (hour >= 12 && hour < 18) return "Guten Tag, Admin 👋";
-  return "Guten Abend, Admin 👋";
+  if (hour >= 5 && hour < 12) return d.greetingMorning;
+  if (hour >= 12 && hour < 18) return d.greetingDay;
+  return d.greetingEvening;
 }
 
-function getTodayLabel(): string {
+function getTodayLabel(locale: Locale): string {
   const now = new Date();
-  return now.toLocaleDateString("de-AT", {
+  return now.toLocaleDateString(locale === "de" ? "de-AT" : "en-GB", {
     weekday: "long", year: "numeric", month: "long", day: "numeric",
   });
 }
 
-function formatWhen(isoStr: string): string {
+function formatWhen(isoStr: string, d: DashDict): string {
   const diff = Date.now() - new Date(isoStr).getTime();
   const mins = Math.floor(diff / 60000);
-  if (mins < 1) return "gerade eben";
-  if (mins < 60) return `vor ${mins} min`;
+  if (mins < 1) return d.justNow;
+  if (mins < 60) return d.minutesAgo.replace("{m}", String(mins));
   const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `vor ${hrs} h`;
-  return `vor ${Math.floor(hrs / 24)} T`;
+  if (hrs < 24) return d.hoursAgo.replace("{h}", String(hrs));
+  return d.daysAgo.replace("{d}", String(Math.floor(hrs / 24)));
 }
 
 export default function DashboardPage() {
+  const { dict, locale } = useI18n();
+  const d = dict.admin.dashboard;
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [bookings, setBookings] = useState<TodayBooking[]>([]);
   const [leads, setLeads] = useState<RecentLead[]>([]);
@@ -136,13 +143,13 @@ export default function DashboardPage() {
     <div className="dash-main">
       <header className="dash-header">
         <div>
-          <h3>{getGreeting()}</h3>
-          <div className="dash-date">{getTodayLabel()}</div>
+          <h3>{getGreeting(d)}</h3>
+          <div className="dash-date">{getTodayLabel(locale)}</div>
         </div>
         <div className="dash-header-right">
           {stats?.escalationQueue != null && stats.escalationQueue > 0 && (
             <Link href="/admin/escalations" className="kanban-pill intent-high">
-              ⚠ {stats.escalationQueue} Eskalation{stats.escalationQueue > 1 ? "en" : ""}
+              ⚠ {stats.escalationQueue} {stats.escalationQueue > 1 ? d.escalationMany : d.escalationOne}
             </Link>
           )}
           <button className="dash-bell" aria-label="Notifications" style={{ opacity: 0.3, cursor: "not-allowed" }} disabled>🔔</button>
@@ -160,7 +167,7 @@ export default function DashboardPage() {
           fontSize: "14px",
           marginBottom: "24px",
         }}>
-          Fehler beim Laden der Statistiken. Bitte Seite neu laden.
+          {d.statErrorReload}
         </div>
       )}
 
@@ -169,10 +176,10 @@ export default function DashboardPage() {
           <div className="stat-num" style={{ color: "var(--color-accent)" }}>
             {stats?.today.bookingsToday ?? "—"}
           </div>
-          <div className="stat-label">Heute Termine</div>
+          <div className="stat-label">{d.todayAppointments}</div>
           <div className="stat-trend up">
             {stats?.today.remindersScheduled != null
-              ? `↑ ${stats.today.remindersScheduled} Erinnerungen`
+              ? d.remindersUp.replace("{count}", String(stats.today.remindersScheduled))
               : "—"}
           </div>
         </div>
@@ -180,27 +187,27 @@ export default function DashboardPage() {
           <div className="stat-num" style={{ color: "var(--color-emerald)" }}>
             {"—"}
           </div>
-          <div className="stat-label">Wochenumsatz</div>
+          <div className="stat-label">{d.weekRevenue}</div>
           <div className="stat-trend up">
-            {stats?.thisWeek.totalBookings ?? 0} Buchungen
+            {d.weekBookings.replace("{count}", String(stats?.thisWeek.totalBookings ?? 0))}
           </div>
         </div>
         <div className="stat-card">
           <div className="stat-num" style={{ color: "var(--color-amber)" }}>
             {stats?.today.newLeads ?? "—"}
           </div>
-          <div className="stat-label">Neue Leads</div>
+          <div className="stat-label">{d.newLeads}</div>
           <div className="stat-trend neutral">
-            {stats?.thisWeek.totalLeads ?? 0} diese Woche
+            {d.weekLeads.replace("{count}", String(stats?.thisWeek.totalLeads ?? 0))}
           </div>
         </div>
         <div className="stat-card">
           <div className="stat-num" style={{ color: "var(--color-rose)" }}>
             {stats?.today.pendingActions ?? "—"}
           </div>
-          <div className="stat-label">Ausstehend</div>
+          <div className="stat-label">{d.pending}</div>
           <div className={`stat-trend ${(stats?.today.pendingActions ?? 0) > 0 ? "warn" : "neutral"}`}>
-            {(stats?.today.pendingActions ?? 0) > 0 ? "Bestätigung nötig →" : "Alles erledigt"}
+            {(stats?.today.pendingActions ?? 0) > 0 ? d.confirmationNeeded : d.allDone}
           </div>
         </div>
       </div>
@@ -208,22 +215,22 @@ export default function DashboardPage() {
       <div className="dash-row">
         <div className="dash-card">
           <div className="dash-card-head">
-            <h4>Termine heute</h4>
-            <Link href="/admin/calendar">Zum Kalender →</Link>
+            <h4>{d.apptToday}</h4>
+            <Link href="/admin/calendar">{d.toCalendar}</Link>
           </div>
           {bookings.length === 0 ? (
             <div style={{ padding: "24px 0", textAlign: "center", color: "var(--color-text-faint)", fontSize: "14px" }}>
-              Heute keine Termine
+              {d.noApptToday}
             </div>
           ) : (
             <table className="appt-table">
               <thead>
                 <tr>
-                  <th>Zeit</th>
-                  <th>Kunde</th>
-                  <th>Leistung</th>
-                  <th>Mitarbeiter</th>
-                  <th>Status</th>
+                  <th>{d.thTime}</th>
+                  <th>{d.thCustomer}</th>
+                  <th>{d.thService}</th>
+                  <th>{d.thStaff}</th>
+                  <th>{d.thStatus}</th>
                   <th></th>
                 </tr>
               </thead>
@@ -248,7 +255,7 @@ export default function DashboardPage() {
                       </td>
                       <td>
                         <span className={`status-pill ${getStatusPillClass(b.status)}`}>
-                          {getStatusLabel(b.status)}
+                          {getStatusLabel(b.status, d)}
                         </span>
                       </td>
                       <td className="appt-actions-cell">
@@ -264,13 +271,13 @@ export default function DashboardPage() {
 
         <div className="dash-card">
           <div className="dash-card-head">
-            <h4>Neue Leads</h4>
-            <Link href="/admin/front-desk">Alle anzeigen →</Link>
+            <h4>{d.leadsHeading}</h4>
+            <Link href="/admin/front-desk">{d.showAll}</Link>
           </div>
           <div className="lead-list">
             {leads.length === 0 ? (
               <div style={{ padding: "16px 0", color: "var(--color-text-faint)", fontSize: "13px" }}>
-                Keine Leads
+                {d.noLeads}
               </div>
             ) : (
               leads.map((lead) => {
@@ -287,7 +294,7 @@ export default function DashboardPage() {
                       <div className="lead-name">{lead.customerName ?? "—"}</div>
                       <div className="lead-svc">
                         <span className="lead-source-ic" style={{ color: srcColor }}>{srcLabel}</span>
-                        {lead.intent ?? "Anfrage"}
+                        {lead.intent ?? d.request}
                       </div>
                     </div>
                     <div className="lead-meta">
@@ -295,7 +302,7 @@ export default function DashboardPage() {
                         <span className="dot" style={{ background: confDotColor }} />
                         {confPct}%
                       </span>
-                      <span>{formatWhen(lead.createdAt)}</span>
+                      <span>{formatWhen(lead.createdAt, d)}</span>
                     </div>
                   </div>
                 );
@@ -303,7 +310,9 @@ export default function DashboardPage() {
             )}
           </div>
           <div className="ai-cost">
-            KI-Kosten heute: €{stats?.aiCosts.estimatedCostEur.toFixed(4) ?? "0.0000"} · Tokens: {stats?.aiCosts.totalTokensToday.toLocaleString("de-AT") ?? 0}
+            {d.aiCostToday
+              .replace("{cost}", stats?.aiCosts.estimatedCostEur.toFixed(4) ?? "0.0000")
+              .replace("{tokens}", String(stats?.aiCosts.totalTokensToday.toLocaleString(locale === "de" ? "de-AT" : "en-GB") ?? 0))}
           </div>
         </div>
       </div>

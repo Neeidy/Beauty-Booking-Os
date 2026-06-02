@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Sidebar from "../../components/admin/Sidebar";
 import { getDb, leads } from "@beauty-booking/db";
 import { eq, and, count } from "drizzle-orm";
+import { loadClientConfig } from "@/lib/load-client-config";
 
 export const metadata: Metadata = {
   title: `Admin — ${process.env["NEXT_PUBLIC_SALON_NAME"] ?? "Beauty Studio"}`,
@@ -29,10 +30,16 @@ async function getEscalationCount(): Promise<number> {
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const escalationCount = await getEscalationCount();
+  let brandName = "Beauty Booking OS";
+  try {
+    brandName = loadClientConfig().clientName;
+  } catch {
+    // fall back to default brand if config unavailable
+  }
 
   return (
     <div className="admin-layout">
-      <Sidebar escalationCount={escalationCount} />
+      <Sidebar escalationCount={escalationCount} brandName={brandName} />
       <main className="admin-main">
         {children}
       </main>

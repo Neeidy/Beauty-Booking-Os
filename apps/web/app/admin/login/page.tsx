@@ -3,11 +3,14 @@
 import { useState, type FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const next = searchParams.get("next") ?? "/admin/dashboard";
+  const { dict } = useI18n();
+  const t = dict.admin.login;
 
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -28,7 +31,7 @@ function LoginForm() {
       // Hard navigation ensures the new cookie is sent with the next request
       window.location.href = next;
     } else {
-      setError("Falsches Passwort. Bitte versuchen Sie es erneut.");
+      setError(t.wrongPassword);
       setLoading(false);
     }
   }
@@ -58,7 +61,7 @@ function LoginForm() {
               {process.env["NEXT_PUBLIC_SALON_NAME"] ?? "Beauty Booking OS"}
             </span>
           </div>
-          <p style={{ fontSize: "13px", color: "var(--color-text-muted)", margin: 0 }}>Admin Panel</p>
+          <p style={{ fontSize: "13px", color: "var(--color-text-muted)", margin: 0 }}>{t.adminPanel}</p>
         </div>
 
         {/* Card */}
@@ -71,7 +74,7 @@ function LoginForm() {
         }}>
           <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             <div className="form-row">
-              <label htmlFor="password" className="form-label">Passwort</label>
+              <label htmlFor="password" className="form-label">{t.passwordLabel}</label>
               <input
                 id="password"
                 type="password"
@@ -81,7 +84,7 @@ function LoginForm() {
                 autoFocus
                 className="form-input"
                 style={{ width: "100%", boxSizing: "border-box" }}
-                placeholder="Admin-Passwort eingeben"
+                placeholder={t.passwordPlaceholder}
               />
             </div>
 
@@ -95,13 +98,13 @@ function LoginForm() {
               className="btn btn-primary btn-full"
               style={{ opacity: loading ? 0.6 : 1 }}
             >
-              {loading ? "Wird angemeldet…" : "Anmelden"}
+              {loading ? t.submitting : t.submit}
             </button>
           </form>
         </div>
 
         <p style={{ textAlign: "center", marginTop: "24px", fontSize: "12px", color: "var(--color-text-faint)" }}>
-          Beauty Booking OS · Admin
+          {t.footer}
         </p>
       </div>
     </div>
