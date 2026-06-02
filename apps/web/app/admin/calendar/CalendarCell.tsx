@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useI18n } from "@/lib/i18n/I18nProvider";
 
 interface CalendarBooking {
   id: string;
@@ -41,6 +42,7 @@ function getStatusColor(status: string): string {
 }
 
 export default function CalendarCell({ day }: CalendarCellProps) {
+  const { dict } = useI18n();
   const [expanded, setExpanded] = useState(false);
 
   if (day.bookings.length === 0) {
@@ -121,7 +123,7 @@ export default function CalendarCell({ day }: CalendarCellProps) {
             backgroundColor: "var(--color-accent)",
           }}
         >
-          +{hiddenCount} daha
+          {dict.admin.calendar.cellMore.replace("{count}", String(hiddenCount))}
         </button>
       )}
     </div>

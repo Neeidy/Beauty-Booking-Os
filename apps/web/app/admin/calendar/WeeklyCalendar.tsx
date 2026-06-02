@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import CalendarTimeIndicator from "../../../components/admin/CalendarTimeIndicator";
+import { useI18n } from "@/lib/i18n/I18nProvider";
+import type { Locale } from "@/lib/i18n/locales";
 
 interface CalendarBooking {
   id: string;
@@ -54,8 +56,8 @@ function getTodayMondayVienna(): string {
   return monday.toISOString().slice(0, 10);
 }
 
-function formatDisplayDate(dateStr: string): string {
-  return new Intl.DateTimeFormat("de-AT", {
+function formatDisplayDate(dateStr: string, locale: Locale): string {
+  return new Intl.DateTimeFormat(locale === "de" ? "de-AT" : "en-GB", {
     day: "numeric",
     month: "short",
     timeZone: "UTC",
@@ -77,6 +79,8 @@ function parseTimeToMinutes(timeStr: string): { h: number; m: number } {
 }
 
 export default function WeeklyCalendar({ initialData }: WeeklyCalendarProps) {
+  const { dict, locale } = useI18n();
+  const cal = dict.admin.calendar;
   const [data, setData] = useState(initialData);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -96,8 +100,8 @@ export default function WeeklyCalendar({ initialData }: WeeklyCalendarProps) {
     router.push(`/admin/calendar?weekStart=${newWeekStart}`);
   }
 
-  const weekStartDisplay = formatDisplayDate(data.weekStart);
-  const weekEndDisplay = formatDisplayDate(data.weekEnd);
+  const weekStartDisplay = formatDisplayDate(data.weekStart, locale);
+  const weekEndDisplay = formatDisplayDate(data.weekEnd, locale);
 
   return (
     <div style={{ opacity: isLoading ? 0.5 : 1, pointerEvents: isLoading ? "none" : "auto" }}>
@@ -106,7 +110,7 @@ export default function WeeklyCalendar({ initialData }: WeeklyCalendarProps) {
         <div className="cal-header-left">
           <button
             className="cal-ico-btn"
-            aria-label="Vorherige Woche"
+            aria-label={cal.prevWeek}
             onClick={() => navigateToWeek(prevWeek)}
           >
             ‹
@@ -116,7 +120,7 @@ export default function WeeklyCalendar({ initialData }: WeeklyCalendarProps) {
           </div>
           <button
             className="cal-ico-btn"
-            aria-label="Nächste Woche"
+            aria-label={cal.nextWeek}
             onClick={() => navigateToWeek(nextWeek)}
           >
             ›
@@ -126,11 +130,11 @@ export default function WeeklyCalendar({ initialData }: WeeklyCalendarProps) {
             onClick={() => !isCurrentWeek && navigateToWeek(todayMondayStr)}
             disabled={isCurrentWeek}
           >
-            Heute
+            {cal.today}
           </button>
         </div>
         <div className="cal-header-right">
-          <span className="cal-count">{data.totalBookings} Termine diese Woche</span>
+          <span className="cal-count">{cal.weekCount.replace("{count}", String(data.totalBookings))}</span>
         </div>
       </header>
 

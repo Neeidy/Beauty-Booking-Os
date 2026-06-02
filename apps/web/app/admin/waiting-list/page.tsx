@@ -1,6 +1,8 @@
 import WaitingListView from "./WaitingListView";
 import { getDb, leads } from "@beauty-booking/db";
 import { eq, and, sql } from "drizzle-orm";
+import { getLocale } from "@/lib/i18n/server";
+import { getDictionary } from "@/lib/i18n/dictionary";
 
 export const dynamic = "force-dynamic";
 
@@ -26,6 +28,8 @@ interface WaitingListData {
 }
 
 export default async function WaitingListPage() {
+  const dict = getDictionary(await getLocale());
+  const t = dict.admin.waitingList;
   let data: WaitingListData | null = null;
 
   try {
@@ -81,19 +85,19 @@ export default async function WaitingListPage() {
     <>
       <header className="adm-header">
         <div className="adm-header-title">
-          <span className="breadcrumb">Warteliste</span>
+          <span className="breadcrumb">{t.breadcrumb}</span>
           <h2>
-            Warteliste{" "}
+            {t.title}{" "}
             {data && (
               <span style={{ color: "var(--color-text-muted)", fontWeight: 400, fontSize: "14px", marginLeft: "8px" }}>
-                · {data.total} wartend
+                {t.waitingSuffix.replace("{count}", String(data.total))}
               </span>
             )}
           </h2>
         </div>
         <div className="adm-header-actions">
-          <button className="btn btn-ghost btn-sm">⟳ Erneut prüfen</button>
-          <button className="btn btn-primary btn-sm">+ Manuell hinzufügen</button>
+          <button className="btn btn-ghost btn-sm">{t.recheck}</button>
+          <button className="btn btn-primary btn-sm">{t.addManual}</button>
         </div>
       </header>
       <WaitingListView initialData={data} />

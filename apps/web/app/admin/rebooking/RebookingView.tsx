@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useI18n } from "@/lib/i18n/I18nProvider";
+import type { Dictionary } from "@/lib/i18n/dictionary";
 
 interface RebookingJob {
   id: string;
@@ -20,11 +22,11 @@ function getJobStatusClass(status: string): string {
   return "scheduled";
 }
 
-function getJobStatusLabel(status: string): string {
-  if (status === "completed" || status === "sent") return "✓ Versendet";
-  if (status === "skipped") return "✗ Übersprungen";
-  if (status === "opted-out") return "⊘ Abgemeldet";
-  return "⏳ Geplant";
+function getJobStatusLabel(status: string, js: Dictionary["admin"]["rebooking"]["jobStatus"]): string {
+  if (status === "completed" || status === "sent") return js.sent;
+  if (status === "skipped") return js.skipped;
+  if (status === "opted-out") return js.optedOut;
+  return js.scheduled;
 }
 
 function getInitials(name: string | null): string {
@@ -33,6 +35,9 @@ function getInitials(name: string | null): string {
 }
 
 export default function RebookingView() {
+  const { dict, locale } = useI18n();
+  const t = dict.admin.rebooking;
+  const dateLocale = locale === "de" ? "de-AT" : "en-GB";
   const [jobs, setJobs] = useState<RebookingJob[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRunning, setIsRunning] = useState(false);
@@ -48,7 +53,7 @@ export default function RebookingView() {
       const data = await res.json();
       setJobs(data.jobs ?? []);
     } catch {
-      setError("Job listesi yüklenemedi.");
+      setError(t.loadError);
     } finally {
       setIsLoading(false);
     }
@@ -63,13 +68,14 @@ export default function RebookingView() {
       const data = await res.json();
       const s = data.summary;
       setRunResult(
-        `${s?.processed ?? 0} planlandı · ` +
-        `${s?.skippedConsent ?? 0} consent eksik · ` +
-        `${s?.skippedDuplicate ?? 0} duplicate`
+        t.runResult
+          .replace("{processed}", String(s?.processed ?? 0))
+          .replace("{skippedConsent}", String(s?.skippedConsent ?? 0))
+          .replace("{skippedDuplicate}", String(s?.skippedDuplicate ?? 0))
       );
       await fetchJobs();
     } catch {
-      setRunResult("Çalıştırma başarısız.");
+      setRunResult(t.runFailed);
     } finally {
       setIsRunning(false);
     }
@@ -88,15 +94,15 @@ export default function RebookingView() {
           <div className="rb-stats">
             <div className="rb-stat">
               <div className="rb-stat-num">{jobs.length}</div>
-              <div className="rb-stat-lbl">Aktive Erinnerungen</div>
+              <div className="rb-stat-lbl">{t.statActive}</div>
             </div>
             <div className="rb-stat">
               <div className="rb-stat-num">{sentCount}</div>
-              <div className="rb-stat-lbl">Versendet</div>
+              <div className="rb-stat-lbl">{t.statSent}</div>
             </div>
             <div className="rb-stat">
               <div className="rb-stat-num">{skippedCount}</div>
-              <div className="rb-stat-lbl">Übersprungen</div>
+              <div className="rb-stat-lbl">{t.statSkipped}</div>
             </div>
           </div>
           <button
@@ -104,7 +110,7 @@ export default function RebookingView() {
             onClick={handleRunNow}
             disabled={isRunning}
           >
-            {isRunning ? "⏳ Wird ausgeführt..." : "▶ Jetzt ausführen"}
+            {isRunning ? t.running : t.runNow}
           </button>
         </div>
 
@@ -115,37 +121,37 @@ export default function RebookingView() {
 
       <div className="adm-toolbar adm-toolbar-bordered">
         <div className="adm-search">
-          <input type="search" placeholder="Kunde, Leistung..." readOnly />
+          <input type="search" placeholder={t.searchPlaceholder} readOnly />
         </div>
-        <button className="adm-filter-chip active">Alle ({jobs.length})</button>
-        <button className="adm-filter-chip">⏳ Geplant ({scheduledCount})</button>
-        <button className="adm-filter-chip">✓ Versendet ({sentCount})</button>
-        <button className="adm-filter-chip">✗ Übersprungen ({skippedCount})</button>
+        <button className="adm-filter-chip active">{t.filterAll.replace("{count}", String(jobs.length))}</button>
+        <button className="adm-filter-chip">{t.filterScheduled.replace("{count}", String(scheduledCount))}</button>
+        <button className="adm-filter-chip">{t.filterSent.replace("{count}", String(sentCount))}</button>
+        <button className="adm-filter-chip">{t.filterSkipped.replace("{count}", String(skippedCount))}</button>
       </div>
 
       <div className="adm-body adm-body-flush">
         {isLoading ? (
-          <div className="loading-text">Wird geladen…</div>
+          <div className="loading-text">{t.loading}</div>
         ) : error ? (
           <div className="empty">
             <div className="empty-ico">⚠</div>
-            <h4>Fehler beim Laden</h4>
+            <h4>{t.loadErrorTitle}</h4>
             <p>{error}</p>
           </div>
         ) : jobs.length === 0 ? (
           <div className="empty">
             <div className="empty-ico">📅</div>
-            <h4>Keine Erinnerungen</h4>
-            <p>Noch keine Rebooking-Erinnerungen geplant.</p>
+            <h4>{t.emptyTitle}</h4>
+            <p>{t.emptyText}</p>
           </div>
         ) : (
           <table className="clients-table rb-table">
             <thead>
               <tr>
-                <th>Kunde</th>
-                <th>Geplant für</th>
-                <th>Booking</th>
-                <th>Status</th>
+                <th>{t.colCustomer}</th>
+                <th>{t.colScheduled}</th>
+                <th>{t.colBooking}</th>
+                <th>{t.colStatus}</th>
                 <th></th>
               </tr>
             </thead>
@@ -163,13 +169,13 @@ export default function RebookingView() {
                   </td>
                   <td>
                     <strong>
-                      {new Intl.DateTimeFormat("de-AT", {
+                      {new Intl.DateTimeFormat(dateLocale, {
                         day: "2-digit", month: "2-digit", year: "numeric", timeZone: "Europe/Vienna",
                       }).format(new Date(job.scheduledAt))}
                     </strong>
                     {job.executedAt && (
                       <div className="rb-executed">
-                        Ausgeführt: {new Intl.DateTimeFormat("de-AT", {
+                        {t.executedPrefix} {new Intl.DateTimeFormat(dateLocale, {
                           day: "2-digit", month: "2-digit", timeZone: "Europe/Vienna",
                         }).format(new Date(job.executedAt))}
                       </div>
@@ -180,11 +186,11 @@ export default function RebookingView() {
                   </td>
                   <td>
                     <span className={`rb-job-status ${getJobStatusClass(job.status)}`}>
-                      {getJobStatusLabel(job.status)}
+                      {getJobStatusLabel(job.status, t.jobStatus)}
                     </span>
                   </td>
                   <td>
-                    <button className="btn btn-ghost btn-sm">Vorschau</button>
+                    <button className="btn btn-ghost btn-sm">{t.preview}</button>
                   </td>
                 </tr>
               ))}

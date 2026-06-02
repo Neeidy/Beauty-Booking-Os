@@ -3,6 +3,8 @@ import WeeklyCalendar from "./WeeklyCalendar";
 import { getDb, bookings, services } from "@beauty-booking/db";
 import { eq, and, gte, lte, asc } from "drizzle-orm";
 import { formatDateVienna, formatTimeVienna } from "@/lib/vienna-helpers";
+import { getLocale } from "@/lib/i18n/server";
+import { getDictionary } from "@/lib/i18n/dictionary";
 
 export const dynamic = "force-dynamic";
 
@@ -69,6 +71,8 @@ export default async function CalendarPage({
   searchParams: Promise<{ weekStart?: string }>;
 }) {
   const { weekStart: weekStartParam } = await searchParams;
+  const dict = getDictionary(await getLocale());
+  const cal = dict.admin.calendar;
 
   let data: CalendarResponse | null = null;
 
@@ -82,8 +86,8 @@ export default async function CalendarPage({
     const endUTC = new Date(startUTC.getTime() + 7 * 24 * 60 * 60 * 1000 - 1);
     const weekEndStr = formatDateVienna(endUTC);
 
-    const dayNamesLong = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"];
-    const dayNamesShort = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
+    const dayNamesLong = cal.daysLong;
+    const dayNamesShort = cal.daysShort;
 
     const db = getDb();
 
@@ -209,9 +213,9 @@ export default async function CalendarPage({
           padding: "12px 24px",
           fontSize: "14px",
         }}>
-          Kalender konnte nicht geladen werden.{" "}
+          {cal.loadError}{" "}
           <Link href="/admin/calendar" style={{ color: "var(--color-accent)", fontWeight: 600 }}>
-            Erneut versuchen
+            {cal.retry}
           </Link>
         </div>
       </div>
