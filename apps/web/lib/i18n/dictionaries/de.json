@@ -1,0 +1,211 @@
+{
+  "meta": {
+    "title": "Vienna Glow Studio — Premium Beauty in Wien",
+    "description": "Nails, Gesichtspflege, Wimpern & Brauen — Ihr Premium Beauty Studio in 1060 Wien. Jetzt Termin buchen.",
+    "ogLocale": "de_AT"
+  },
+  "nav": {
+    "services": "Leistungen",
+    "gallery": "Galerie",
+    "team": "Team",
+    "contact": "Kontakt",
+    "bookNow": "Jetzt buchen"
+  },
+  "hero": {
+    "badge": "Wien 1060 · Nägel · Haare · Beauty · Epilasyon",
+    "headlineLine1": "Schönheit,",
+    "headlineLine2": "die bleibt.",
+    "sub": "Professionelle Nagelpflege, Haarstyling, Gesichtsbehandlungen und Haarentfernung — in Ihrem Premium Studio in Wien.",
+    "pillNails": "💅 Nägel",
+    "pillHair": "✂️ Haare",
+    "pillFacial": "🌿 Facial",
+    "pillLashes": "👁 Wimpern",
+    "pillEpilation": "〰️ Epilasyon",
+    "ctaPrimary": "Jetzt Termin buchen →",
+    "ctaSecondary": "Leistungen entdecken",
+    "trustGoogle": "Google Bewertung",
+    "trustOnline": "✓ Online buchbar 24/7",
+    "trustAvailable": "✓ Sofort verfügbar",
+    "imageAlt": "Studio interior",
+    "scroll": "Mehr entdecken"
+  },
+  "services": {
+    "caption": "Unser Angebot",
+    "heading": "Alles für Ihre Schönheit",
+    "subtitle": "Von Nagelpflege bis Gesichtsbehandlung — in einem Studio, mit einem Team, das Ihre Handschrift kennt.",
+    "cta": "Termin buchen →",
+    "viewAll": "Alle Leistungen & Preise ansehen →",
+    "items": {
+      "nails": {
+        "title": "Nagelstudio",
+        "desc": "Gel Maniküre · Acryl · Nail Art · Pediküre",
+        "price": "ab € 35,–",
+        "badge": "Beliebt 🔥",
+        "alt": "Nail Art"
+      },
+      "hair": {
+        "title": "Haarstyling",
+        "desc": "Damenschnitt · Herrenschnitt · Coloration · Balayage",
+        "price": "ab € 25,–",
+        "alt": "Hair Salon"
+      },
+      "facial": {
+        "title": "Gesichtspflege & Kosmetik",
+        "desc": "HydraFacial · Peeling · Anti-Aging",
+        "price": "ab € 55,–",
+        "alt": "Facial Care"
+      },
+      "lashes": {
+        "title": "Wimpern & Brauen",
+        "desc": "Wimpernlifting · Tinting · Brow Lamination",
+        "price": "ab € 45,–",
+        "badge": "Trending ✨",
+        "alt": "Lash & Brow"
+      },
+      "epilation": {
+        "title": "Epilasyon & Waxing",
+        "desc": "Ganzkörper · Brazilian · Gesicht · Achseln",
+        "price": "ab € 20,–",
+        "alt": "Waxing Studio"
+      },
+      "barber": {
+        "title": "Herrenfriseur",
+        "desc": "Haarschnitt · Bartpflege · Styling · Rasur",
+        "price": "ab € 25,–",
+        "alt": "Barbershop"
+      }
+    }
+  },
+  "gallery": {
+    "caption": "Einblicke",
+    "heading": "Unser Studio & unsere Arbeit",
+    "subtitle": "Ein Blick hinter die Kulissen — unsere Arbeit, unser Team, unser Wien.",
+    "catNailArt": "Nail Art",
+    "catHair": "Hair",
+    "catLashes": "Lashes",
+    "catStudio": "Studio",
+    "catFacial": "Facial",
+    "catNail": "Nail",
+    "catTeam": "Team"
+  },
+  "team": {
+    "caption": "Unser Team",
+    "heading": "Experten für Ihre Schönheit",
+    "cta": "Online Termin direkt beim Wunschmitarbeiter buchen →",
+    "members": {
+      "anna": {
+        "name": "Anna M.",
+        "role": "Nageldesignerin & Inhaberin",
+        "bio": "10 Jahre Erfahrung. Spezialistin für komplexe Nail Art Designs."
+      },
+      "sofia": {
+        "name": "Sofia B.",
+        "role": "Friseurmeisterin",
+        "bio": "Zertifizierte Friseurmeisterin, Fokus auf moderne Colorationstechniken."
+      },
+      "lena": {
+        "name": "Lena K.",
+        "role": "Beauty & Kosmetikerin",
+        "bio": "Ausgebildete Kosmetikerin und Wimpernexpertin aus Wien."
+      }
+    }
+  },
+  "testimonials": {
+    "statsRatingLabel": "Google Bewertung",
+    "statsReviewsLabel": "Bewertungen",
+    "statsRecommendLabel": "Weiterempfehlungsrate",
+    "caption": "Kundenstimmen",
+    "heading": "Was unsere Kundinnen sagen",
+    "sourceGoogle": "Google",
+    "items": {
+      "katrin": {
+        "text": "Anna ist einfach die Beste! Meine Gel-Nägel sehen immer perfekt aus. Das Studio ist wunderschön und das Team super freundlich.",
+        "name": "Katrin H.",
+        "role": "Stammkundin seit 2022"
+      },
+      "eva": {
+        "text": "HydraFacial bei Lena war ein Erlebnis der Extraklasse. Meine Haut strahlt seit der Behandlung.",
+        "name": "Eva W.",
+        "role": "Neukundin · 2026"
+      },
+      "alex": {
+        "text": "Das Online-Buchungssystem ist so praktisch — ich buche immer um 22 Uhr nach der Arbeit. Die Erinnerung kommt automatisch.",
+        "name": "Alex D.",
+        "role": "Stammkunde seit 2024"
+      }
+    }
+  },
+  "trust": {
+    "gdprTitle": "DSGVO-konform",
+    "gdprDesc": "Ihre Daten sind sicher. Österreichisches Recht.",
+    "ratedTitle": "Top-bewertet in Wien",
+    "ratedDesc": "4.9 Sterne auf Google.",
+    "onlineTitle": "Online buchbar 24/7",
+    "onlineDesc": "Buchen Sie jederzeit — auch nachts."
+  },
+  "standort": {
+    "caption": "Standort & Zeiten",
+    "heading": "Besuchen Sie uns",
+    "address": "Mariahilfer Straße 45, 1060 Wien",
+    "phone": "+43 1 234 5678",
+    "email": "hello@viennaglowstudio.at",
+    "instagram": "@viennaglowstudio",
+    "days": {
+      "monday": "Montag",
+      "tuesday": "Dienstag",
+      "wednesday": "Mittwoch",
+      "thursday": "Donnerstag",
+      "friday": "Freitag",
+      "saturday": "Samstag",
+      "sunday": "Sonntag"
+    },
+    "statusOpen": "● Geöffnet",
+    "statusClosed": "○ Geschlossen",
+    "eveningTag": "Abendtermine! 🌙",
+    "hoursNote": "Online buchbar — auch außerhalb der Öffnungszeiten.",
+    "cta": "Jetzt Termin buchen",
+    "mapName": "Vienna Glow Studio",
+    "mapAddr": "Mariahilfer Straße 45",
+    "mapBadge": "🚇 U3 Neubaugasse · 3 Min.",
+    "transportU3": "🚇 U3 Neubaugasse",
+    "transportBus": "🚌 Bus 57A",
+    "transportPark": "🚗 Parkgarage 100m"
+  },
+  "cta": {
+    "pill": "✨ Online buchbar — 24/7",
+    "heading": "Bereit für Ihren nächsten Termin?",
+    "subtitle": "Wählen Sie Ihre Lieblingsleistung und buchen Sie bequem online.",
+    "bookNow": "Jetzt Termin buchen",
+    "googleFallback": "Jetzt buchen",
+    "whatsappText": "Hallo, ich möchte gerne einen Termin buchen.",
+    "whatsappButton": "Via WhatsApp",
+    "viewServices": "Alle Leistungen ansehen",
+    "reassurance": "Kostenlos · Keine Anmeldung · Sofortbestätigung"
+  },
+  "footer": {
+    "tagline": "Ihr Premium Beauty Studio in Wien Mariahilf.",
+    "socialInstagram": "Instagram",
+    "socialFacebook": "Facebook",
+    "socialTiktok": "TikTok",
+    "headingServices": "Leistungen",
+    "serviceNails": "Nagelstudio",
+    "serviceHair": "Haarstyling",
+    "serviceFacial": "Gesichtspflege",
+    "serviceLashes": "Wimpern & Brauen",
+    "serviceEpilation": "Epilasyon",
+    "headingStudio": "Studio",
+    "studioAbout": "Über uns",
+    "studioTeam": "Team",
+    "studioGallery": "Galerie",
+    "studioHours": "Öffnungszeiten",
+    "studioContact": "Kontakt",
+    "headingBooking": "Online Buchen",
+    "bookNow": "Jetzt Termin buchen",
+    "bookingReassurance": "Schnell · Einfach · Kostenlos",
+    "copyright": "© 2026 Vienna Glow Studio · Wien, Österreich",
+    "legalPrivacy": "Datenschutz",
+    "legalImprint": "Impressum",
+    "legalGdpr": "DSGVO",
+    "poweredBy": "Powered by Beauty Booking OS"
+  }
+}

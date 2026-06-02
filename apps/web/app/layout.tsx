@@ -3,6 +3,12 @@ import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import { loadBranding, brandingToCss } from "@/lib/load-branding";
 import ThemeToggle from "@/components/ThemeToggle";
+import LocaleToggle from "@/components/LocaleToggle";
+import { getLocale } from "@/lib/i18n/server";
+import { getDictionary } from "@/lib/i18n/dictionary";
+import { I18nProvider } from "@/lib/i18n/I18nProvider";
+
+export const dynamic = "force-dynamic";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -16,25 +22,29 @@ const inter = Inter({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "Vienna Glow Studio — Premium Beauty in Wien",
-  description:
-    "Nails, Gesichtspflege, Wimpern & Brauen — Ihr Premium Beauty Studio in 1060 Wien. Jetzt Termin buchen.",
-  keywords: ["Beauty Salon Wien", "Nails Wien", "HydraFacial Wien", "Lash Lift Wien"],
-  openGraph: {
-    title: "Vienna Glow Studio",
-    description: "Premium Beauty Studio in Wien — Nails, Skin, Lashes",
-    locale: "de_AT",
-    type: "website",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
+
+  return {
+    title: dict.meta.title,
+    description: dict.meta.description,
+    keywords: ["Beauty Salon Wien", "Nails Wien", "HydraFacial Wien", "Lash Lift Wien"],
+    openGraph: {
+      title: dict.meta.title,
+      description: dict.meta.description,
+      locale: dict.meta.ogLocale,
+      type: "website",
+    },
+  };
+}
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -43,8 +53,11 @@ export default function RootLayout({
   const branding = loadBranding(slug);
   const brandCss = brandingToCss(branding);
 
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
+
   return (
-    <html lang="de" className={`${playfair.variable} ${inter.variable}`}>
+    <html lang={locale} className={`${playfair.variable} ${inter.variable}`}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
@@ -59,8 +72,11 @@ export default function RootLayout({
         <style dangerouslySetInnerHTML={{ __html: brandCss }} />
       </head>
       <body className="font-sans antialiased" style={{ backgroundColor: "var(--color-bg)" }}>
-        {children}
-        <ThemeToggle />
+        <I18nProvider locale={locale} dict={dict}>
+          {children}
+          <LocaleToggle />
+          <ThemeToggle />
+        </I18nProvider>
       </body>
     </html>
   );

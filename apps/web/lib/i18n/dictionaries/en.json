@@ -1,0 +1,211 @@
+{
+  "meta": {
+    "title": "Vienna Glow Studio — Premium Beauty in Vienna",
+    "description": "Nails, facials, lashes & brows — your premium beauty studio in 1060 Vienna. Book your appointment now.",
+    "ogLocale": "en"
+  },
+  "nav": {
+    "services": "Services",
+    "gallery": "Gallery",
+    "team": "Team",
+    "contact": "Contact",
+    "bookNow": "Book now"
+  },
+  "hero": {
+    "badge": "Vienna 1060 · Nails · Hair · Beauty · Waxing",
+    "headlineLine1": "Beauty",
+    "headlineLine2": "that lasts.",
+    "sub": "Professional nail care, hair styling, facial treatments and hair removal — at your premium studio in Vienna.",
+    "pillNails": "💅 Nails",
+    "pillHair": "✂️ Hair",
+    "pillFacial": "🌿 Facial",
+    "pillLashes": "👁 Lashes",
+    "pillEpilation": "〰️ Waxing",
+    "ctaPrimary": "Book an appointment →",
+    "ctaSecondary": "Explore services",
+    "trustGoogle": "Google rating",
+    "trustOnline": "✓ Book online 24/7",
+    "trustAvailable": "✓ Available right away",
+    "imageAlt": "Studio interior",
+    "scroll": "Discover more"
+  },
+  "services": {
+    "caption": "Our offering",
+    "heading": "Everything for your beauty",
+    "subtitle": "From nail care to facial treatments — in one studio, with a team that knows your signature style.",
+    "cta": "Book appointment →",
+    "viewAll": "View all services & prices →",
+    "items": {
+      "nails": {
+        "title": "Nail Studio",
+        "desc": "Gel manicure · Acrylic · Nail art · Pedicure",
+        "price": "from € 35.–",
+        "badge": "Popular 🔥",
+        "alt": "Nail Art"
+      },
+      "hair": {
+        "title": "Hair Styling",
+        "desc": "Women's cut · Men's cut · Coloring · Balayage",
+        "price": "from € 25.–",
+        "alt": "Hair Salon"
+      },
+      "facial": {
+        "title": "Facials & Cosmetics",
+        "desc": "HydraFacial · Peeling · Anti-aging",
+        "price": "from € 55.–",
+        "alt": "Facial Care"
+      },
+      "lashes": {
+        "title": "Lashes & Brows",
+        "desc": "Lash lift · Tinting · Brow lamination",
+        "price": "from € 45.–",
+        "badge": "Trending ✨",
+        "alt": "Lash & Brow"
+      },
+      "epilation": {
+        "title": "Waxing & Epilation",
+        "desc": "Full body · Brazilian · Face · Underarms",
+        "price": "from € 20.–",
+        "alt": "Waxing Studio"
+      },
+      "barber": {
+        "title": "Men's Barber",
+        "desc": "Haircut · Beard care · Styling · Shave",
+        "price": "from € 25.–",
+        "alt": "Barbershop"
+      }
+    }
+  },
+  "gallery": {
+    "caption": "Insights",
+    "heading": "Our studio & our work",
+    "subtitle": "A look behind the scenes — our work, our team, our Vienna.",
+    "catNailArt": "Nail Art",
+    "catHair": "Hair",
+    "catLashes": "Lashes",
+    "catStudio": "Studio",
+    "catFacial": "Facial",
+    "catNail": "Nail",
+    "catTeam": "Team"
+  },
+  "team": {
+    "caption": "Our team",
+    "heading": "Experts for your beauty",
+    "cta": "Book online directly with your preferred specialist →",
+    "members": {
+      "anna": {
+        "name": "Anna M.",
+        "role": "Nail Designer & Owner",
+        "bio": "10 years of experience. Specialist in complex nail art designs."
+      },
+      "sofia": {
+        "name": "Sofia B.",
+        "role": "Master Hairdresser",
+        "bio": "Certified master hairdresser, focused on modern coloring techniques."
+      },
+      "lena": {
+        "name": "Lena K.",
+        "role": "Beauty & Cosmetician",
+        "bio": "Trained cosmetician and lash expert from Vienna."
+      }
+    }
+  },
+  "testimonials": {
+    "statsRatingLabel": "Google rating",
+    "statsReviewsLabel": "Reviews",
+    "statsRecommendLabel": "Recommendation rate",
+    "caption": "Client voices",
+    "heading": "What our clients say",
+    "sourceGoogle": "Google",
+    "items": {
+      "katrin": {
+        "text": "Anna is simply the best! My gel nails always look perfect. The studio is beautiful and the team is super friendly.",
+        "name": "Katrin H.",
+        "role": "Regular client since 2022"
+      },
+      "eva": {
+        "text": "The HydraFacial with Lena was a first-class experience. My skin has been glowing ever since the treatment.",
+        "name": "Eva W.",
+        "role": "New client · 2026"
+      },
+      "alex": {
+        "text": "The online booking system is so convenient — I always book at 10 pm after work. The reminder comes automatically.",
+        "name": "Alex D.",
+        "role": "Regular client since 2024"
+      }
+    }
+  },
+  "trust": {
+    "gdprTitle": "GDPR-compliant",
+    "gdprDesc": "Your data is safe. Austrian law.",
+    "ratedTitle": "Top-rated in Vienna",
+    "ratedDesc": "4.9 stars on Google.",
+    "onlineTitle": "Book online 24/7",
+    "onlineDesc": "Book anytime — even at night."
+  },
+  "standort": {
+    "caption": "Location & hours",
+    "heading": "Visit us",
+    "address": "Mariahilfer Straße 45, 1060 Vienna",
+    "phone": "+43 1 234 5678",
+    "email": "hello@viennaglowstudio.at",
+    "instagram": "@viennaglowstudio",
+    "days": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
+    },
+    "statusOpen": "● Open",
+    "statusClosed": "○ Closed",
+    "eveningTag": "Evening appointments! 🌙",
+    "hoursNote": "Bookable online — even outside opening hours.",
+    "cta": "Book an appointment",
+    "mapName": "Vienna Glow Studio",
+    "mapAddr": "Mariahilfer Straße 45",
+    "mapBadge": "🚇 U3 Neubaugasse · 3 min.",
+    "transportU3": "🚇 U3 Neubaugasse",
+    "transportBus": "🚌 Bus 57A",
+    "transportPark": "🚗 Parking garage 100m"
+  },
+  "cta": {
+    "pill": "✨ Book online — 24/7",
+    "heading": "Ready for your next appointment?",
+    "subtitle": "Choose your favorite service and book conveniently online.",
+    "bookNow": "Book an appointment",
+    "googleFallback": "Book now",
+    "whatsappText": "Hello, I would like to book an appointment.",
+    "whatsappButton": "Via WhatsApp",
+    "viewServices": "View all services",
+    "reassurance": "Free · No registration · Instant confirmation"
+  },
+  "footer": {
+    "tagline": "Your premium beauty studio in Vienna Mariahilf.",
+    "socialInstagram": "Instagram",
+    "socialFacebook": "Facebook",
+    "socialTiktok": "TikTok",
+    "headingServices": "Services",
+    "serviceNails": "Nail Studio",
+    "serviceHair": "Hair Styling",
+    "serviceFacial": "Facials",
+    "serviceLashes": "Lashes & Brows",
+    "serviceEpilation": "Waxing",
+    "headingStudio": "Studio",
+    "studioAbout": "About us",
+    "studioTeam": "Team",
+    "studioGallery": "Gallery",
+    "studioHours": "Opening hours",
+    "studioContact": "Contact",
+    "headingBooking": "Book Online",
+    "bookNow": "Book an appointment",
+    "bookingReassurance": "Fast · Easy · Free",
+    "copyright": "© 2026 Vienna Glow Studio · Vienna, Austria",
+    "legalPrivacy": "Privacy",
+    "legalImprint": "Imprint",
+    "legalGdpr": "GDPR",
+    "poweredBy": "Powered by Beauty Booking OS"
+  }
+}

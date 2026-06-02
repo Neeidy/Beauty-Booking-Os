@@ -1,4 +1,10 @@
-export default function TestimonialsSection() {
+import { getLocale } from "@/lib/i18n/server";
+import { getDictionary } from "@/lib/i18n/dictionary";
+
+export default async function TestimonialsSection() {
+  const dict = getDictionary(await getLocale());
+  const t = dict.testimonials;
+
   return (
     <>
       {/* Stats Bar */}
@@ -7,15 +13,15 @@ export default function TestimonialsSection() {
           <div className="stats-item">
             <div className="stats-num">4.9/5</div>
             <div className="stats-stars">★★★★★</div>
-            <div className="stats-label">Google Bewertung</div>
+            <div className="stats-label">{t.statsRatingLabel}</div>
           </div>
           <div className="stats-item">
             <div className="stats-num">200+</div>
-            <div className="stats-label stats-label-top">Bewertungen</div>
+            <div className="stats-label stats-label-top">{t.statsReviewsLabel}</div>
           </div>
           <div className="stats-item">
             <div className="stats-num">97%</div>
-            <div className="stats-label stats-label-top">Weiterempfehlungsrate</div>
+            <div className="stats-label stats-label-top">{t.statsRecommendLabel}</div>
           </div>
         </div>
       </section>
@@ -24,16 +30,15 @@ export default function TestimonialsSection() {
       <section className="section testimonials">
         <div className="container">
           <div className="section-header">
-            <span className="caption">Kundenstimmen</span>
-            <h2>Was unsere Kundinnen sagen</h2>
+            <span className="caption">{t.caption}</span>
+            <h2>{t.heading}</h2>
           </div>
           <div className="testimonial-grid">
             <article className="testimonial-card">
               <span className="testimonial-quote">&ldquo;</span>
               <div className="testimonial-stars" aria-label="5 stars">★★★★★</div>
               <p className="testimonial-text">
-                Anna ist einfach die Beste! Meine Gel-Nägel sehen immer perfekt aus.
-                Das Studio ist wunderschön und das Team super freundlich.
+                {t.items.katrin.text}
               </p>
               <div className="testimonial-author">
                 <span
@@ -43,11 +48,11 @@ export default function TestimonialsSection() {
                   KH
                 </span>
                 <div>
-                  <div className="testimonial-name">Katrin H.</div>
-                  <div className="testimonial-role">Stammkundin seit 2022</div>
+                  <div className="testimonial-name">{t.items.katrin.name}</div>
+                  <div className="testimonial-role">{t.items.katrin.role}</div>
                 </div>
                 <span className="testimonial-source">
-                  <span className="gbadge">G</span> Google
+                  <span className="gbadge">G</span> {t.sourceGoogle}
                 </span>
               </div>
             </article>
@@ -56,8 +61,7 @@ export default function TestimonialsSection() {
               <span className="testimonial-quote">&ldquo;</span>
               <div className="testimonial-stars">★★★★★</div>
               <p className="testimonial-text">
-                HydraFacial bei Lena war ein Erlebnis der Extraklasse.
-                Meine Haut strahlt seit der Behandlung.
+                {t.items.eva.text}
               </p>
               <div className="testimonial-author">
                 <span
@@ -67,11 +71,11 @@ export default function TestimonialsSection() {
                   EW
                 </span>
                 <div>
-                  <div className="testimonial-name">Eva W.</div>
-                  <div className="testimonial-role">Neukundin · 2026</div>
+                  <div className="testimonial-name">{t.items.eva.name}</div>
+                  <div className="testimonial-role">{t.items.eva.role}</div>
                 </div>
                 <span className="testimonial-source">
-                  <span className="gbadge">G</span> Google
+                  <span className="gbadge">G</span> {t.sourceGoogle}
                 </span>
               </div>
             </article>
@@ -80,8 +84,7 @@ export default function TestimonialsSection() {
               <span className="testimonial-quote">&ldquo;</span>
               <div className="testimonial-stars">★★★★★</div>
               <p className="testimonial-text">
-                Das Online-Buchungssystem ist so praktisch — ich buche immer um 22 Uhr nach der Arbeit.
-                Die Erinnerung kommt automatisch.
+                {t.items.alex.text}
               </p>
               <div className="testimonial-author">
                 <span
@@ -91,11 +94,11 @@ export default function TestimonialsSection() {
                   AD
                 </span>
                 <div>
-                  <div className="testimonial-name">Alex D.</div>
-                  <div className="testimonial-role">Stammkunde seit 2024</div>
+                  <div className="testimonial-name">{t.items.alex.name}</div>
+                  <div className="testimonial-role">{t.items.alex.role}</div>
                 </div>
                 <span className="testimonial-source">
-                  <span className="gbadge">G</span> Google
+                  <span className="gbadge">G</span> {t.sourceGoogle}
                 </span>
               </div>
             </article>
@@ -114,8 +117,8 @@ export default function TestimonialsSection() {
               🛡
             </span>
             <div>
-              <h4>DSGVO-konform</h4>
-              <p>Ihre Daten sind sicher. Österreichisches Recht.</p>
+              <h4>{dict.trust.gdprTitle}</h4>
+              <p>{dict.trust.gdprDesc}</p>
             </div>
           </div>
           <div className="trust-item">
@@ -126,8 +129,8 @@ export default function TestimonialsSection() {
               ⭐
             </span>
             <div>
-              <h4>Top-bewertet in Wien</h4>
-              <p>4.9 Sterne auf Google.</p>
+              <h4>{dict.trust.ratedTitle}</h4>
+              <p>{dict.trust.ratedDesc}</p>
             </div>
           </div>
           <div className="trust-item">
@@ -138,8 +141,8 @@ export default function TestimonialsSection() {
               🕐
             </span>
             <div>
-              <h4>Online buchbar 24/7</h4>
-              <p>Buchen Sie jederzeit — auch nachts.</p>
+              <h4>{dict.trust.onlineTitle}</h4>
+              <p>{dict.trust.onlineDesc}</p>
             </div>
           </div>
         </div>

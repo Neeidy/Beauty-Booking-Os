@@ -5,6 +5,7 @@
   "packageType": "starter",
   "languages": ["de", "tr"],
   "defaultLanguage": "de",
+  "defaultLocale": "en",
   "channels": {
     "website": true,
     "instagramDm": false,
