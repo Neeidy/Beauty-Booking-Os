@@ -1040,6 +1040,11 @@ section[id] { scroll-margin-top: 88px; }
   h1 { font-size: calc(40px * var(--font-scale)); }
   .hero { padding: 32px 0 64px; }
   .section { padding: 64px 0; }
+  /* Long-text CTAs must wrap on phones instead of forcing horizontal scroll */
+  .btn { white-space: normal; max-width: 100%; text-align: center; }
+  /* Shrink the decorative hero glow so it stays proportionate and within
+     bounds on small screens (parent already clips with overflow:hidden). */
+  .hero-blob { width: 340px; height: 340px; right: -20%; top: 4%; }
 }
 
 
@@ -3317,6 +3322,15 @@ section[id] { scroll-margin-top: 88px; }
   color: var(--color-accent);
   font-size: 13px;
   font-weight: 700;
+}
+
+/* On phones the booking flow is a full-width, tap-heavy form: the floating
+   cluster would float over the service-card list and visually cover a card
+   corner. Hide it there (.booking-wrap is unique to /booking and is a DOM
+   sibling of .floating-controls, which renders after it in <body>). Theme and
+   locale are chosen on the landing page and inherited via cookie. */
+@media (max-width: 640px) {
+  .booking-wrap ~ .floating-controls { display: none; }
 }
 
 /* ── Tweaks panel ── */
