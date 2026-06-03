@@ -2,6 +2,10 @@ import { type NextRequest, NextResponse } from "next/server";
 
 const COOKIE_NAME = "admin_session";
 const ADMIN_SECRET = process.env["ADMIN_SECRET"] ?? "change-me-in-production";
+// Shared secret sent to /api/internal/log so the sink can reject public callers.
+// Mirrors the fallback chain in that route handler.
+const INTERNAL_LOG_SECRET =
+  process.env["INTERNAL_LOG_SECRET"] ?? process.env["WEBHOOK_SECRET"] ?? "";
 
 /**
  * Constant-time string compare for the Edge runtime (no node:crypto here).
@@ -124,7 +128,11 @@ export function middleware(request: NextRequest) {
     const duration = Date.now() - start;
     void fetch(new URL("/api/internal/log", request.url).toString(), {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        // Proves to the log sink that this POST originates from our middleware.
+        "x-internal-log": INTERNAL_LOG_SECRET,
+      },
       body: JSON.stringify({
         type: "request",
         method: request.method,
