@@ -22,5 +22,37 @@ Status as of the i18n sprint completion. The app is stable (327 tests green, liv
 - Dashboard "Wochenumsatz" stat is a hardcoded "—" placeholder, never populated.
 - operatingHours format inconsistency: file configs use `"HH:MM"`, the admin SettingsView writes `"HHmm"`; `/api/booking/slots` normalizes both at read.
 
+## Security audit — deferred / accepted items
+
+A full read-only security audit was run. Critical and high-severity fixes were applied
+(leaked DB credential redacted from `.env.example`; `next` → 15.5.19 and `postcss` → 8.5.15,
+closing 9 high + several moderate CVEs). The items below were intentionally NOT changed.
+
+### drizzle-orm SQL-injection advisory (GHSA, `<0.45.2`) — accepted, not exploitable here
+- **Advisory:** improperly escaped quoted SQL identifiers; only triggered when attacker-controlled
+  input reaches identifier-constructing APIs (`sql.identifier()`, `.as()`, `sql.raw()`, raw `` sql`` ``).
+- **Why not patched:** the codebase uses NONE of those with user input — every query is parameterized
+  via `eq()/and()/lt()` etc. Verified by grep across `apps/web` + `packages/db`: zero matches. The
+  vulnerable code path does not exist here, so real-world risk is zero.
+- **Why deferred:** the fix requires drizzle `0.38 → 0.45`, a major bump, and `drizzle-orm` is declared
+  in the FROZEN `packages/db` as well as `apps/web`. A major ORM upgrade risks the 327-test suite and
+  the live booking flow for a vulnerability that is not reachable.
+- **Recommended (when packages/db unfreezes):** bump `drizzle-orm` to `>=0.45.2` in both
+  `apps/web/package.json` and `packages/db/package.json`, then full typecheck + test + booking-flow QA.
+
+### Transitive `postcss` advisory via `next`
+- One moderate postcss XSS advisory remains via `apps/web > next > postcss` (Next's bundled copy, not
+  our direct dep, which is already 8.5.15). It is build-time only and not reachable with user input.
+  Resolves when `next` next bumps its bundled postcss.
+
+### Auth / infra hardening (tracked separately, see audit report)
+- Admin auth stores the raw `ADMIN_SECRET` as the session cookie value and compares with `===`
+  (not `timingSafeEqual`); a default fallback secret exists if env is unset.
+- `/api/internal/log` is unauthenticated (relies on infra not exposing it; Vercel exposes all `/api/*`).
+- Rate limiter is in-memory per-isolate (multiplied across Vercel instances); `getClientIp` trusts
+  `x-forwarded-for`.
+- No global CSP/HSTS/X-Frame-Options headers.
+- These are hardening improvements, not active breaches, and are being addressed incrementally.
+
 ## Deferred feature (not a bug)
 - **Multi-tenant landing content:** landing marketing content (service cards, team, testimonials, gallery) lives in the i18n dictionary — bilingual but shared across tenants. Per-tenant needs a 2-dimensional (tenant × locale) approach (e.g. `clients/{slug}/landing.json`) plus authoring bilingual content for a second salon. `elegant-nails-vienna` has no `staff.json`. Deferred together with onboarding a real second salon.
