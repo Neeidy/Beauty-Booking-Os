@@ -1033,6 +1033,9 @@ section[id] { scroll-margin-top: 88px; }
   .site-nav { height: auto; padding: 12px 0; }
   .site-nav-inner { flex-wrap: wrap; gap: 12px; }
   .site-links { display: none; }
+  /* With the middle nav hidden, push the Book-now CTA to the right edge so the
+     header reads brand-left / CTA-right instead of both bunched at the left. */
+  .site-nav-inner > .btn-primary { margin-left: auto; }
   .service-grid { grid-template-columns: 1fr; }
   .gallery-grid { grid-template-columns: 1fr; }
   .stats-grid { grid-template-columns: 1fr; gap: 20px; }
