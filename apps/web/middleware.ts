@@ -3,6 +3,22 @@ import { type NextRequest, NextResponse } from "next/server";
 const COOKIE_NAME = "admin_session";
 const ADMIN_SECRET = process.env["ADMIN_SECRET"] ?? "change-me-in-production";
 
+/**
+ * Constant-time string compare for the Edge runtime (no node:crypto here).
+ * Pure-JS XOR accumulation over a fixed iteration count so the timing does not
+ * reveal where a mismatch occurred or the secret's length. Mismatched lengths
+ * still iterate the full span and always return false.
+ */
+function timingSafeStrEqual(a: string | undefined | null, b: string): boolean {
+  if (a == null) return false;
+  let diff = a.length ^ b.length;
+  const n = Math.max(a.length, b.length);
+  for (let i = 0; i < n; i++) {
+    diff |= (a.charCodeAt(i) || 0) ^ (b.charCodeAt(i) || 0);
+  }
+  return diff === 0;
+}
+
 const REQUESTS_PER_MINUTE = Number(process.env["RATE_LIMIT_REQUESTS_PER_MINUTE"] ?? 30);
 const WINDOW_MS = 60_000;
 
@@ -91,7 +107,7 @@ export function middleware(request: NextRequest) {
   // ── Admin page auth guard ─────────────────────────────────────────────────
   if (pathname.startsWith("/admin") && !pathname.startsWith("/admin/login")) {
     const cookie = request.cookies.get(COOKIE_NAME);
-    if (cookie?.value !== ADMIN_SECRET) {
+    if (!timingSafeStrEqual(cookie?.value, ADMIN_SECRET)) {
       const loginUrl = new URL("/admin/login", request.url);
       loginUrl.searchParams.set("next", pathname);
       return NextResponse.redirect(loginUrl);

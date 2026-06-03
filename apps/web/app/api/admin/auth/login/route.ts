@@ -1,7 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { setAdminSession } from "@/lib/admin-auth";
-
-const ADMIN_SECRET = process.env["ADMIN_SECRET"] ?? "change-me-in-production";
+import { setAdminSession, verifyAdminSecret } from "@/lib/admin-auth";
 
 export async function POST(request: NextRequest) {
   let body: { password?: string } = {};
@@ -11,7 +9,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid body" }, { status: 400 });
   }
 
-  if (body.password !== ADMIN_SECRET) {
+  if (!verifyAdminSecret(body.password)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
