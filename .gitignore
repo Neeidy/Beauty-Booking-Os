@@ -43,6 +43,7 @@ NOTLAR.txt
 .vercel
 .env*.local
 .claude/worktrees/
+.claude/settings.local.json
 pixel-agents/
 
 # Cleanup additions

@@ -2,6 +2,29 @@
   "name": "beauty-booking-os",
   "version": "0.0.1",
   "private": true,
+  "description": "Multi-tenant, AI-assisted, bilingual (DE/EN) salon booking platform — a premium storefront plus a full admin back-office, built as a Next.js 15 + Turborepo monorepo.",
+  "author": "Yigitcan Uk",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Neeidy/beauty-booking-os.git"
+  },
+  "keywords": [
+    "salon-booking",
+    "appointment-scheduling",
+    "multi-tenant",
+    "nextjs",
+    "react",
+    "typescript",
+    "supabase",
+    "drizzle-orm",
+    "ai-agents",
+    "anthropic-claude",
+    "i18n",
+    "gdpr",
+    "turborepo",
+    "monorepo"
+  ],
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",

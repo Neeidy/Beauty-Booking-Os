@@ -75,7 +75,7 @@ DO NOT TOUCH anything else.
 ### Commit & push
 `pnpm typecheck && pnpm test && git add . && git commit -m "feat(i18n): Phase 4f — admin staff DE/EN (admin panel i18n complete)" && git push origin main`
 ### LIVE Vercel verification (REQUIRED — authed login is now authorized)
-The user authorized live admin login. Use the admin password from your environment — read `ADMIN_SECRET` from `apps/web/.env.local` (its value is `beauty2025`). DO NOT hardcode or commit this secret into any tracked/committed file; use it only at runtime for verification.
+The user authorized live admin login. Use the admin password from your environment — read `ADMIN_SECRET` from `apps/web/.env.local` (its value is `<ADMIN_SECRET — set in env>`). DO NOT hardcode or commit this secret into any tracked/committed file; use it only at runtime for verification.
 1. Poll `https://beauty-booking-os-web.vercel.app/` until 200, no "Application error" (deploy live).
 2. Authenticate against LIVE: `POST https://beauty-booking-os-web.vercel.app/api/admin/auth/login` with `{ "password": "<ADMIN_SECRET>" }`, capture the `admin_session` cookie from the response.
    - If login returns 401 (production `ADMIN_SECRET` differs from local), report it and fall back to: public-surface regression check (`/`, `/admin/login` de+en still 200, no error) + ask the user to eyeball.
