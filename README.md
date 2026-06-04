@@ -122,14 +122,14 @@ Lead intake and classification run through Claude agents with confidence scoring
 
 ---
 
-## Author
+## License
 
-**Built by Yigitcan Uk**
-
-[LinkedIn](https://www.linkedin.com/in/yigitcanuk/) · [GitHub](https://github.com/Neeidy)
+MIT — see [LICENSE](./LICENSE).
 
 ---
 
-## License
+<div align="center">
 
-Released under the [MIT License](LICENSE).
+Built by [Yigitcan Uk](https://www.linkedin.com/in/yigitcanuk/) · [GitHub](https://github.com/Neeidy)
+
+</div>
