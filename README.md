@@ -1,122 +1,135 @@
-# Beauty Booking OS
+<h1 align="center">✨ Beauty Booking OS</h1>
 
-![Next.js](https://img.shields.io/badge/Next.js-15-000000?logo=nextdotjs&logoColor=white)
-![React](https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)
-![Tests](https://img.shields.io/badge/tests-327%20passing-brightgreen)
-![License](https://img.shields.io/badge/license-proprietary-red)
+<p align="center">
+  <em>the operating system behind a busy salon</em>
+</p>
 
-> Multi-tenant, AI-assisted, bilingual (DE/EN) salon booking platform — a premium storefront **and** a full admin back-office, built end to end.
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-15-000000?logo=nextdotjs&logoColor=white" alt="Next.js 15">
+  <img src="https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white" alt="React 19">
+  <img src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Supabase-PostgreSQL-3FCF8E?logo=supabase&logoColor=white" alt="Supabase / PostgreSQL">
+  <img src="https://img.shields.io/badge/tests-327%20passing-5cd887" alt="327 tests passing">
+  <img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License">
+</p>
 
-**Live demo:** <https://beauty-booking-os-web.vercel.app> · **Booking flow:** <https://beauty-booking-os-web.vercel.app/booking> · **Interactive showcase:** [`docs/showcase/index.html`](docs/showcase/index.html)
+<p align="center">
+  <a href="https://beauty-booking-os-web.vercel.app">Live demo</a> ·
+  <a href="https://beauty-booking-os-web.vercel.app/booking">Booking flow</a> ·
+  <a href="docs/showcase/index.html">Interactive showcase</a>
+</p>
+
+> A config-driven, multi-tenant salon booking platform — a premium customer storefront **and** a full operational back-office — built end to end as a Next.js 15 monorepo.
+
+Beauty Booking OS turns a single salon config into a complete product: a branded storefront with a guided booking flow, plus an admin back-office for leads, calendar, staff, rebooking, and AI-assisted intake. Each tenant is onboarded by adding configuration — no code changes — and the whole system runs live on Vercel + Supabase against a seeded demo salon. The UI is fully bilingual (DE/EN, formal *Sie*).
 
 ---
 
-## Overview
-
-Beauty Booking OS is a config-driven, multi-tenant platform for beauty salons. Each tenant gets a premium, branded storefront with a guided booking flow on the front end, and a complete operational back-office — front desk, CRM, calendar, staff, AI logs — on the back end. A new salon is onboarded by adding a config directory, not by writing code.
-
-It is built as a single Next.js 15 + Turborepo monorepo and runs live on Vercel + Supabase against a seeded `demo-salon`.
-
-## Key features
-
-- **Premium storefront + guided 4-step booking** — live slot availability, hold-timer slot reservations (TTL-based, with a Postgres exclusion constraint preventing double-booking), and a waiting list for full slots.
-- **Full admin back-office** — dashboard, lead **Kanban** (front desk), customer **CRM**, weekly **calendar**, **settings**, **staff** management, **rebooking** jobs, and **AI logs**.
-- **AI agents (Claude)** — lead intake & classification with confidence scoring and automatic human-review escalation below threshold. Every agent output is **Zod-validated** (no raw `JSON.parse`) and every call is cost-logged (tokens + duration) to `event_logs`.
-- **Full DE/EN internationalisation** — formal German *Sie* register, cookie-based locale resolution, and **730 parity-locked keys** per locale enforced by an automated test.
-- **GDPR (Austrian law)** — explicit, unbundled consent; JSON export; anonymisation instead of hard-delete; automatic anonymisation after two years.
-- **Multi-tenant by config** — per-salon `clients/{slug}` directories with runtime `--brand-*` CSS-variable theming.
-
-## Tech stack
-
-| Layer | Technology |
-| --- | --- |
-| Framework | Next.js 15 (App Router, TypeScript) · React 19 |
-| Styling | Tailwind CSS v4 + design tokens (CSS variables) |
-| Database | Supabase (PostgreSQL) + Drizzle ORM (via `postgres.js`) |
-| Validation | Zod — every AI agent output is schema-validated |
-| AI | Anthropic Claude API (`@anthropic-ai/sdk`, model `claude-sonnet-4-20250514`) |
-| Email | Resend — transactional email via its REST API (console fallback in dev) |
-| Background jobs | Cron-triggered Next.js API routes (reminders, rebooking, recovery, reviews) |
-| Monorepo | pnpm workspaces + Turborepo |
-| Testing | Vitest — 327 tests across 37 files |
-| Deploy | Vercel + Supabase |
-
-## Monorepo structure
+## Architecture
 
 ```
-beauty-booking-os/
-├─ apps/
-│  └─ web/            # Next.js app — storefront, admin back-office, API routes
-├─ packages/
-│  ├─ db/             # Drizzle schema + client (Supabase Postgres)
-│  ├─ core/           # Domain logic, job runner, shared types
-│  ├─ agents/         # Claude agents (intake, booking, follow-up, content, orchestrator)
-│  ├─ shared/         # Anthropic client wrapper + cross-cutting utilities
-│  ├─ config/         # Config loading + schemas
-│  └─ integrations/   # External integrations (e.g. Resend email)
-├─ clients/
-│  └─ {slug}/         # Per-tenant config: client.config.json, services.json, branding.json, staff.json
-└─ docs/              # Documentation, sprint log, known issues, interactive showcase
+apps/web ── Next.js 15 monorepo  (storefront · admin · API routes)
+   │
+   ├─ Storefront    premium landing + guided 4-step booking
+   │                live slot availability · hold-timer reservations · waiting list
+   ├─ Admin         dashboard · leads Kanban · CRM · calendar · settings · staff · rebooking · AI logs
+   ├─ API routes    slots · reservations · booking · leads · gdpr · jobs
+   │
+   ├─ packages/     db (Drizzle) · core · agents · shared · config · integrations
+   ├─ AI agents     intake · booking · follow-up · content · orchestrator
+   │                Claude · every output Zod-validated · token + cost logged
+   └─ Scheduled     Vercel Cron ─▶ /api/jobs/*   (reminders · recovery · retention)
+   │
+   └─ Data & infra  Supabase (PostgreSQL) · Drizzle ORM · Resend (email) · Vercel
 ```
 
-## Getting started
+Tenants live under `clients/{slug}` (config + branding injected at runtime via `--brand-*` CSS variables). The German/English dictionaries are parity-locked — `de.json` and `en.json` (730 keys each) are kept identical by an automated test.
 
-### Prerequisites
+---
 
-- Node.js **≥ 20**
-- pnpm **≥ 9**
+## Requirements
 
-### Setup
+- **Node.js 20+** and **pnpm 9+**
+- A **Supabase** project (PostgreSQL)
+- An **Anthropic** API key (Claude — `claude-sonnet-4-20250514`)
+- *(optional)* a **Resend** API key for transactional email — without it, emails simply log to the console
+
+---
+
+## Setup
 
 ```bash
+# 1. Install dependencies
 pnpm install
-cp .env.example .env     # Windows: copy .env.example .env
+
+# 2. Create your environment file
+cp .env.example .env        # Windows: copy .env.example .env
+#    then set DATABASE_URL + Supabase keys, ANTHROPIC_API_KEY, and (optional) RESEND_API_KEY
 ```
 
-Then fill in `.env` with your own **Supabase**, **Anthropic**, and **Resend** values. (`.env` is git-ignored — only `.env.example` is committed, and it contains placeholders only.)
+`.env` and any real keys are git-ignored — only `.env.example` (placeholders only) is committed.
 
-### Develop
+---
+
+## Usage
 
 ```bash
 pnpm dev          # web app on http://localhost:3030
-pnpm test         # Vitest suite (327 tests)
+pnpm test         # Vitest suite — 327 tests
 pnpm typecheck    # tsc --noEmit across the monorepo
 pnpm build        # production build
 ```
 
-## Internationalisation
+---
 
-The app ships full German/English localisation. German uses the formal *Sie* register throughout. The active locale is resolved **server-side** from a cookie — falling back to the tenant's `defaultLocale`, then English — so there are no locale-prefixed routes and no `localStorage`. Both dictionaries are **parity-locked**: an automated test flattens `de.json` and `en.json` and fails if their key sets ever diverge (currently **730 keys** per locale, kept in lockstep).
+## Safety & guarantees
 
-## Multi-tenant
+- **GDPR (Austrian law)** — explicit, unbundled consent (data processing + reminders required, marketing optional); JSON export; deletion **anonymises** instead of hard-deleting; auto-anonymisation after two years.
+- **No double-booking** — slot holds plus a PostgreSQL exclusion constraint guarantee one booking per slot.
+- **Admin auth on every `/api/admin/*` route** — constant-time secret comparison.
+- **AI guardrails** — every agent output is Zod-validated; low-confidence intents escalate to human review; each call is token- and cost-logged to `event_logs`.
+- **Secrets are git-ignored** — `.env` and real credentials never enter version control.
+- **Rate limiting** on public endpoints.
 
-Every salon is a directory under `clients/{slug}` carrying its own `client.config.json`, `services.json`, `branding.json`, and `staff.json`. Branding (colours, fonts, copy) is injected at runtime through `--brand-*` CSS variables, so onboarding a tenant means adding config — not changing code. The bundled `demo-salon` powers the live demo.
+---
 
-## GDPR
+## AI & internationalisation
 
-Built for Austrian data-protection rules. Consent is **explicit and unbundled** — separate fields for data processing (required), appointment reminders (required), and marketing (optional), with no pre-checked boxes. Customer data exports to JSON on request; deletion **anonymises** rather than hard-deletes, and records auto-anonymise after two years (730 days). Each tenant config carries a GDPR contact email.
+Lead intake and classification run through Claude agents with confidence scoring and automatic human-review escalation below threshold — no raw model JSON is ever trusted (every output passes a Zod schema). The entire UI ships in German and English (formal *Sie*), resolved server-side from a cookie, with the two dictionaries locked in parity by test.
+
+---
+
+## Project layout
+
+| Path | Purpose |
+|---|---|
+| `apps/web/` | Next.js app — storefront, admin back-office, API routes |
+| `apps/web/app/api/` | Route handlers — booking · slots · reservations · leads · admin · gdpr · jobs |
+| `packages/db/` | Drizzle schema + Supabase Postgres client |
+| `packages/core/` | Domain logic, job runner, shared types |
+| `packages/agents/` | Claude agents — intake · booking · follow-up · content · orchestrator |
+| `packages/shared/` | Anthropic client wrapper + cross-cutting utilities |
+| `packages/config/` | Config loading + schemas |
+| `packages/integrations/` | External integrations (Resend email) |
+| `clients/{slug}/` | Per-tenant config — `client.config.json`, `services.json`, `branding.json`, `staff.json` |
+| `docs/` | Documentation, sprint log, known issues, interactive showcase |
+
+---
 
 ## Testing
 
-**327 automated tests across 37 files** run on Vitest (`pnpm test`) — covering API routes, the booking/reservation flow, Vienna-timezone helpers, AI-agent schema validation, the job runner, and configuration loading. Notable guardrails:
+**327 automated tests** across 37 files (Vitest) — covering API routes, the booking/reservation flow, Vienna-timezone helpers, AI-agent schema validation, the job runner, and config loading. Guardrail tests include **i18n parity** ([`locale.test.ts`](apps/web/lib/i18n/__tests__/locale.test.ts)) and **design-token generation** ([`branding-to-css.test.ts`](apps/web/lib/__tests__/branding-to-css.test.ts)). Deferred items and security-audit outcomes are documented in [`docs/known-issues.md`](docs/known-issues.md).
 
-- **i18n parity** — [`locale.test.ts`](apps/web/lib/i18n/__tests__/locale.test.ts) fails the suite if the DE/EN dictionary key sets diverge.
-- **Design tokens** — [`branding-to-css.test.ts`](apps/web/lib/__tests__/branding-to-css.test.ts) verifies per-tenant `--brand-*` CSS-variable generation.
-
-## Deployment
-
-Deployed on **Vercel** (web) + **Supabase** (PostgreSQL). All secrets are configured as environment variables in the Vercel dashboard and are **never** committed — the repository tracks only `.env.example` with placeholder values.
-
-## Status & known issues
-
-The system is stable (327 tests green, live and healthy on Vercel). Deferred items, accepted trade-offs, and the security-audit outcomes are documented in [`docs/known-issues.md`](docs/known-issues.md).
-
-## License
-
-Proprietary — **all rights reserved**. Published for portfolio and demonstration purposes only; not for reuse, redistribution, or commercial use without written permission. See [`LICENSE`](LICENSE).
+---
 
 ## Author
 
-Built by **Yigitcan Uk**
+**Built by Yigitcan Uk**
+
 [LinkedIn](https://www.linkedin.com/in/yigitcanuk/) · [GitHub](https://github.com/Neeidy)
+
+---
+
+## License
+
+Released under the [MIT License](LICENSE).
