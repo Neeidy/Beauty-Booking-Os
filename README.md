@@ -133,3 +133,5 @@ MIT — see [LICENSE](./LICENSE).
 Built by [Yigitcan Uk](https://www.linkedin.com/in/yigitcanuk/) · [GitHub](https://github.com/Neeidy)
 
 </div>
+
+<!-- RS push-to-deploy test 2026-06-29T17:31:58Z -->
